@@ -1,16 +1,22 @@
 package pl.tomaszmiller;
 
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.input.MouseEvent;
+import javafx.fxml.Initializable;
+import javafx.stage.Stage;
 
+import java.io.IOException;
 import java.net.URL;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ResourceBundle;
-import javafx.fxml.Initializable;
-import jdk.nashorn.internal.runtime.regexp.joni.Regex;
 
 public class Controller implements Initializable {
 
@@ -86,7 +92,7 @@ public class Controller implements Initializable {
 
     }
 
-    public void openDialog() {
+    public void openDialog(MouseEvent event) throws IOException { //wyjątek do FXMLLoader
         if (!isLoginFormValid()) {
             return;
         }
@@ -99,7 +105,17 @@ public class Controller implements Initializable {
                 while (resultSet.next()) {
                     String passwordFromDatabase = resultSet.getString("password");
                     if (passwordFromDatabase.equals(userPassword.getText())) {
+
+//                        tworzenie nowego widoku po zalogowaniu
+                        Parent userView = FXMLLoader.load(getClass().getResource("userView.fxml"));
+                        Scene scene = new Scene(userView);
+                        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+                        stage.hide();
+                        stage.setScene(scene);
+                        stage.show();
+
                         Utils.openDialog("Logowanie", "Zalogowałeś się poprawnie!");
+
                     } else {
                         Utils.openDialog("Logowanie", "Podane hasło jest niepoprawne!");
                     }
