@@ -19,25 +19,25 @@ public class Controller implements Initializable {
     PasswordField userPassword;
 
     @FXML
-    FirstNameField firstName;
+    TextField firstName;
 
     @FXML
-    LastNameField lastName;
+    TextField lastName;
 
     @FXML
-    PhoneNumberField phoneNumber;
+    TextField phoneNumber;
 
     @FXML
-    EmailField email;
+    TextField email;
 
     @FXML
-    EmailConfirmedField emailConfirmed;
+    TextField emailConfirmed;
 
     @FXML
-    PasswordRegField password;
+    PasswordField password;
 
     @FXML
-    PasswordConfirmedRegField passwordConfirmed;
+    PasswordField passwordConfirmed;
 
 
 //    public void openDialog() {
@@ -110,7 +110,7 @@ public class Controller implements Initializable {
             return;
         }
 
-        
+
 
     }
 
