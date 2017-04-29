@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import com.jfoenix.controls.*?>
 <?import javafx.scene.image.*?>
 <?import javafx.geometry.*?>
 <?import javafx.scene.text.*?>
@@ -26,10 +27,10 @@
                      <children>
                         <ScrollPane fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER" prefHeight="200.0" prefWidth="200.0">
                            <content>
-                              <ListView prefHeight="419.0" prefWidth="798.0" />
+                              <JFXListView fx:id="theList" />
                            </content>
                         </ScrollPane>
-                        <ImageView fx:id="logo" fitHeight="140.0" fitWidth="801.0" pickOnBounds="true" preserveRatio="true" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER">
+                        <ImageView fx:id="logo" fitHeight="69.0" fitWidth="711.0" pickOnBounds="true" preserveRatio="true" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER">
                            <image>
                               <Image url="@mueller.png" />
                            </image>
