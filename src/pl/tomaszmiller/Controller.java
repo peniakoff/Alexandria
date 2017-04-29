@@ -109,7 +109,7 @@ public class Controller implements Initializable {
 //                        tworzenie nowego widoku po zalogowaniu
                         Parent userView = FXMLLoader.load(getClass().getResource("userView.fxml"));
                         Scene scene = new Scene(userView);
-                        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+                        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow(); //każy widżet musi być przypisany do jakiejś sceny
                         stage.hide();
                         stage.setScene(scene);
                         stage.show();
