@@ -1,20 +1,20 @@
 package pl.tomaszmiller;
 
 import com.jfoenix.controls.JFXListView;
-import javafx.animation.FadeTransition;
-import javafx.animation.RotateTransition;
-import javafx.animation.ScaleTransition;
+import com.jfoenix.controls.JFXTextField;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
-import javafx.util.Duration;
-
+import javafx.scene.input.MouseEvent;
 
 import java.net.URL;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ResourceBundle;
 
 /**
@@ -27,6 +27,15 @@ public class UserController implements Initializable {
 
     @FXML
     JFXListView theList;
+
+    @FXML
+    JFXTextField bookAuthor;
+
+    @FXML
+    JFXTextField bookTitle;
+
+    @FXML
+    JFXTextField pages;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -64,8 +73,52 @@ public class UserController implements Initializable {
 //        });
 //        fadeTransition.play();
 
-    ObservableList<String> items = FXCollections.observableArrayList("Tomek", "Roman", "Pajac");
-    theList.setItems(items);
+//    ObservableList<String> items = FXCollections.observableArrayList("Tomek", "Roman", "Pajac");
+        ObservableList<String> items = loadBook();
+        theList.setItems(items);
+        theList.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                String[] bookData = loadBookData((String)theList.getSelectionModel().getSelectedItem());
+                bookAuthor.setText(bookData[0]);
+                bookTitle.setText(bookData[1]);
+                pages.setText(bookData[2]);
+            }
+        });
 
     }
+
+    private String[] loadBookData(String bookTitle) {
+        Statement statement = MySqlConnector.getInstance().getNewStatement();
+        String[] dataArray = new String[3];
+        try {
+            ResultSet resultSet = statement.executeQuery("SELECT * FROM `books` WHERE `title`='" + bookTitle + "' LIMIT 1");
+            while (resultSet.next()) {
+                dataArray[0] = resultSet.getString("author");
+                dataArray[1] = resultSet.getString("title");
+                dataArray[2] = String.valueOf(resultSet.getInt("pages"));
+                return dataArray;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    private ObservableList<String> loadBook() {
+
+        ObservableList<String> items = FXCollections.observableArrayList();
+        Statement statement = MySqlConnector.getInstance().getNewStatement();
+        ResultSet resultSet = null;
+        try {
+            resultSet = statement.executeQuery("SELECT * FROM `books`");
+            while (resultSet.next()) {
+                items.add(resultSet.getString("title"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return items;
+    }
+
 }
