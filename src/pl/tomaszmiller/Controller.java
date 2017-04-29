@@ -97,14 +97,14 @@ public class Controller implements Initializable {
             return;
         }
 
-        System.out.println("Login: " + userEmail.getText() + ", Password: " + userPassword.getText());
+        System.out.println("Login: " + userEmail.getText() + ", Password: " + Utils.hashPassword(userPassword.getText()));
         Statement statement = MySqlConnector.getInstance().getNewStatement();
         try {
             ResultSet resultSet = statement.executeQuery("SELECT * FROM `users` WHERE email='" + userEmail.getText() + "' LIMIT 1");
             int counter = 0;
                 while (resultSet.next()) {
                     String passwordFromDatabase = resultSet.getString("password");
-                    if (passwordFromDatabase.equals(userPassword.getText())) {
+                    if (passwordFromDatabase.equals(Utils.hashPassword(userPassword.getText()))) {
 
 //                        tworzenie nowego widoku po zalogowaniu
                         Parent userView = FXMLLoader.load(getClass().getResource("userView.fxml"));
@@ -163,7 +163,7 @@ public class Controller implements Initializable {
             PreparedStatement statement1 = MySqlConnector.getInstance().getConnection().prepareStatement(sql);
             statement1.setString(1, getValue(firstName));
             statement1.setString(2, getValue(lastName));
-            statement1.setString(3, getPassword(password));
+            statement1.setString(3, Utils.hashPassword(getPassword(password)));
             statement1.setString(4, getValue(email));
             statement1.setString(5, getValue(phoneNumber));
             statement1.execute();
