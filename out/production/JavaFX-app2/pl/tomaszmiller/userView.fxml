@@ -9,11 +9,11 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" stylesheets="@style.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" stylesheets="@style.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pl.tomaszmiller.UserController">
    <center>
       <TabPane prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER">
         <tabs>
-          <Tab text="Moje wypożyczenia">
+           <Tab text="Moje wypożyczenia">
                <content>
                   <GridPane>
                     <columnConstraints>
@@ -29,7 +29,7 @@
                               <ListView prefHeight="419.0" prefWidth="798.0" />
                            </content>
                         </ScrollPane>
-                        <ImageView fitHeight="140.0" fitWidth="801.0" pickOnBounds="true" preserveRatio="true" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER">
+                        <ImageView fx:id="logo" fitHeight="140.0" fitWidth="801.0" pickOnBounds="true" preserveRatio="true" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER">
                            <image>
                               <Image url="@mueller.png" />
                            </image>
@@ -38,8 +38,8 @@
                   </GridPane>
                </content>
           </Tab>
-          <Tab text="Wypożycz książkę" />
-            <Tab text="Ustawienia użytkownika">
+           <Tab text="Wypożycz książkę" />
+           <Tab text="Ustawienia użytkownika">
                <content>
                   <GridPane style="-fx-background-color: #EEEEEE;">
                      <children>
@@ -58,15 +58,6 @@
                                     <Insets right="26.0" />
                                  </GridPane.margin>
                               </Label>
-                              <Label text="potwierdź hasło" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="4" GridPane.valignment="CENTER">
-                                 <font>
-                                    <Font size="18.0" />
-                                 </font>
-                                 <GridPane.margin>
-                                    <Insets right="26.0" />
-                                 </GridPane.margin>
-                              </Label>
-                              <PasswordField GridPane.columnIndex="2" GridPane.rowIndex="4" />
                               <Label text="nazwisko" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="1" GridPane.valignment="CENTER">
                                  <font>
                                     <Font size="18.0" />
@@ -75,10 +66,15 @@
                                     <Insets right="26.0" />
                                  </GridPane.margin>
                               </Label>
-                              <TextField prefHeight="31.0" prefWidth="280.0" GridPane.columnIndex="2" />
-                              <TextField prefHeight="31.0" prefWidth="280.0" GridPane.columnIndex="2" GridPane.rowIndex="1" />
-                              <TextField prefHeight="31.0" prefWidth="280.0" GridPane.columnIndex="2" GridPane.rowIndex="2" />
                               <Label text="numer telefonu" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="2" GridPane.valignment="CENTER">
+                                 <font>
+                                    <Font size="18.0" />
+                                 </font>
+                                 <GridPane.margin>
+                                    <Insets right="26.0" />
+                                 </GridPane.margin>
+                              </Label>
+                              <Label text="potwierdź hasło" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="4" GridPane.valignment="CENTER">
                                  <font>
                                     <Font size="18.0" />
                                  </font>
@@ -94,7 +90,11 @@
                                     <Insets right="26.0" />
                                  </GridPane.margin>
                               </Label>
+                              <TextField prefHeight="31.0" prefWidth="280.0" GridPane.columnIndex="2" />
+                              <TextField prefHeight="31.0" prefWidth="280.0" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+                              <TextField prefHeight="31.0" prefWidth="280.0" GridPane.columnIndex="2" GridPane.rowIndex="2" />
                               <PasswordField GridPane.columnIndex="2" GridPane.rowIndex="3" />
+                              <PasswordField GridPane.columnIndex="2" GridPane.rowIndex="4" />
                            </children>
                            <columnConstraints>
                               <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="15.0" />
