@@ -18,6 +18,28 @@ public class Controller implements Initializable {
     @FXML
     PasswordField userPassword;
 
+    @FXML
+    FirstNameField firstName;
+
+    @FXML
+    LastNameField lastName;
+
+    @FXML
+    PhoneNumberField phoneNumber;
+
+    @FXML
+    EmailField email;
+
+    @FXML
+    EmailConfirmedField emailConfirmed;
+
+    @FXML
+    PasswordRegField password;
+
+    @FXML
+    PasswordConfirmedRegField passwordConfirmed;
+
+
 //    public void openDialog() {
 //        Alert alert = new Alert(Alert.AlertType.INFORMATION);
 //        alert.setTitle("Akademia Kodu");
@@ -43,6 +65,12 @@ public class Controller implements Initializable {
             Utils.openDialog("Logowanie", "Adres e-mail lub hasło jest niepoprawne!");
             return false;
         }
+        return true;
+
+    }
+
+    private boolean isRagisterFormValid() {
+
         return true;
 
     }
@@ -74,6 +102,15 @@ public class Controller implements Initializable {
             e.printStackTrace();
         }
 
+    }
+
+    public void createAccount() {
+
+        if (!isRagisterFormValid()) {
+            return;
+        }
+
+        
 
     }
 
