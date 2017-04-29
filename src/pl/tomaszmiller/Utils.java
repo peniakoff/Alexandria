@@ -17,4 +17,14 @@ public class Utils {
 
     }
 
+    public static void confirmDialog(String title, String massage) {
+
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(massage);
+        alert.showAndWait();
+
+    }
+
 }

@@ -72,13 +72,13 @@ public class Controller implements Initializable {
     }
 
     private boolean isRagisterFormValid() {
-        if (firstName.getText().trim().length() < 4
-                || lastName.getText().trim().length() < 3
-                || phoneNumber.getText().trim().length() < 9
-                || email.getText().trim().length() < 6
-                || password.getText().trim().length() < 6
-                || !email.getText().trim().equals(emailConfirmed.getText().trim())
-                || !password.getText().trim().equals(passwordConfirmed.getText().trim())) {
+        if (getValue(firstName).length() < 3
+                || getValue(lastName).length() < 3
+                || getValue(phoneNumber).length() < 9
+                || getPassword(password).length() < 6
+                || getValue(email).length() < 6
+                || !getValue(email).equals(getValue(emailConfirmed))
+                || !getPassword(password).equals(getPassword(passwordConfirmed))) {
             Utils.openDialog("Tworzenie nowego konta", "Wpisane dane są niepoprawne! Spróbuj ponownie!");
             return false;
         }
@@ -133,21 +133,29 @@ public class Controller implements Initializable {
             if (counter > 0) {
                 Utils.openDialog("Tworzenie nowego konta", "Użytkownik o podanym adresie e-mail już istnieje!");
             } else {
-                String sql = "INSERT INTO `users`(`f_name`, `l_name`, `password`, `email`, `phone_number`) VALUES (?, ?, ?, ?, ?)";
-                PreparedStatement statement1 = MySqlConnector.getInstance().getConnection().prepareStatement(sql);
-                statement1.setString(1, getValue(firstName));
-                statement1.setString(2, getValue(lastName));
-                statement1.setString(3, getPassword(password));
-                statement1.setString(4, getValue(email));
-                statement1.setString(5, getValue(phoneNumber));
-                statement1.execute();
-                statement1.close();
+                insertSqlData();
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
 
+    }
 
+    public void insertSqlData() {
+        try {
+            String sql = "INSERT INTO `users`(`f_name`, `l_name`, `password`, `email`, `phone_number`) VALUES (?, ?, ?, ?, ?)";
+            PreparedStatement statement1 = MySqlConnector.getInstance().getConnection().prepareStatement(sql);
+            statement1.setString(1, getValue(firstName));
+            statement1.setString(2, getValue(lastName));
+            statement1.setString(3, getPassword(password));
+            statement1.setString(4, getValue(email));
+            statement1.setString(5, getValue(phoneNumber));
+            statement1.execute();
+            statement1.close();
+            Utils.confirmDialog("Tworzenie nowego konta", "Twoje konto zostało pomyślnie utworzone!");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     public String getValue(TextField var) {
