@@ -112,14 +112,6 @@
                         </Label>
                         <GridPane GridPane.rowIndex="1">
                            <children>
-                              <Label text="potwierdź adres e-mail" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="4" GridPane.valignment="CENTER">
-                                 <font>
-                                    <Font size="18.0" />
-                                 </font>
-                                 <GridPane.margin>
-                                    <Insets right="26.0" />
-                                 </GridPane.margin>
-                              </Label>
                               <Label text="imię" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.valignment="CENTER">
                                  <font>
                                     <Font size="18.0" />
@@ -128,16 +120,7 @@
                                     <Insets right="26.0" />
                                  </GridPane.margin>
                               </Label>
-                              <Label text="potwierdź hasło" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="6" GridPane.valignment="CENTER">
-                                 <font>
-                                    <Font size="18.0" />
-                                 </font>
-                                 <GridPane.margin>
-                                    <Insets right="26.0" />
-                                 </GridPane.margin>
-                              </Label>
-                              <TextField fx:id="emailConfirmed" prefHeight="31.0" prefWidth="280.0" promptText="wpisz ponownie adres e-mail" GridPane.columnIndex="2" GridPane.rowIndex="4" />
-                              <PasswordField fx:id="passwordConfirmed" promptText="wpisz ponownie hasło" GridPane.columnIndex="2" GridPane.rowIndex="6" />
+                              <TextField fx:id="firstName" prefHeight="31.0" prefWidth="280.0" promptText="wpisz imię" GridPane.columnIndex="2" />
                               <Label text="nazwisko" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="1" GridPane.valignment="CENTER">
                                  <font>
                                     <Font size="18.0" />
@@ -146,7 +129,6 @@
                                     <Insets right="26.0" />
                                  </GridPane.margin>
                               </Label>
-                              <TextField fx:id="firstName" prefHeight="31.0" prefWidth="280.0" promptText="wpisz imię" GridPane.columnIndex="2" />
                               <TextField fx:id="lastName" prefHeight="31.0" prefWidth="280.0" promptText="wpisz nazwisko" GridPane.columnIndex="2" GridPane.rowIndex="1" />
                               <Label text="numer telefonu" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="2">
                                  <font>
@@ -156,7 +138,7 @@
                                     <Insets right="26.0" />
                                  </padding>
                               </Label>
-                              <TextField fx:id="email" prefHeight="31.0" prefWidth="280.0" promptText="wpisz adres e-mail" GridPane.columnIndex="2" GridPane.rowIndex="3" />
+                              <TextField fx:id="phoneNumber" prefHeight="31.0" prefWidth="280.0" promptText="wpisz numer telefonu" GridPane.columnIndex="2" GridPane.rowIndex="2" />
                               <Label text="adres e-mail" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="3" GridPane.valignment="CENTER">
                                  <font>
                                     <Font size="18.0" />
@@ -165,6 +147,16 @@
                                     <Insets right="26.0" />
                                  </GridPane.margin>
                               </Label>
+                              <TextField fx:id="email" prefHeight="31.0" prefWidth="280.0" promptText="wpisz adres e-mail" GridPane.columnIndex="2" GridPane.rowIndex="3" />
+                              <Label text="potwierdź adres e-mail" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="4" GridPane.valignment="CENTER">
+                                 <font>
+                                    <Font size="18.0" />
+                                 </font>
+                                 <GridPane.margin>
+                                    <Insets right="26.0" />
+                                 </GridPane.margin>
+                              </Label>
+                              <TextField fx:id="emailConfirmed" prefHeight="31.0" prefWidth="280.0" promptText="wpisz ponownie adres e-mail" GridPane.columnIndex="2" GridPane.rowIndex="4" />
                               <Label text="hasło" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="5" GridPane.valignment="CENTER">
                                  <font>
                                     <Font size="18.0" />
@@ -174,7 +166,15 @@
                                  </GridPane.margin>
                               </Label>
                               <PasswordField fx:id="password" promptText="wpisz hasło" GridPane.columnIndex="2" GridPane.rowIndex="5" />
-                              <TextField fx:id="phoneNumber" prefHeight="31.0" prefWidth="280.0" promptText="wpisz numer telefonu" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+                              <Label text="potwierdź hasło" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="6" GridPane.valignment="CENTER">
+                                 <font>
+                                    <Font size="18.0" />
+                                 </font>
+                                 <GridPane.margin>
+                                    <Insets right="26.0" />
+                                 </GridPane.margin>
+                              </Label>
+                              <PasswordField fx:id="passwordConfirmed" promptText="wpisz ponownie hasło" GridPane.columnIndex="2" GridPane.rowIndex="6" />
                            </children>
                            <columnConstraints>
                               <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="15.0" />
@@ -192,7 +192,7 @@
                               <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                            </rowConstraints>
                         </GridPane>
-                        <Button mnemonicParsing="false" style="-fx-padding: 10px;" text="Zarejestruj się" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="CENTER">
+                        <Button mnemonicParsing="false" onMouseClicked="#createAccount" style="-fx-padding: 10px;" text="Zarejestruj się" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="CENTER">
                            <font>
                               <Font size="18.0" />
                            </font>
