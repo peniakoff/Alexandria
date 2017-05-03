@@ -1,2 +1,2 @@
-# Księgozbiór (The Library)
-Library project in Java(FX) for managing users and library database.
+# Alexandria - simple library management
+Powered by JavaFX and connection with remote MySQL database.
