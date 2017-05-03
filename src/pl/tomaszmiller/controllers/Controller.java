@@ -1,4 +1,4 @@
-package pl.tomaszmiller;
+package pl.tomaszmiller.controllers;
 
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -9,6 +9,8 @@ import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import javafx.fxml.Initializable;
 import javafx.stage.Stage;
+import pl.tomaszmiller.MySqlConnector;
+import pl.tomaszmiller.Utils;
 
 import java.io.IOException;
 import java.net.URL;
@@ -46,26 +48,6 @@ public class Controller implements Initializable {
 
     @FXML
     PasswordField passwordConfirmed;
-
-
-//    public void openDialog() {
-//        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-//        alert.setTitle("Akademia Kodu");
-//        alert.setHeaderText(null);
-//        alert.setContentText("Siema, ziomeczki!");
-//
-//        ButtonType buttonCancel = new ButtonType("Anuluj", ButtonBar.ButtonData.CANCEL_CLOSE);
-//        ButtonType buttonDrugs = new ButtonType("Drugs are OK, bro!");
-//
-//        alert.getButtonTypes().setAll(buttonCancel, buttonDrugs);
-//
-//        Optional<ButtonType> result = alert.showAndWait();
-//        if (result.get() == buttonDrugs) {
-//            System.out.println("Drugs, Love and Rock&Roll!");
-//        } else if (result.get() == buttonCancel) {
-//            System.out.println("Ktoś to, kurde mać, zrąbał.");
-//        }
-//    }
 
     private boolean isLoginFormValid() {
 

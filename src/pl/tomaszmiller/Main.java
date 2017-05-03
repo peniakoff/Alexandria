@@ -12,7 +12,7 @@ public class Main extends Application {
     public void start(Stage primaryStage) throws Exception{
 
 //        Parent root = FXMLLoader.load(getClass().getResource("loginView.fxml"));
-        Parent root = FXMLLoader.load(getClass().getResource("userView.fxml"));
+        Parent root = FXMLLoader.load(getClass().getResource("views/userView.fxml"));
         primaryStage.setTitle("The Library | pre-alpha build");
         primaryStage.setScene(new Scene(root, 800, 600));
         primaryStage.setResizable(false);

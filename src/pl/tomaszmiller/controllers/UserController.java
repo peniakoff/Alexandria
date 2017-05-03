@@ -1,4 +1,4 @@
-package pl.tomaszmiller;
+package pl.tomaszmiller.controllers;
 
 import com.jfoenix.controls.JFXListView;
 import com.jfoenix.controls.JFXTextField;
@@ -10,6 +10,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import pl.tomaszmiller.MySqlConnector;
 
 import java.net.URL;
 import java.sql.ResultSet;
