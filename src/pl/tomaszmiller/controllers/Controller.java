@@ -86,18 +86,16 @@ public class Controller implements Initializable {
             int counter = 0;
                 while (resultSet.next()) {
                     String passwordFromDatabase = resultSet.getString("password");
+                    int userRank = resultSet.getInt("user_rank");
                     if (passwordFromDatabase.equals(Utils.hashPassword(userPassword.getText()))) {
-
-//                        tworzenie nowego widoku po zalogowaniu
-                        Parent userView = FXMLLoader.load(getClass().getResource("../views/userView.fxml"));
-                        Scene scene = new Scene(userView);
+                        String source = (userRank == 1 ? "../views/adminView.fxml" : "../views/userView.fxml");
+                        Parent nextView = FXMLLoader.load(getClass().getResource(source)); //tworzenie nowego widoku po zalogowaniu
+                        Scene scene = new Scene(nextView);
                         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow(); //każy widżet musi być przypisany do jakiejś sceny
                         stage.hide();
                         stage.setScene(scene);
                         stage.show();
-
-                        Utils.openDialog("Logowanie", "Zalogowałeś się poprawnie!");
-
+                        Utils.confirmDialog("Logowanie", "Zalogowałeś się poprawnie!");
                     } else {
                         Utils.openDialog("Logowanie", "Podane hasło jest niepoprawne!");
                     }
