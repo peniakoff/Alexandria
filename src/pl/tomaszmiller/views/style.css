@@ -7,7 +7,7 @@
 
 .text-field:focused, .password-field:focused {
 	-fx-border-width: 0 0 2 0;
-	-fx-border-color: #00897B;
+	-fx-border-color: #002244;
 	-fx-background-color: #FAFAFA;
 }
 
