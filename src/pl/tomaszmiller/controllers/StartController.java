@@ -9,7 +9,7 @@ import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import javafx.fxml.Initializable;
 import javafx.stage.Stage;
-import pl.tomaszmiller.MySqlConnector;
+import pl.tomaszmiller.database.MySqlConnector;
 import pl.tomaszmiller.Utils;
 
 import java.io.IOException;
