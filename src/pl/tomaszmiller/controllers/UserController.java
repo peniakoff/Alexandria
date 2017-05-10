@@ -7,10 +7,9 @@ import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
-import pl.tomaszmiller.MySqlConnector;
+import pl.tomaszmiller.database.MySqlConnector;
 
 import java.net.URL;
 import java.sql.ResultSet;

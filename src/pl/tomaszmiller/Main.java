@@ -6,6 +6,8 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
+import pl.tomaszmiller.database.MySqlConnector;
+
 import static com.sun.org.apache.bcel.internal.util.SecuritySupport.getResourceAsStream;
 
 public class Main extends Application {

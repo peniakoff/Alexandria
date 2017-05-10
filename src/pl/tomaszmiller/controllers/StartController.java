@@ -20,7 +20,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ResourceBundle;
 
-public class Controller implements Initializable {
+public class StartController implements Initializable {
 
     @FXML
     TextField userEmail;
@@ -51,7 +51,7 @@ public class Controller implements Initializable {
 
     private boolean isLoginFormValid() {
 
-        if (userEmail.getText().trim().length() < 5 || userPassword.getText().trim().length() < 4) {
+        if (getValue(userEmail).length() < 5 || getPassword(userPassword).length() < 6) {
             Utils.openDialog("Logowanie", "Adres e-mail lub hasło jest niepoprawne!");
             return false;
         }
@@ -102,7 +102,7 @@ public class Controller implements Initializable {
                     counter ++;
                 }
             if (counter == 0) {
-                Utils.openDialog("Logowanie", "Użytkownik o podanym mailu nie istnieje!");
+                Utils.openDialog("Logowanie", "Użytkownik o podanym adresie e-mail nie istnieje!");
             }
             statement.close();
         } catch (SQLException e) {
@@ -117,7 +117,11 @@ public class Controller implements Initializable {
             return;
         }
 
-        System.out.println("First name: " + getValue(firstName) + ", last name: " + getValue(lastName) + ", phone number: " + getValue(phoneNumber) + ", email: " + getValue(email) + ", password: " + getPassword(password));
+        System.out.println("First name: " + getValue(firstName)
+                + ", last name: " + getValue(lastName)
+                + ", phone number: " + getValue(phoneNumber)
+                + ", email: " + getValue(email)
+                + ", password: " + getPassword(password));
         Statement statement = MySqlConnector.getInstance().getNewStatement();
         try {
             ResultSet resultSet = statement.executeQuery("SELECT * FROM `users` WHERE email='" + getValue(email) + "' LIMIT 1");
@@ -129,7 +133,7 @@ public class Controller implements Initializable {
             if (counter > 0) {
                 Utils.openDialog("Tworzenie nowego konta", "Użytkownik o podanym adresie e-mail już istnieje!");
             } else {
-                insertSqlData();
+                insertRegisterSqlData();
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -137,7 +141,7 @@ public class Controller implements Initializable {
 
     }
 
-    public void insertSqlData() {
+    public void insertRegisterSqlData() {
         try {
             String sql = "INSERT INTO `users`(`f_name`, `l_name`, `password`, `email`, `phone_number`) VALUES (?, ?, ?, ?, ?)";
             PreparedStatement statement1 = MySqlConnector.getInstance().getConnection().prepareStatement(sql);
