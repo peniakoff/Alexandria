@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.Cursor?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+
+<BorderPane xmlns:fx="http://javafx.com/fxml/1" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="600.0" minWidth="800.0" prefHeight="600.0" prefWidth="800.0" stylesheets="@style.css"
+            xmlns="http://javafx.com/javafx/17" fx:controller="pl.tomaszmiller.controllers.AdminController">
+    <center>
+        <TabPane prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER">
+            <tabs>
+                <Tab text="Użytkownicy">
+                    <content>
+                        <GridPane style="-fx-background-color: #EEEEEE;">
+                            <children>
+                                <Label style="-fx-font-size: 20px;" text="Zarządzanie użytkownikami będzie kolejnym krokiem modernizacji." GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
+                            </children>
+                        </GridPane>
+                    </content>
+                </Tab>
+                <Tab text="Wypożyczenia">
+                    <content>
+                        <GridPane style="-fx-background-color: #EEEEEE;">
+                            <children>
+                                <Label style="-fx-font-size: 20px;" text="Panel wypożyczeń wymaga jeszcze implementacji logiki biznesowej." GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
+                            </children>
+                        </GridPane>
+                    </content>
+                </Tab>
+                <Tab text="Baza książek">
+                    <content>
+                        <GridPane>
+                            <columnConstraints>
+                                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0"/>
+                            </columnConstraints>
+                            <rowConstraints>
+                                <RowConstraints minHeight="10.0" percentHeight="75.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                            </rowConstraints>
+                            <children>
+                                <ScrollPane fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER" prefHeight="200.0" prefWidth="200.0">
+                                    <content>
+                                        <ListView fx:id="theList"/>
+                                    </content>
+                                </ScrollPane>
+                                <GridPane GridPane.rowIndex="1">
+                                    <columnConstraints>
+                                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="55.0" prefWidth="100.0"/>
+                                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
+                                    </columnConstraints>
+                                    <rowConstraints>
+                                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                                    </rowConstraints>
+                                    <children>
+                                        <TextField fx:id="bookAuthor" alignment="CENTER" editable="false" prefHeight="31.0" prefWidth="333.0" GridPane.halignment="LEFT" GridPane.valignment="CENTER">
+                                            <GridPane.margin>
+                                                <Insets left="20.0" right="20.0"/>
+                                            </GridPane.margin>
+                                            <cursor>
+                                                <Cursor fx:constant="DEFAULT"/>
+                                            </cursor>
+                                        </TextField>
+                                        <TextField fx:id="bookTitle" alignment="CENTER" editable="false" GridPane.rowIndex="1">
+                                            <GridPane.margin>
+                                                <Insets left="20.0" right="20.0"/>
+                                            </GridPane.margin>
+                                            <cursor>
+                                                <Cursor fx:constant="DEFAULT"/>
+                                            </cursor>
+                                        </TextField>
+                                        <TextField fx:id="pages" alignment="CENTER" editable="false" GridPane.rowIndex="2">
+                                            <GridPane.margin>
+                                                <Insets left="20.0" right="20.0"/>
+                                            </GridPane.margin>
+                                            <cursor>
+                                                <Cursor fx:constant="DEFAULT"/>
+                                            </cursor>
+                                        </TextField>
+                                    </children>
+                                </GridPane>
+                            </children>
+                        </GridPane>
+                    </content>
+                </Tab>
+            </tabs>
+        </TabPane>
+    </center>
+</BorderPane>

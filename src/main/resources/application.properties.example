@@ -1,0 +1,5 @@
+alexandria.db.url=jdbc:mysql://localhost:3306/alexandria?serverTimezone=UTC&useSSL=false&allowPublicKeyRetrieval=true
+alexandria.db.username=root
+alexandria.db.******
+alexandria.db.poolSize=10
+alexandria.db.minimumIdle=2
