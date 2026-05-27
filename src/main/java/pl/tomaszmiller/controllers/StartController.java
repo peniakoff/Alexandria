@@ -81,7 +81,11 @@ public class StartController {
             return;
         }
 
-        if (emailExists(getValue(email))) {
+        Boolean alreadyExists = emailExists(getValue(email));
+        if (alreadyExists == null) {
+            return;
+        }
+        if (alreadyExists) {
             Utils.openDialog("Tworzenie nowego konta", "Użytkownik o podanym adresie e-mail już istnieje!");
             return;
         }
@@ -150,7 +154,7 @@ public class StartController {
         }
     }
 
-    private boolean emailExists(String emailValue) {
+    private Boolean emailExists(String emailValue) {
         String sql = "SELECT 1 FROM users WHERE email = ? LIMIT 1";
         try (Connection connection = MySqlConnector.getInstance().getConnection();
              PreparedStatement statement = connection.prepareStatement(sql)) {
@@ -161,7 +165,7 @@ public class StartController {
         } catch (SQLException exception) {
             LOGGER.error("Unable to verify whether e-mail {} already exists.", emailValue, exception);
             Utils.openDialog("Tworzenie nowego konta", "Nie udało się zweryfikować adresu e-mail.");
-            return true;
+            return null;
         }
     }
 
