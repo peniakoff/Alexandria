@@ -1,0 +1,17 @@
+.text-field, .password-field, .list-view {
+    -fx-background-color: #F5F5F5;
+    -fx-border-width: 0 0 2 0;
+    -fx-border-radius: 0;
+    -fx-border-color: #F5F5F5;
+}
+
+.text-field:focused, .password-field:focused, .list-view:focused {
+    -fx-border-width: 0 0 2 0;
+    -fx-border-color: #002244;
+    -fx-background-color: #FAFAFA;
+}
+
+.button {
+    -fx-border-width: 0;
+    -fx-focus-color: transparent;
+}

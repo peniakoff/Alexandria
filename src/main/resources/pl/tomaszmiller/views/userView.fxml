@@ -1,20 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?import com.jfoenix.controls.JFXListView?>
-<?import com.jfoenix.controls.JFXTextField?>
-<?import javafx.geometry.*?>
-<?import javafx.scene.control.*?>
+
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.Cursor?>
-<?import javafx.scene.image.Image?>
-<?import javafx.scene.image.ImageView?>
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.text.*?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.text.Font?>
+
 <BorderPane xmlns:fx="http://javafx.com/fxml/1" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="600.0" minWidth="800.0" prefHeight="600.0" prefWidth="800.0" stylesheets="@style.css"
-            xmlns="http://javafx.com/javafx/8" fx:controller="pl.tomaszmiller.controllers.UserController">
+            xmlns="http://javafx.com/javafx/17" fx:controller="pl.tomaszmiller.controllers.UserController">
     <center>
         <TabPane prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER">
             <tabs>
-                <Tab text="Moje wypożyczenia">
-                </Tab>
+                <Tab text="Moje wypożyczenia" />
                 <Tab text="Wypożycz książkę">
                     <content>
                         <GridPane>
@@ -22,21 +29,18 @@
                                 <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0"/>
                             </columnConstraints>
                             <rowConstraints>
-                                <RowConstraints minHeight="10.0" percentHeight="75.0" prefHeight="30.0"
-                                                vgrow="SOMETIMES"/>
+                                <RowConstraints minHeight="10.0" percentHeight="75.0" prefHeight="30.0" vgrow="SOMETIMES"/>
                                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
                             </rowConstraints>
                             <children>
-                                <ScrollPane fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER" prefHeight="200.0"
-                                            prefWidth="200.0">
+                                <ScrollPane fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER" prefHeight="200.0" prefWidth="200.0">
                                     <content>
-                                        <JFXListView fx:id="theList"/>
+                                        <ListView fx:id="theList"/>
                                     </content>
                                 </ScrollPane>
                                 <GridPane GridPane.rowIndex="1">
                                     <columnConstraints>
-                                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="55.0"
-                                                           prefWidth="100.0"/>
+                                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="55.0" prefWidth="100.0"/>
                                         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
                                     </columnConstraints>
                                     <rowConstraints>
@@ -45,34 +49,30 @@
                                         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
                                     </rowConstraints>
                                     <children>
-                                        <JFXTextField fx:id="bookAuthor" alignment="CENTER" editable="false"
-                                                      prefHeight="31.0" prefWidth="333.0" GridPane.halignment="LEFT"
-                                                      GridPane.valignment="CENTER">
+                                        <TextField fx:id="bookAuthor" alignment="CENTER" editable="false" prefHeight="31.0" prefWidth="333.0" GridPane.halignment="LEFT" GridPane.valignment="CENTER">
                                             <GridPane.margin>
                                                 <Insets left="20.0" right="20.0"/>
                                             </GridPane.margin>
                                             <cursor>
                                                 <Cursor fx:constant="DEFAULT"/>
                                             </cursor>
-                                        </JFXTextField>
-                                        <JFXTextField fx:id="bookTitle" alignment="CENTER" editable="false"
-                                                      GridPane.rowIndex="1">
+                                        </TextField>
+                                        <TextField fx:id="bookTitle" alignment="CENTER" editable="false" GridPane.rowIndex="1">
                                             <GridPane.margin>
                                                 <Insets left="20.0" right="20.0"/>
                                             </GridPane.margin>
                                             <cursor>
                                                 <Cursor fx:constant="DEFAULT"/>
                                             </cursor>
-                                        </JFXTextField>
-                                        <JFXTextField fx:id="pages" alignment="CENTER" editable="false"
-                                                      GridPane.rowIndex="2">
+                                        </TextField>
+                                        <TextField fx:id="pages" alignment="CENTER" editable="false" GridPane.rowIndex="2">
                                             <GridPane.margin>
                                                 <Insets left="20.0" right="20.0"/>
                                             </GridPane.margin>
                                             <cursor>
                                                 <Cursor fx:constant="DEFAULT"/>
                                             </cursor>
-                                        </JFXTextField>
+                                        </TextField>
                                     </children>
                                 </GridPane>
                             </children>
@@ -83,17 +83,14 @@
                     <content>
                         <GridPane style="-fx-background-color: #EEEEEE;">
                             <children>
-                                <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="30.0" prefWidth="229.0"
-                                       text="Ustawienia użytkownika" textAlignment="CENTER" GridPane.halignment="CENTER"
-                                       GridPane.valignment="CENTER">
+                                <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="30.0" prefWidth="229.0" text="Ustawienia użytkownika" textAlignment="CENTER" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
                                     <font>
                                         <Font size="20.0"/>
                                     </font>
                                 </Label>
                                 <GridPane GridPane.rowIndex="1">
                                     <children>
-                                        <Label text="imię" GridPane.columnIndex="1" GridPane.halignment="RIGHT"
-                                               GridPane.valignment="CENTER">
+                                        <Label text="imię" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.valignment="CENTER">
                                             <font>
                                                 <Font size="18.0"/>
                                             </font>
@@ -101,8 +98,7 @@
                                                 <Insets right="26.0"/>
                                             </GridPane.margin>
                                         </Label>
-                                        <Label text="nazwisko" GridPane.columnIndex="1" GridPane.halignment="RIGHT"
-                                               GridPane.rowIndex="1" GridPane.valignment="CENTER">
+                                        <Label text="nazwisko" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="1" GridPane.valignment="CENTER">
                                             <font>
                                                 <Font size="18.0"/>
                                             </font>
@@ -110,9 +106,7 @@
                                                 <Insets right="26.0"/>
                                             </GridPane.margin>
                                         </Label>
-                                        <Label text="numer telefonu" GridPane.columnIndex="1"
-                                               GridPane.halignment="RIGHT" GridPane.rowIndex="2"
-                                               GridPane.valignment="CENTER">
+                                        <Label text="numer telefonu" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="2" GridPane.valignment="CENTER">
                                             <font>
                                                 <Font size="18.0"/>
                                             </font>
@@ -120,9 +114,7 @@
                                                 <Insets right="26.0"/>
                                             </GridPane.margin>
                                         </Label>
-                                        <Label text="potwierdź hasło" GridPane.columnIndex="1"
-                                               GridPane.halignment="RIGHT" GridPane.rowIndex="4"
-                                               GridPane.valignment="CENTER">
+                                        <Label text="potwierdź hasło" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="4" GridPane.valignment="CENTER">
                                             <font>
                                                 <Font size="18.0"/>
                                             </font>
@@ -130,8 +122,7 @@
                                                 <Insets right="26.0"/>
                                             </GridPane.margin>
                                         </Label>
-                                        <Label text="hasło" GridPane.columnIndex="1" GridPane.halignment="RIGHT"
-                                               GridPane.rowIndex="3" GridPane.valignment="CENTER">
+                                        <Label text="hasło" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="3" GridPane.valignment="CENTER">
                                             <font>
                                                 <Font size="18.0"/>
                                             </font>
@@ -140,10 +131,8 @@
                                             </GridPane.margin>
                                         </Label>
                                         <TextField prefHeight="31.0" prefWidth="280.0" GridPane.columnIndex="2"/>
-                                        <TextField prefHeight="31.0" prefWidth="280.0" GridPane.columnIndex="2"
-                                                   GridPane.rowIndex="1"/>
-                                        <TextField prefHeight="31.0" prefWidth="280.0" GridPane.columnIndex="2"
-                                                   GridPane.rowIndex="2"/>
+                                        <TextField prefHeight="31.0" prefWidth="280.0" GridPane.columnIndex="2" GridPane.rowIndex="1"/>
+                                        <TextField prefHeight="31.0" prefWidth="280.0" GridPane.columnIndex="2" GridPane.rowIndex="2"/>
                                         <PasswordField GridPane.columnIndex="2" GridPane.rowIndex="3"/>
                                         <PasswordField GridPane.columnIndex="2" GridPane.rowIndex="4"/>
                                     </children>
@@ -161,8 +150,7 @@
                                         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
                                     </rowConstraints>
                                 </GridPane>
-                                <Button mnemonicParsing="false" style="-fx-padding: 10px;" text="Aktualizuj dane"
-                                        GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="CENTER">
+                                <Button mnemonicParsing="false" style="-fx-padding: 10px;" text="Aktualizuj dane" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="CENTER">
                                     <font>
                                         <Font size="18.0"/>
                                     </font>
@@ -172,10 +160,8 @@
                                 <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
                             </columnConstraints>
                             <rowConstraints>
-                                <RowConstraints minHeight="10.0" percentHeight="20.0" prefHeight="30.0"
-                                                vgrow="SOMETIMES"/>
-                                <RowConstraints maxHeight="223.0" minHeight="10.0" percentHeight="60.0"
-                                                prefHeight="223.0" vgrow="SOMETIMES"/>
+                                <RowConstraints minHeight="10.0" percentHeight="20.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                                <RowConstraints maxHeight="223.0" minHeight="10.0" percentHeight="60.0" prefHeight="223.0" vgrow="SOMETIMES"/>
                                 <RowConstraints minHeight="10.0" prefHeight="151.0" vgrow="SOMETIMES"/>
                             </rowConstraints>
                         </GridPane>

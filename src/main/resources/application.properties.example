@@ -1,0 +1,8 @@
+# Production recommendation (TLS required)
+alexandria.db.url=jdbc:mysql://localhost:3306/alexandria?serverTimezone=UTC&sslMode=REQUIRED
+# Local development only (insecure)
+# alexandria.db.url=jdbc:mysql://localhost:3306/alexandria?serverTimezone=UTC&useSSL=false&allowPublicKeyRetrieval=true
+alexandria.db.username=root
+alexandria.db.password=change-me
+alexandria.db.poolSize=10
+alexandria.db.minimumIdle=2
