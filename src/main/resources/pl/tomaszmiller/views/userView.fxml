@@ -27,16 +27,16 @@
     <center>
         <TabPane tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER">
             <tabs>
-                <Tab text="Moje wypożyczenia">
+                <Tab text="My rentals">
                     <content>
                         <VBox spacing="8.0" style="-fx-padding: 12;">
-                            <Label text="Moje wypożyczenia" style="-fx-font-size: 16px; -fx-font-weight: bold;"/>
+                            <Label text="My rentals" style="-fx-font-size: 16px; -fx-font-weight: bold;"/>
                             <TableView fx:id="myRentalsTable" VBox.vgrow="ALWAYS">
                                 <columns>
                                     <TableColumn fx:id="myRentalIdCol" text="ID" prefWidth="50"/>
-                                    <TableColumn fx:id="myRentalBookCol" text="Tytuł" prefWidth="300"/>
-                                    <TableColumn fx:id="myRentalBorrowCol" text="Wypożyczono" prefWidth="120"/>
-                                    <TableColumn fx:id="myRentalDueCol" text="Termin" prefWidth="120"/>
+                                    <TableColumn fx:id="myRentalBookCol" text="Title" prefWidth="300"/>
+                                    <TableColumn fx:id="myRentalBorrowCol" text="Borrowed" prefWidth="120"/>
+                                    <TableColumn fx:id="myRentalDueCol" text="Due date" prefWidth="120"/>
                                     <TableColumn fx:id="myRentalStatusCol" text="Status" prefWidth="120"/>
                                 </columns>
                             </TableView>
@@ -44,7 +44,7 @@
                     </content>
                 </Tab>
 
-                <Tab text="Wypożycz książkę">
+                <Tab text="Borrow book">
                     <content>
                         <GridPane>
                             <columnConstraints>
@@ -57,8 +57,8 @@
                             <children>
                                 <VBox spacing="6" style="-fx-padding: 10;">
                                     <HBox spacing="6">
-                                        <TextField fx:id="searchField" promptText="Szukaj tytułu / autora…" HBox.hgrow="ALWAYS"/>
-                                        <Button text="Szukaj" onAction="#onSearchBook"
+                                        <TextField fx:id="searchField" promptText="Search by title / author…" HBox.hgrow="ALWAYS"/>
+                                        <Button text="Search" onAction="#onSearchBook"
                                                 style="-fx-background-color: #002244; -fx-text-fill: white; -fx-padding: 6 10;"/>
                                     </HBox>
                                     <ScrollPane fitToWidth="true" fitToHeight="true" VBox.vgrow="ALWAYS">
@@ -68,11 +68,11 @@
                                     </ScrollPane>
                                 </VBox>
                                 <VBox spacing="10" style="-fx-padding: 10;" GridPane.columnIndex="1">
-                                    <Label text="Szczegóły" style="-fx-font-weight: bold;"/>
-                                    <TextField fx:id="bookAuthor" editable="false" promptText="Autor"/>
-                                    <TextField fx:id="bookTitle" editable="false" promptText="Tytuł"/>
-                                    <TextField fx:id="pages" editable="false" promptText="Liczba stron"/>
-                                    <Button fx:id="borrowBtn" text="Wypożycz" onAction="#onBorrowBook"
+                                    <Label text="Details" style="-fx-font-weight: bold;"/>
+                                    <TextField fx:id="bookAuthor" editable="false" promptText="Author"/>
+                                    <TextField fx:id="bookTitle" editable="false" promptText="Title"/>
+                                    <TextField fx:id="pages" editable="false" promptText="Pages"/>
+                                    <Button fx:id="borrowBtn" text="Borrow" onAction="#onBorrowBook"
                                             style="-fx-background-color: #b3995d; -fx-padding: 8 14;"/>
                                 </VBox>
                             </children>
@@ -80,36 +80,36 @@
                     </content>
                 </Tab>
 
-                <Tab text="Ustawienia użytkownika">
+                <Tab text="User settings">
                     <content>
                         <VBox spacing="16" style="-fx-padding: 24; -fx-background-color: #EEEEEE;">
-                            <Label text="Dane profilowe" style="-fx-font-size: 16px; -fx-font-weight: bold;"/>
+                            <Label text="Profile data" style="-fx-font-size: 16px; -fx-font-weight: bold;"/>
                             <GridPane hgap="12" vgap="10">
                                 <columnConstraints>
                                     <ColumnConstraints percentWidth="25" halignment="RIGHT"/>
                                     <ColumnConstraints percentWidth="55"/>
                                 </columnConstraints>
-                                <Label text="Imię:" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+                                <Label text="First name:" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
                                 <TextField fx:id="settingsFirstName" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
-                                <Label text="Nazwisko:" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+                                <Label text="Last name:" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
                                 <TextField fx:id="settingsLastName" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
-                                <Label text="Telefon:" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+                                <Label text="Phone:" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
                                 <TextField fx:id="settingsPhone" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
                             </GridPane>
 
-                            <Label text="Zmiana hasła" style="-fx-font-size: 16px; -fx-font-weight: bold;"/>
+                            <Label text="Change password" style="-fx-font-size: 16px; -fx-font-weight: bold;"/>
                             <GridPane hgap="12" vgap="10">
                                 <columnConstraints>
                                     <ColumnConstraints percentWidth="25" halignment="RIGHT"/>
                                     <ColumnConstraints percentWidth="55"/>
                                 </columnConstraints>
-                                <Label text="Nowe hasło:" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
-                                <PasswordField fx:id="settingsNewPassword" GridPane.rowIndex="0" GridPane.columnIndex="1" promptText="min. 8 znaków"/>
-                                <Label text="Powtórz hasło:" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
-                                <PasswordField fx:id="settingsConfirmPassword" GridPane.rowIndex="1" GridPane.columnIndex="1" promptText="powtórz nowe hasło"/>
+                                <Label text="New password:" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+                                <PasswordField fx:id="settingsNewPassword" GridPane.rowIndex="0" GridPane.columnIndex="1" promptText="min. 8 characters"/>
+                                <Label text="Repeat password:" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+                                <PasswordField fx:id="settingsConfirmPassword" GridPane.rowIndex="1" GridPane.columnIndex="1" promptText="re-enter new password"/>
                             </GridPane>
 
-                            <Button fx:id="saveSettingsBtn" text="Zapisz zmiany" onAction="#onSaveSettings"
+                            <Button fx:id="saveSettingsBtn" text="Save changes" onAction="#onSaveSettings"
                                     style="-fx-background-color: #002244; -fx-text-fill: white; -fx-padding: 8 20;"/>
                         </VBox>
                     </content>

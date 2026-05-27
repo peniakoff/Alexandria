@@ -47,7 +47,7 @@ public class StartController {
 
         Optional<User> userOpt = authService.login(getValue(userEmail), getPassword(userPassword));
         if (userOpt.isEmpty()) {
-            Utils.openDialog("Logowanie", "Nieprawidłowy adres e-mail lub hasło.");
+            Utils.openDialog("Login", "Invalid e-mail address or password.");
             return;
         }
 
@@ -57,10 +57,10 @@ public class StartController {
                 : "/pl/tomaszmiller/views/userView.fxml";
         try {
             switchScene(event, source);
-            Utils.confirmDialog("Logowanie", "Zalogowano pomyślnie jako " + user.fullName() + ".");
+            Utils.confirmDialog("Login", "Logged in successfully as " + user.fullName() + ".");
         } catch (IOException exception) {
             LOGGER.error("Unable to open the dashboard view {}.", source, exception);
-            Utils.openDialog("Logowanie", "Nie udało się otworzyć panelu użytkownika.");
+            Utils.openDialog("Login", "Failed to open user panel.");
         }
     }
 
@@ -71,7 +71,7 @@ public class StartController {
         }
 
         if (userService.emailExists(getValue(email))) {
-            Utils.openDialog("Tworzenie nowego konta", "Użytkownik o podanym adresie e-mail już istnieje!");
+            Utils.openDialog("Create new account", "A user with this e-mail address already exists!");
             return;
         }
 
@@ -79,10 +79,10 @@ public class StartController {
                 getValue(email), getValue(phoneNumber), UserRole.USER);
         Optional<User> saved = userService.register(newUser, getPassword(password));
         if (saved.isPresent()) {
-            Utils.confirmDialog("Tworzenie nowego konta", "Twoje konto zostało pomyślnie utworzone!");
+            Utils.confirmDialog("Create new account", "Your account has been successfully created!");
             clearRegisterForm();
         } else {
-            Utils.openDialog("Tworzenie nowego konta", "Nie udało się utworzyć nowego konta.");
+            Utils.openDialog("Create new account", "Failed to create new account.");
         }
     }
 
@@ -90,7 +90,7 @@ public class StartController {
         String emailValue = getValue(userEmail);
         String passwordValue = getPassword(userPassword);
         if (!Utils.isValidEmail(emailValue) || passwordValue.length() < 8) {
-            Utils.openDialog("Logowanie", "Adres e-mail lub hasło jest niepoprawne!");
+            Utils.openDialog("Login", "E-mail address or password is incorrect!");
             return false;
         }
         return true;
@@ -114,7 +114,7 @@ public class StartController {
                 && passwordValue.equals(passwordConfirmedValue);
 
         if (!valid) {
-            Utils.openDialog("Tworzenie nowego konta", "Wpisane dane są niepoprawne! Sprawdź formularz i spróbuj ponownie.");
+            Utils.openDialog("Create new account", "The data entered is incorrect! Check the form and try again.");
         }
         return valid;
     }

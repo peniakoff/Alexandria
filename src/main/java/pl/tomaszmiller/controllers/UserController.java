@@ -113,20 +113,20 @@ public class UserController implements Initializable {
     private void onBorrowBook() {
         User currentUser = UserSession.getCurrentUser();
         if (currentUser == null) {
-            Utils.openDialog("Wypożycz książkę", "Musisz być zalogowany, aby wypożyczyć książkę.");
+            Utils.openDialog("Borrow book", "You must be logged in to borrow a book.");
             return;
         }
         if (selectedBookId <= 0) {
-            Utils.openDialog("Wypożycz książkę", "Najpierw wybierz książkę z listy.");
+            Utils.openDialog("Borrow book", "First select a book from the list.");
             return;
         }
         Optional<Rental> rental = rentalService.borrow(currentUser.id(), selectedBookId);
         if (rental.isPresent()) {
-            Utils.confirmDialog("Wypożycz książkę",
-                    "Książka została wypożyczona. Termin zwrotu: " + rental.get().dueDate() + ".");
+            Utils.confirmDialog("Borrow book",
+                    "Book has been borrowed. Due date: " + rental.get().dueDate() + ".");
             refreshMyRentals();
         } else {
-            Utils.openDialog("Wypożycz książkę", "Nie udało się wypożyczyć książki.");
+            Utils.openDialog("Borrow book", "Failed to borrow book.");
         }
     }
 
@@ -197,11 +197,11 @@ public class UserController implements Initializable {
         String phone = settingsPhone.getText() == null ? "" : settingsPhone.getText().trim();
 
         if (!Utils.isValidName(firstName) || !Utils.isValidName(lastName)) {
-            Utils.openDialog("Ustawienia", "Imię i nazwisko są wymagane (2-48 znaków, tylko litery).");
+            Utils.openDialog("Settings", "First and last name are required (2-48 characters, letters only).");
             return;
         }
         if (!phone.isEmpty() && !Utils.isValidPhoneNumber(phone)) {
-            Utils.openDialog("Ustawienia", "Nieprawidłowy format numeru telefonu.");
+            Utils.openDialog("Settings", "Invalid phone number format.");
             return;
         }
 
@@ -211,7 +211,7 @@ public class UserController implements Initializable {
         if (saved) {
             UserSession.setCurrentUser(updated);
         } else {
-            Utils.openDialog("Ustawienia", "Nie udało się zapisać zmian.");
+            Utils.openDialog("Settings", "Failed to save changes.");
             return;
         }
 
@@ -219,24 +219,24 @@ public class UserController implements Initializable {
         String confirmPass = settingsConfirmPassword != null ? settingsConfirmPassword.getText() : "";
         if (newPass != null && !newPass.isBlank()) {
             if (newPass.length() < 8) {
-                Utils.openDialog("Zmiana hasła", "Hasło musi mieć co najmniej 8 znaków.");
+                Utils.openDialog("Change password", "Password must be at least 8 characters long.");
                 return;
             }
             if (!newPass.equals(confirmPass)) {
-                Utils.openDialog("Zmiana hasła", "Hasła nie są zgodne.");
+                Utils.openDialog("Change password", "Passwords do not match.");
                 return;
             }
             boolean changed = userService.changePassword(currentUser.id(), newPass);
             if (changed) {
                 settingsNewPassword.clear();
                 settingsConfirmPassword.clear();
-                Utils.confirmDialog("Ustawienia", "Dane i hasło zostały zaktualizowane.");
+                Utils.confirmDialog("Settings", "Data and password have been updated.");
             } else {
-                Utils.openDialog("Zmiana hasła", "Nie udało się zmienić hasła.");
+                Utils.openDialog("Change password", "Failed to change password.");
             }
             return;
         }
-        Utils.confirmDialog("Ustawienia", "Dane zostały zaktualizowane.");
+        Utils.confirmDialog("Settings", "Data has been updated.");
     }
 
     /**

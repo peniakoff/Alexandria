@@ -31,7 +31,7 @@ class BookServiceTest {
 
     @Test
     void getAllTitles_returnsSortedTitles() throws Exception {
-        when(bookRepository.loadBookTitles()).thenReturn(Arrays.asList("Wiedźmin", "Pan Tadeusz"));
+        when(bookRepository.loadBookTitles()).thenReturn(Arrays.asList("The Witcher", "Pan Tadeusz"));
         List<String> titles = bookService.getAllTitles();
         assertEquals(2, titles.size());
         verify(bookRepository, times(1)).loadBookTitles();

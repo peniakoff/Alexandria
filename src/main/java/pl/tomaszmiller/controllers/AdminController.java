@@ -110,41 +110,41 @@ public class AdminController implements Initializable {
         String isbn = bookIsbn.getText() == null ? null : bookIsbn.getText().trim();
 
         if (author.isEmpty() || title.isEmpty() || pagesStr.isEmpty()) {
-            Utils.openDialog("Dodaj książkę", "Uzupełnij pola: autor, tytuł i liczba stron.");
+            Utils.openDialog("Add book", "Please fill in all fields: author, title and number of pages.");
             return;
         }
         int pageCount;
         try {
             pageCount = Integer.parseInt(pagesStr);
         } catch (NumberFormatException e) {
-            Utils.openDialog("Dodaj książkę", "Liczba stron musi być liczbą całkowitą.");
+            Utils.openDialog("Add book", "Number of pages must be an integer.");
             return;
         }
         Book newBook = new Book(0L, author, title, pageCount, isbn == null || isbn.isEmpty() ? null : isbn, BookStatus.AVAILABLE);
         Optional<Book> saved = bookService.addBook(newBook);
         if (saved.isPresent()) {
-            Utils.confirmDialog("Dodaj książkę", "Książka \"" + title + "\" została dodana.");
+            Utils.confirmDialog("Add book", "Book \"" + title + "\" has been added.");
             refreshBookList();
             clearBookDetails();
         } else {
-            Utils.openDialog("Dodaj książkę", "Nie udało się dodać książki.");
+            Utils.openDialog("Add book", "Failed to add book.");
         }
     }
 
     @FXML
     private void onDeleteBook() {
         if (selectedBookId <= 0) {
-            Utils.openDialog("Usuń książkę", "Najpierw wybierz książkę z listy.");
+            Utils.openDialog("Remove book", "First select a book from the list.");
             return;
         }
         boolean deleted = bookService.deleteBook(selectedBookId);
         if (deleted) {
-            Utils.confirmDialog("Usuń książkę", "Książka została usunięta.");
+            Utils.confirmDialog("Remove book", "Book has been removed.");
             refreshBookList();
             clearBookDetails();
             selectedBookId = 0L;
         } else {
-            Utils.openDialog("Usuń książkę", "Nie udało się usunąć książki.");
+            Utils.openDialog("Remove book", "Failed to remove book.");
         }
     }
 
@@ -200,7 +200,7 @@ public class AdminController implements Initializable {
         ObservableList<User> data = FXCollections.observableArrayList(users);
         usersTable.setItems(data);
         if (userCountLabel != null) {
-            userCountLabel.setText("Użytkownicy: " + users.size());
+            userCountLabel.setText("Users: " + users.size());
         }
     }
 
@@ -211,15 +211,15 @@ public class AdminController implements Initializable {
         }
         User selected = usersTable.getSelectionModel().getSelectedItem();
         if (selected == null) {
-            Utils.openDialog("Usuń użytkownika", "Wybierz użytkownika z listy.");
+            Utils.openDialog("Remove user", "Select a user from the list.");
             return;
         }
         boolean deleted = userService.deleteUser(selected.id());
         if (deleted) {
-            Utils.confirmDialog("Usuń użytkownika", "Użytkownik " + selected.fullName() + " został usunięty.");
+            Utils.confirmDialog("Remove user", "User " + selected.fullName() + " has been removed.");
             refreshUsers();
         } else {
-            Utils.openDialog("Usuń użytkownika", "Nie udało się usunąć użytkownika.");
+            Utils.openDialog("Remove user", "Failed to remove user.");
         }
     }
 
@@ -258,16 +258,16 @@ public class AdminController implements Initializable {
     @FXML
     private void onReturnBook() {
         if (selectedRentalId <= 0) {
-            Utils.openDialog("Zwrot książki", "Wybierz wypożyczenie z tabeli.");
+            Utils.openDialog("Book return", "Select a rental from the table.");
             return;
         }
         boolean done = rentalService.returnBook(selectedRentalId);
         if (done) {
-            Utils.confirmDialog("Zwrot książki", "Zwrot zarejestrowany pomyślnie.");
+            Utils.confirmDialog("Book return", "Return registered successfully.");
             refreshRentals();
             selectedRentalId = 0L;
         } else {
-            Utils.openDialog("Zwrot książki", "Nie udało się zarejestrować zwrotu.");
+            Utils.openDialog("Book return", "Failed to register return.");
         }
     }
 

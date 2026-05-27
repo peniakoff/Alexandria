@@ -42,7 +42,7 @@ public abstract class AbstractBookCatalogController implements Initializable {
         Optional<Book> book = bookService.findByTitle(selectedTitle);
         if (book.isEmpty()) {
             clearBookDetails();
-            Utils.openDialog("Baza książek", "Nie udało się odnaleźć wybranej książki.");
+            Utils.openDialog("Book catalog", "Failed to find the selected book.");
             return;
         }
         Book selectedBook = book.get();

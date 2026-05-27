@@ -39,20 +39,20 @@ class SqlBookRepositoryH2Test extends H2TestBase {
 
     @Test
     void findByTitle_returnsEmptyWhenNotFound() throws Exception {
-        Optional<Book> result = getRepo().findByTitle("Nieistniejąca Książka");
+        Optional<Book> result = getRepo().findByTitle("Nonexistent Book");
         assertFalse(result.isPresent());
     }
 
     @Test
     void loadBookTitles_returnsSortedAlphabetically() throws Exception {
-        getRepo().save(new Book(0L, "B Author", "Zemsta", 100, null, BookStatus.AVAILABLE));
-        getRepo().save(new Book(0L, "A Author", "Alicja", 200, null, BookStatus.AVAILABLE));
-        getRepo().save(new Book(0L, "C Author", "Mała", 150, null, BookStatus.AVAILABLE));
+        getRepo().save(new Book(0L, "B Author", "Zenith", 100, null, BookStatus.AVAILABLE));
+        getRepo().save(new Book(0L, "A Author", "Alpha", 200, null, BookStatus.AVAILABLE));
+        getRepo().save(new Book(0L, "C Author", "Minor", 150, null, BookStatus.AVAILABLE));
         List<String> titles = getRepo().loadBookTitles();
         assertEquals(3, titles.size());
-        assertEquals("Alicja", titles.get(0));
-        assertEquals("Mała", titles.get(1));
-        assertEquals("Zemsta", titles.get(2));
+        assertEquals("Alpha", titles.get(0));
+        assertEquals("Minor", titles.get(1));
+        assertEquals("Zenith", titles.get(2));
     }
 
     @Test
