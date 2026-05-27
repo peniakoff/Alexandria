@@ -1,8 +1,22 @@
+# ─── Datasource type ──────────────────────────────────────────────────────────
+# Supported values: MYSQL (default) | SQLITE | REST_API
+alexandria.datasource.type=MYSQL
+
+# ─── MySQL (default, production) ─────────────────────────────────────────────
 # Production recommendation (TLS required)
 alexandria.db.url=jdbc:mysql://localhost:3306/alexandria?serverTimezone=UTC&sslMode=REQUIRED
 # Local development only (insecure)
 # alexandria.db.url=jdbc:mysql://localhost:3306/alexandria?serverTimezone=UTC&useSSL=false&allowPublicKeyRetrieval=true
 alexandria.db.username=root
-alexandria.db.password=change-me
+alexandria.db.******
 alexandria.db.poolSize=10
 alexandria.db.minimumIdle=2
+
+# ─── SQLite (local / offline) ─────────────────────────────────────────────────
+# alexandria.datasource.type=SQLITE
+# alexandria.sqlite.path=./alexandria.db
+
+# ─── Supabase REST API ────────────────────────────────────────────────────────
+# alexandria.datasource.type=REST_API
+# alexandria.api.url=https://YOUR_PROJECT_ID.supabase.co
+# alexandria.api.key=YOUR_SUPABASE_ANON_KEY

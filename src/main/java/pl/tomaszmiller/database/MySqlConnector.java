@@ -11,7 +11,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Properties;
 
-public final class MySqlConnector implements AutoCloseable {
+public final class MySqlConnector implements DatabaseConnector {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MySqlConnector.class);
     private static final String APP_PROPERTIES = "application.properties";
