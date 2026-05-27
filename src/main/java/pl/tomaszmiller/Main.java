@@ -8,6 +8,7 @@ import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import pl.tomaszmiller.database.MySqlConnector;
 
 import java.io.IOException;
 import java.net.URL;
@@ -29,6 +30,11 @@ public class Main extends Application {
         primaryStage.setScene(new Scene(root, 800, 600));
         primaryStage.setResizable(false);
         primaryStage.show();
+    }
+
+    @Override
+    public void stop() {
+        MySqlConnector.shutdown();
     }
 
     private void addWindowIcon(Stage primaryStage) {

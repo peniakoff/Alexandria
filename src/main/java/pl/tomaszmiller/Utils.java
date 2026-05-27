@@ -23,7 +23,7 @@ public final class Utils {
     }
 
     public static void confirmDialog(String title, String message) {
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle(title);
         alert.setHeaderText(null);
         alert.setContentText(message);
@@ -31,6 +31,9 @@ public final class Utils {
     }
 
     public static String hashPassword(String password) {
+        if (password == null || password.isBlank()) {
+            throw new IllegalArgumentException("Password must not be null or blank");
+        }
         return BCrypt.hashpw(password, BCrypt.gensalt(12));
     }
 

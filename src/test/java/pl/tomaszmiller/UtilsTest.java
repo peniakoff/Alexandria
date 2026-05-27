@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class UtilsTest {
@@ -15,6 +16,12 @@ class UtilsTest {
         assertNotEquals("SecretPass123", hash);
         assertTrue(Utils.verifyPassword("SecretPass123", hash));
         assertFalse(Utils.verifyPassword("wrong", hash));
+    }
+
+    @Test
+    void shouldRejectBlankPasswordWhenHashing() {
+        assertThrows(IllegalArgumentException.class, () -> Utils.hashPassword(null));
+        assertThrows(IllegalArgumentException.class, () -> Utils.hashPassword(" "));
     }
 
     @Test
