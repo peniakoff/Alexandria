@@ -1,0 +1,52 @@
+plugins {
+    id 'application'
+    id 'java'
+    id 'org.openjfx.javafxplugin' version '0.1.0'
+}
+
+group = 'pl.tomaszmiller'
+version = '1.0.0-SNAPSHOT'
+description = 'Simple library management application built with JavaFX and MySQL.'
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+ext {
+    javafxVersion = '17.0.14'
+    mysqlVersion = '8.4.0'
+    hikaricpVersion = '6.2.1'
+    slf4jVersion = '2.0.17'
+    logbackVersion = '1.5.18'
+    junitVersion = '5.12.2'
+    jbcryptVersion = '0.4'
+}
+
+dependencies {
+    implementation "com.mysql:mysql-connector-j:${mysqlVersion}"
+    implementation "com.zaxxer:HikariCP:${hikaricpVersion}"
+    implementation "org.mindrot:jbcrypt:${jbcryptVersion}"
+    implementation "org.slf4j:slf4j-api:${slf4jVersion}"
+    implementation "ch.qos.logback:logback-classic:${logbackVersion}"
+
+    testImplementation "org.junit.jupiter:junit-jupiter:${junitVersion}"
+}
+
+javafx {
+    version = javafxVersion
+    modules = ['javafx.controls', 'javafx.fxml']
+}
+
+application {
+    mainClass = 'pl.tomaszmiller.Main'
+}
+
+tasks.withType(Test).configureEach {
+    useJUnitPlatform()
+}

@@ -1,11 +1,11 @@
 # Alexandria
 
 Alexandria is a JavaFX desktop application for simple library management backed by MySQL.
-This modernization refreshes the project to Java 17, OpenJFX, MySQL Connector/J 8, HikariCP, BCrypt, SLF4J/Logback, Maven, JUnit 5, and GitHub Actions CI.
+This modernization refreshes the project to Java 17, OpenJFX, MySQL Connector/J 8, HikariCP, BCrypt, SLF4J/Logback, Gradle, JUnit 5, and GitHub Actions CI.
 
 ## What changed
 
-- migrated the project to Maven
+- migrated the project to Gradle
 - replaced ad-hoc JDBC access with prepared statements and try-with-resources
 - moved database configuration to properties/environment variables
 - added pooled MySQL connections with HikariCP
@@ -16,7 +16,7 @@ This modernization refreshes the project to Java 17, OpenJFX, MySQL Connector/J 
 ## Requirements
 
 - Java 17+
-- Maven 3.9+
+- Gradle 9.5+ (or use the included Gradle Wrapper)
 - MySQL 8+
 
 ## Configuration
@@ -35,8 +35,8 @@ You can also override every property with environment variables:
 ## Running locally
 
 ```bash
-mvn clean test
-mvn javafx:run
+./gradlew clean test
+./gradlew run
 ```
 
 ## Project structure
