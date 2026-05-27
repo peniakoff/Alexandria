@@ -35,7 +35,7 @@ class RentalServiceTest {
     @Test
     void borrow_createsActiveRental() throws Exception {
         LocalDate today = LocalDate.now();
-        Rental saved = new Rental(1L, 10L, 20L, today, today.plusDays(14), null, RentalStatus.ACTIVE);
+        Rental saved = new Rental(1L, 10L, 20L, today, today.plusDays(Rental.DEFAULT_LOAN_DAYS), null, RentalStatus.ACTIVE);
         when(rentalRepository.save(any(Rental.class))).thenReturn(saved);
 
         Optional<Rental> result = rentalService.borrow(10L, 20L);

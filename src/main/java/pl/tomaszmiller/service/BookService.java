@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 import pl.tomaszmiller.model.Book;
 import pl.tomaszmiller.repository.port.BookRepository;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -24,7 +25,9 @@ public class BookService {
 
     public List<String> getAllTitles() {
         try {
-            return bookRepository.loadBookTitles();
+            List<String> titles = new ArrayList<>(bookRepository.loadBookTitles());
+            Collections.sort(titles);
+            return titles;
         } catch (Exception e) {
             LOGGER.error("Unable to load book titles.", e);
             return Collections.emptyList();

@@ -55,7 +55,7 @@ public class SupabaseUserRepository implements UserRepository {
 
     @Override
     public Optional<User> findById(long id) throws Exception {
-        HttpRequest req = buildGetRequest(baseUrl + TABLE + "?id=eq." + id + "&limit=1");
+        HttpRequest req = buildGetRequest(baseUrl + TABLE + "?select=id,f_name,l_name,email,phone_number,user_rank&id=eq." + id + "&limit=1");
         HttpResponse<String> resp = httpClient.send(req, HttpResponse.BodyHandlers.ofString());
         checkResponse(resp);
         JsonArray array = JsonParser.parseString(resp.body()).getAsJsonArray();
@@ -64,7 +64,7 @@ public class SupabaseUserRepository implements UserRepository {
 
     @Override
     public Optional<User> findByEmail(String email) throws Exception {
-        String url = baseUrl + TABLE + "?email=eq." + URLEncoder.encode(email, StandardCharsets.UTF_8) + "&limit=1";
+        String url = baseUrl + TABLE + "?select=id,f_name,l_name,email,phone_number,user_rank&email=eq." + URLEncoder.encode(email, StandardCharsets.UTF_8) + "&limit=1";
         HttpRequest req = buildGetRequest(url);
         HttpResponse<String> resp = httpClient.send(req, HttpResponse.BodyHandlers.ofString());
         checkResponse(resp);

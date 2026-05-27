@@ -64,6 +64,14 @@ public final class AppConfig {
                 databaseConnector = null;
                 String apiUrl = resolveValue(properties, "alexandria.api.url", "ALEXANDRIA_API_URL", "");
                 String apiKey = resolveValue(properties, "alexandria.api.key", "ALEXANDRIA_API_KEY", "");
+                if (apiUrl.isBlank()) {
+                    throw new IllegalStateException(
+                            "REST_API datasource requires 'alexandria.api.url' or env ALEXANDRIA_API_URL to be set.");
+                }
+                if (apiKey.isBlank()) {
+                    throw new IllegalStateException(
+                            "REST_API datasource requires 'alexandria.api.key' or env ALEXANDRIA_API_KEY to be set.");
+                }
                 bookRepository = new SupabaseBookRepository(apiUrl, apiKey);
                 userRepository = new SupabaseUserRepository(apiUrl, apiKey);
                 rentalRepository = new SupabaseRentalRepository(apiUrl, apiKey);

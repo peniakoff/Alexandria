@@ -21,6 +21,8 @@ services:
       timeout: 5s
       retries: 5
       start_period: 30s
+    networks:
+      - alexandria-net
 
   app:
     build: .
@@ -36,11 +38,18 @@ services:
       ALEXANDRIA_DB_PASSWORD: changeme
       ALEXANDRIA_DB_POOL_SIZE: 5
       ALEXANDRIA_DB_MINIMUM_IDLE: 1
-    # JavaFX desktop app – needs DISPLAY for GUI; use host network or X11 forwarding
-    network_mode: host
+    # JavaFX desktop app – needs DISPLAY for GUI; use host network or X11 forwarding.
+    # Uncomment network_mode and comment out the networks section below for X11 forwarding on Linux.
+    # network_mode: host
+    networks:
+      - alexandria-net
     volumes:
       - ./src/main/resources/application.properties:/app/application.properties:ro
 
 volumes:
   alexandria-data:
     driver: local
+
+networks:
+  alexandria-net:
+    driver: bridge

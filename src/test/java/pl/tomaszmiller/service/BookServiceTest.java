@@ -34,6 +34,7 @@ class BookServiceTest {
         when(bookRepository.loadBookTitles()).thenReturn(Arrays.asList("The Witcher", "Pan Tadeusz"));
         List<String> titles = bookService.getAllTitles();
         assertEquals(2, titles.size());
+        assertEquals(List.of("Pan Tadeusz", "The Witcher"), titles);
         verify(bookRepository, times(1)).loadBookTitles();
     }
 

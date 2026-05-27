@@ -25,6 +25,7 @@ import pl.tomaszmiller.service.UserService;
 
 import java.net.URL;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
@@ -120,14 +121,27 @@ public class AdminController implements Initializable {
             Utils.openDialog("Add book", "Number of pages must be an integer.");
             return;
         }
-        Book newBook = new Book(0L, author, title, pageCount, isbn == null || isbn.isEmpty() ? null : isbn, BookStatus.AVAILABLE);
-        Optional<Book> saved = bookService.addBook(newBook);
-        if (saved.isPresent()) {
-            Utils.confirmDialog("Add book", "Book \"" + title + "\" has been added.");
-            refreshBookList();
-            clearBookDetails();
+
+        if (selectedBookId > 0) {
+            Book updatedBook = new Book(selectedBookId, author, title, pageCount, isbn == null || isbn.isEmpty() ? null : isbn, BookStatus.AVAILABLE);
+            boolean updated = bookService.updateBook(updatedBook);
+            if (updated) {
+                Utils.confirmDialog("Edit book", "Book \"" + title + "\" has been updated.");
+                refreshBookList();
+                clearBookDetails();
+            } else {
+                Utils.openDialog("Edit book", "Failed to update book.");
+            }
         } else {
-            Utils.openDialog("Add book", "Failed to add book.");
+            Book newBook = new Book(0L, author, title, pageCount, isbn == null || isbn.isEmpty() ? null : isbn, BookStatus.AVAILABLE);
+            Optional<Book> saved = bookService.addBook(newBook);
+            if (saved.isPresent()) {
+                Utils.confirmDialog("Add book", "Book \"" + title + "\" has been added.");
+                refreshBookList();
+                clearBookDetails();
+            } else {
+                Utils.openDialog("Add book", "Failed to add book.");
+            }
         }
     }
 
@@ -242,12 +256,14 @@ public class AdminController implements Initializable {
         if (rentalsTable == null) {
             return;
         }
+        Map<Long, String> userNames = userService.findAll().stream()
+                .collect(java.util.stream.Collectors.toMap(User::id, User::fullName));
+        Map<Long, String> bookTitles = bookService.findAll().stream()
+                .collect(java.util.stream.Collectors.toMap(Book::id, Book::title));
         List<RentalRow> rows = rentalService.findAll().stream()
                 .map(r -> {
-                    String userName = userService.findById(r.userId())
-                            .map(User::fullName).orElse("(id=" + r.userId() + ")");
-                    String bookTitleStr = bookService.findById(r.bookId())
-                            .map(Book::title).orElse("(id=" + r.bookId() + ")");
+                    String userName = userNames.getOrDefault(r.userId(), "(id=" + r.userId() + ")");
+                    String bookTitleStr = bookTitles.getOrDefault(r.bookId(), "(id=" + r.bookId() + ")");
                     return new RentalRow(r.id(), userName, bookTitleStr,
                             r.borrowDate().toString(), r.dueDate().toString(), r.status().name());
                 })

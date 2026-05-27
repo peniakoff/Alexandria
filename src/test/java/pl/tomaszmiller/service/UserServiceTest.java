@@ -3,6 +3,7 @@ package pl.tomaszmiller.service;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import pl.tomaszmiller.model.User;
@@ -61,10 +62,14 @@ class UserServiceTest {
     void register_createsUserWithHashedPassword() throws Exception {
         User input = new User(0L, "Jan", "Kowalski", "jan@example.com", "600000001", UserRole.USER);
         User saved = new User(1L, "Jan", "Kowalski", "jan@example.com", "600000001", UserRole.USER);
-        when(userRepository.save(eq(input), anyString())).thenReturn(saved);
+        ArgumentCaptor<String> hashCaptor = ArgumentCaptor.forClass(String.class);
+        when(userRepository.save(eq(input), hashCaptor.capture())).thenReturn(saved);
         Optional<User> result = userService.register(input, "SecretPass123");
         assertTrue(result.isPresent());
         assertEquals(1L, result.get().id());
+        String capturedHash = hashCaptor.getValue();
+        assertNotEquals("SecretPass123", capturedHash);
+        assertTrue(capturedHash.startsWith("$2"), "Expected a BCrypt hash starting with $2");
     }
 
     @Test

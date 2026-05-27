@@ -29,6 +29,7 @@ public class AuthService {
      * @return the authenticated {@link User}, or empty on failure
      */
     public Optional<User> login(String email, String plainPassword) {
+        UserSession.clearCurrentUser();
         try {
             Optional<String> hashOpt = userRepository.findPasswordHashByEmail(email);
             if (hashOpt.isEmpty()) {
@@ -38,7 +39,6 @@ public class AuthService {
                 return Optional.empty();
             }
             Optional<User> userOpt = userRepository.findByEmail(email);
-            userOpt.ifPresent(UserSession::getInstance);
             if (userOpt.isPresent()) {
                 UserSession.setCurrentUser(userOpt.get());
             }

@@ -22,6 +22,7 @@ import pl.tomaszmiller.session.UserSession;
 
 import java.net.URL;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
@@ -164,10 +165,11 @@ public class UserController implements Initializable {
             myRentalsTable.setItems(FXCollections.observableArrayList());
             return;
         }
+        Map<Long, String> bookTitles = bookService.findAll().stream()
+                .collect(java.util.stream.Collectors.toMap(Book::id, Book::title));
         List<RentalRow> rows = rentalService.findByUser(currentUser.id()).stream()
                 .map(r -> {
-                    String bookTitleStr = bookService.findById(r.bookId())
-                            .map(Book::title).orElse("(id=" + r.bookId() + ")");
+                    String bookTitleStr = bookTitles.getOrDefault(r.bookId(), "(id=" + r.bookId() + ")");
                     return new RentalRow(r.id(), bookTitleStr,
                             r.borrowDate().toString(), r.dueDate().toString(), r.status().name());
                 })
@@ -205,16 +207,6 @@ public class UserController implements Initializable {
             return;
         }
 
-        User updated = new User(currentUser.id(), firstName, lastName,
-                currentUser.email(), phone, currentUser.role());
-        boolean saved = userService.updateProfile(updated);
-        if (saved) {
-            UserSession.setCurrentUser(updated);
-        } else {
-            Utils.openDialog("Settings", "Failed to save changes.");
-            return;
-        }
-
         String newPass = settingsNewPassword != null ? settingsNewPassword.getText() : "";
         String confirmPass = settingsConfirmPassword != null ? settingsConfirmPassword.getText() : "";
         if (newPass != null && !newPass.isBlank()) {
@@ -226,6 +218,19 @@ public class UserController implements Initializable {
                 Utils.openDialog("Change password", "Passwords do not match.");
                 return;
             }
+        }
+
+        User updated = new User(currentUser.id(), firstName, lastName,
+                currentUser.email(), phone, currentUser.role());
+        boolean saved = userService.updateProfile(updated);
+        if (saved) {
+            UserSession.setCurrentUser(updated);
+        } else {
+            Utils.openDialog("Settings", "Failed to save changes.");
+            return;
+        }
+
+        if (newPass != null && !newPass.isBlank()) {
             boolean changed = userService.changePassword(currentUser.id(), newPass);
             if (changed) {
                 settingsNewPassword.clear();

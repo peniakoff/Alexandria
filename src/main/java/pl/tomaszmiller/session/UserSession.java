@@ -9,14 +9,8 @@ import pl.tomaszmiller.model.User;
 public final class UserSession {
 
     private static User currentUser;
-    private static final UserSession INSTANCE = new UserSession();
 
     private UserSession() {
-    }
-
-    /** Returns the singleton (used as method reference target by AuthService). */
-    public static UserSession getInstance(User ignored) {
-        return INSTANCE;
     }
 
     /** Returns the currently logged-in user, or {@code null} if not authenticated. */
