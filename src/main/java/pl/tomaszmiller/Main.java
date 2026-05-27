@@ -8,7 +8,7 @@ import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import pl.tomaszmiller.database.MySqlConnector;
+import pl.tomaszmiller.config.AppConfig;
 
 import java.io.IOException;
 import java.net.URL;
@@ -25,7 +25,7 @@ public class Main extends Application {
                 "Login view is missing"
         ));
 
-        primaryStage.setTitle("Alexandria - simple library management | modernized build");
+        primaryStage.setTitle("Alexandria – library management");
         addWindowIcon(primaryStage);
         primaryStage.setScene(new Scene(root, 800, 600));
         primaryStage.setResizable(false);
@@ -34,7 +34,7 @@ public class Main extends Application {
 
     @Override
     public void stop() {
-        MySqlConnector.shutdown();
+        AppConfig.getInstance().shutdown();
     }
 
     private void addWindowIcon(Stage primaryStage) {

@@ -2,15 +2,17 @@ plugins {
     id 'application'
     id 'java'
     id 'org.openjfx.javafxplugin' version '0.1.0'
+    id 'checkstyle'
+    id 'jacoco'
 }
 
 group = 'pl.tomaszmiller'
-version = '1.0.0-SNAPSHOT'
-description = 'Simple library management application built with JavaFX and MySQL.'
+version = '2.0.0-SNAPSHOT'
+description = 'Alexandria – modernized library management application (Java 21 + JavaFX + multi-datasource).'
 
 java {
     toolchain {
-        languageVersion = JavaLanguageVersion.of(17)
+        languageVersion = JavaLanguageVersion.of(21)
     }
 }
 
@@ -19,25 +21,34 @@ repositories {
 }
 
 ext {
-    javafxVersion = '17.0.14'
-    mysqlVersion = '8.4.0'
-    hikaricpVersion = '6.2.1'
-    slf4jVersion = '2.0.17'
-    logbackVersion = '1.5.18'
-    junitVersion = '5.12.2'
+    javafxVersion        = '23.0.2'
+    mysqlVersion         = '9.1.0'
+    sqliteVersion        = '3.47.2.0'
+    hikaricpVersion      = '6.2.1'
+    slf4jVersion         = '2.0.17'
+    logbackVersion       = '1.5.18'
+    junitVersion         = '5.12.2'
     junitPlatformVersion = '1.12.2'
-    jbcryptVersion = '0.4'
+    jbcryptVersion       = '0.4'
+    gsonVersion          = '2.11.0'
+    h2Version            = '2.3.232'
+    mockitoVersion       = '5.15.2'
 }
 
 dependencies {
     implementation "com.mysql:mysql-connector-j:${mysqlVersion}"
+    implementation "org.xerial:sqlite-jdbc:${sqliteVersion}"
     implementation "com.zaxxer:HikariCP:${hikaricpVersion}"
     implementation "org.mindrot:jbcrypt:${jbcryptVersion}"
     implementation "org.slf4j:slf4j-api:${slf4jVersion}"
     implementation "ch.qos.logback:logback-classic:${logbackVersion}"
+    implementation "com.google.code.gson:gson:${gsonVersion}"
 
     testImplementation "org.junit.jupiter:junit-jupiter:${junitVersion}"
-    testRuntimeOnly "org.junit.platform:junit-platform-launcher:${junitPlatformVersion}"
+    testRuntimeOnly    "org.junit.platform:junit-platform-launcher:${junitPlatformVersion}"
+    testImplementation "org.mockito:mockito-core:${mockitoVersion}"
+    testImplementation "org.mockito:mockito-junit-jupiter:${mockitoVersion}"
+    testImplementation "com.h2database:h2:${h2Version}"
 }
 
 javafx {
@@ -51,4 +62,19 @@ application {
 
 tasks.withType(Test).configureEach {
     useJUnitPlatform()
+    finalizedBy jacocoTestReport
+}
+
+jacocoTestReport {
+    dependsOn test
+    reports {
+        xml.required = true
+        html.required = true
+    }
+}
+
+checkstyle {
+    toolVersion = '10.21.1'
+    configFile = file("${rootDir}/config/checkstyle/checkstyle.xml")
+    ignoreFailures = true
 }

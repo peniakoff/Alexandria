@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.Cursor?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ListView?>
@@ -9,162 +7,111 @@
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.RowConstraints?>
-<?import javafx.scene.text.Font?>
+<?import javafx.scene.layout.VBox?>
 
-<BorderPane xmlns:fx="http://javafx.com/fxml/1" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="600.0" minWidth="800.0" prefHeight="600.0" prefWidth="800.0" stylesheets="@style.css"
-            xmlns="http://javafx.com/javafx/17" fx:controller="pl.tomaszmiller.controllers.UserController">
+<BorderPane xmlns:fx="http://javafx.com/fxml/1"
+            maxHeight="-Infinity" maxWidth="-Infinity"
+            minHeight="600.0" minWidth="800.0"
+            prefHeight="600.0" prefWidth="800.0"
+            stylesheets="@style.css"
+            xmlns="http://javafx.com/javafx/17"
+            fx:controller="pl.tomaszmiller.controllers.UserController">
     <center>
-        <TabPane prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER">
+        <TabPane tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER">
             <tabs>
-                <Tab text="Moje wypożyczenia" />
-                <Tab text="Wypożycz książkę">
+                <Tab text="My rentals">
+                    <content>
+                        <VBox spacing="8.0" style="-fx-padding: 12;">
+                            <Label text="My rentals" style="-fx-font-size: 16px; -fx-font-weight: bold;"/>
+                            <TableView fx:id="myRentalsTable" VBox.vgrow="ALWAYS">
+                                <columns>
+                                    <TableColumn fx:id="myRentalIdCol" text="ID" prefWidth="50"/>
+                                    <TableColumn fx:id="myRentalBookCol" text="Title" prefWidth="300"/>
+                                    <TableColumn fx:id="myRentalBorrowCol" text="Borrowed" prefWidth="120"/>
+                                    <TableColumn fx:id="myRentalDueCol" text="Due date" prefWidth="120"/>
+                                    <TableColumn fx:id="myRentalStatusCol" text="Status" prefWidth="120"/>
+                                </columns>
+                            </TableView>
+                        </VBox>
+                    </content>
+                </Tab>
+
+                <Tab text="Borrow book">
                     <content>
                         <GridPane>
                             <columnConstraints>
-                                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0"/>
+                                <ColumnConstraints hgrow="SOMETIMES" percentWidth="55"/>
+                                <ColumnConstraints hgrow="SOMETIMES"/>
                             </columnConstraints>
                             <rowConstraints>
-                                <RowConstraints minHeight="10.0" percentHeight="75.0" prefHeight="30.0" vgrow="SOMETIMES"/>
-                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                                <RowConstraints minHeight="10" vgrow="ALWAYS"/>
                             </rowConstraints>
                             <children>
-                                <ScrollPane fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER" prefHeight="200.0" prefWidth="200.0">
-                                    <content>
-                                        <ListView fx:id="theList"/>
-                                    </content>
-                                </ScrollPane>
-                                <GridPane GridPane.rowIndex="1">
-                                    <columnConstraints>
-                                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="55.0" prefWidth="100.0"/>
-                                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
-                                    </columnConstraints>
-                                    <rowConstraints>
-                                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
-                                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
-                                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
-                                    </rowConstraints>
-                                    <children>
-                                        <TextField fx:id="bookAuthor" alignment="CENTER" editable="false" prefHeight="31.0" prefWidth="333.0" GridPane.halignment="LEFT" GridPane.valignment="CENTER">
-                                            <GridPane.margin>
-                                                <Insets left="20.0" right="20.0"/>
-                                            </GridPane.margin>
-                                            <cursor>
-                                                <Cursor fx:constant="DEFAULT"/>
-                                            </cursor>
-                                        </TextField>
-                                        <TextField fx:id="bookTitle" alignment="CENTER" editable="false" GridPane.rowIndex="1">
-                                            <GridPane.margin>
-                                                <Insets left="20.0" right="20.0"/>
-                                            </GridPane.margin>
-                                            <cursor>
-                                                <Cursor fx:constant="DEFAULT"/>
-                                            </cursor>
-                                        </TextField>
-                                        <TextField fx:id="pages" alignment="CENTER" editable="false" GridPane.rowIndex="2">
-                                            <GridPane.margin>
-                                                <Insets left="20.0" right="20.0"/>
-                                            </GridPane.margin>
-                                            <cursor>
-                                                <Cursor fx:constant="DEFAULT"/>
-                                            </cursor>
-                                        </TextField>
-                                    </children>
-                                </GridPane>
+                                <VBox spacing="6" style="-fx-padding: 10;">
+                                    <HBox spacing="6">
+                                        <TextField fx:id="searchField" promptText="Search by title / author…" HBox.hgrow="ALWAYS"/>
+                                        <Button text="Search" onAction="#onSearchBook"
+                                                style="-fx-background-color: #002244; -fx-text-fill: white; -fx-padding: 6 10;"/>
+                                    </HBox>
+                                    <ScrollPane fitToWidth="true" fitToHeight="true" VBox.vgrow="ALWAYS">
+                                        <content>
+                                            <ListView fx:id="theList"/>
+                                        </content>
+                                    </ScrollPane>
+                                </VBox>
+                                <VBox spacing="10" style="-fx-padding: 10;" GridPane.columnIndex="1">
+                                    <Label text="Details" style="-fx-font-weight: bold;"/>
+                                    <TextField fx:id="bookAuthor" editable="false" promptText="Author"/>
+                                    <TextField fx:id="bookTitle" editable="false" promptText="Title"/>
+                                    <TextField fx:id="pages" editable="false" promptText="Pages"/>
+                                    <Button fx:id="borrowBtn" text="Borrow" onAction="#onBorrowBook"
+                                            style="-fx-background-color: #b3995d; -fx-padding: 8 14;"/>
+                                </VBox>
                             </children>
                         </GridPane>
                     </content>
                 </Tab>
-                <Tab text="Ustawienia użytkownika">
+
+                <Tab text="User settings">
                     <content>
-                        <GridPane style="-fx-background-color: #EEEEEE;">
-                            <children>
-                                <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="30.0" prefWidth="229.0" text="Ustawienia użytkownika" textAlignment="CENTER" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
-                                    <font>
-                                        <Font size="20.0"/>
-                                    </font>
-                                </Label>
-                                <GridPane GridPane.rowIndex="1">
-                                    <children>
-                                        <Label text="imię" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.valignment="CENTER">
-                                            <font>
-                                                <Font size="18.0"/>
-                                            </font>
-                                            <GridPane.margin>
-                                                <Insets right="26.0"/>
-                                            </GridPane.margin>
-                                        </Label>
-                                        <Label text="nazwisko" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="1" GridPane.valignment="CENTER">
-                                            <font>
-                                                <Font size="18.0"/>
-                                            </font>
-                                            <GridPane.margin>
-                                                <Insets right="26.0"/>
-                                            </GridPane.margin>
-                                        </Label>
-                                        <Label text="numer telefonu" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="2" GridPane.valignment="CENTER">
-                                            <font>
-                                                <Font size="18.0"/>
-                                            </font>
-                                            <GridPane.margin>
-                                                <Insets right="26.0"/>
-                                            </GridPane.margin>
-                                        </Label>
-                                        <Label text="potwierdź hasło" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="4" GridPane.valignment="CENTER">
-                                            <font>
-                                                <Font size="18.0"/>
-                                            </font>
-                                            <GridPane.margin>
-                                                <Insets right="26.0"/>
-                                            </GridPane.margin>
-                                        </Label>
-                                        <Label text="hasło" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="3" GridPane.valignment="CENTER">
-                                            <font>
-                                                <Font size="18.0"/>
-                                            </font>
-                                            <GridPane.margin>
-                                                <Insets right="26.0"/>
-                                            </GridPane.margin>
-                                        </Label>
-                                        <TextField prefHeight="31.0" prefWidth="280.0" GridPane.columnIndex="2"/>
-                                        <TextField prefHeight="31.0" prefWidth="280.0" GridPane.columnIndex="2" GridPane.rowIndex="1"/>
-                                        <TextField prefHeight="31.0" prefWidth="280.0" GridPane.columnIndex="2" GridPane.rowIndex="2"/>
-                                        <PasswordField GridPane.columnIndex="2" GridPane.rowIndex="3"/>
-                                        <PasswordField GridPane.columnIndex="2" GridPane.rowIndex="4"/>
-                                    </children>
-                                    <columnConstraints>
-                                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="15.0"/>
-                                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="25.0"/>
-                                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="40.0"/>
-                                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0"/>
-                                    </columnConstraints>
-                                    <rowConstraints>
-                                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
-                                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
-                                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
-                                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
-                                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
-                                    </rowConstraints>
-                                </GridPane>
-                                <Button mnemonicParsing="false" style="-fx-padding: 10px;" text="Aktualizuj dane" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="CENTER">
-                                    <font>
-                                        <Font size="18.0"/>
-                                    </font>
-                                </Button>
-                            </children>
-                            <columnConstraints>
-                                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
-                            </columnConstraints>
-                            <rowConstraints>
-                                <RowConstraints minHeight="10.0" percentHeight="20.0" prefHeight="30.0" vgrow="SOMETIMES"/>
-                                <RowConstraints maxHeight="223.0" minHeight="10.0" percentHeight="60.0" prefHeight="223.0" vgrow="SOMETIMES"/>
-                                <RowConstraints minHeight="10.0" prefHeight="151.0" vgrow="SOMETIMES"/>
-                            </rowConstraints>
-                        </GridPane>
+                        <VBox spacing="16" style="-fx-padding: 24; -fx-background-color: #EEEEEE;">
+                            <Label text="Profile data" style="-fx-font-size: 16px; -fx-font-weight: bold;"/>
+                            <GridPane hgap="12" vgap="10">
+                                <columnConstraints>
+                                    <ColumnConstraints percentWidth="25" halignment="RIGHT"/>
+                                    <ColumnConstraints percentWidth="55"/>
+                                </columnConstraints>
+                                <Label text="First name:" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+                                <TextField fx:id="settingsFirstName" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+                                <Label text="Last name:" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+                                <TextField fx:id="settingsLastName" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+                                <Label text="Phone:" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+                                <TextField fx:id="settingsPhone" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+                            </GridPane>
+
+                            <Label text="Change password" style="-fx-font-size: 16px; -fx-font-weight: bold;"/>
+                            <GridPane hgap="12" vgap="10">
+                                <columnConstraints>
+                                    <ColumnConstraints percentWidth="25" halignment="RIGHT"/>
+                                    <ColumnConstraints percentWidth="55"/>
+                                </columnConstraints>
+                                <Label text="New password:" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+                                <PasswordField fx:id="settingsNewPassword" GridPane.rowIndex="0" GridPane.columnIndex="1" promptText="min. 8 characters"/>
+                                <Label text="Repeat password:" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+                                <PasswordField fx:id="settingsConfirmPassword" GridPane.rowIndex="1" GridPane.columnIndex="1" promptText="re-enter new password"/>
+                            </GridPane>
+
+                            <Button fx:id="saveSettingsBtn" text="Save changes" onAction="#onSaveSettings"
+                                    style="-fx-background-color: #002244; -fx-text-fill: white; -fx-padding: 8 20;"/>
+                        </VBox>
                     </content>
                 </Tab>
             </tabs>
