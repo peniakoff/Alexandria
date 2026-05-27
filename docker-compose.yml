@@ -1,0 +1,46 @@
+version: '3.9'
+
+services:
+  db:
+    image: mysql:8.4
+    container_name: alexandria-db
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: alexandria
+      MYSQL_USER: alexandria
+      MYSQL_PASSWORD: changeme
+    ports:
+      - "3306:3306"
+    volumes:
+      - alexandria-data:/var/lib/mysql
+      - ./docker/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-prootpassword"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  app:
+    build: .
+    container_name: alexandria-app
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      ALEXANDRIA_DATASOURCE_TYPE: MYSQL
+      ALEXANDRIA_DB_URL: "jdbc:mysql://db:3306/alexandria?serverTimezone=UTC&useSSL=false&allowPublicKeyRetrieval=true"
+      ALEXANDRIA_DB_USERNAME: alexandria
+      ALEXANDRIA_DB_PASSWORD: changeme
+      ALEXANDRIA_DB_POOL_SIZE: 5
+      ALEXANDRIA_DB_MINIMUM_IDLE: 1
+    # JavaFX desktop app – needs DISPLAY for GUI; use host network or X11 forwarding
+    network_mode: host
+    volumes:
+      - ./src/main/resources/application.properties:/app/application.properties:ro
+
+volumes:
+  alexandria-data:
+    driver: local

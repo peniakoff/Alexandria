@@ -1,94 +1,108 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.Cursor?>
+<?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
 
-<BorderPane xmlns:fx="http://javafx.com/fxml/1" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="600.0" minWidth="800.0" prefHeight="600.0" prefWidth="800.0" stylesheets="@style.css"
-            xmlns="http://javafx.com/javafx/17" fx:controller="pl.tomaszmiller.controllers.AdminController">
+<BorderPane xmlns:fx="http://javafx.com/fxml/1"
+            maxHeight="-Infinity" maxWidth="-Infinity"
+            minHeight="600.0" minWidth="800.0"
+            prefHeight="600.0" prefWidth="800.0"
+            stylesheets="@style.css"
+            xmlns="http://javafx.com/javafx/17"
+            fx:controller="pl.tomaszmiller.controllers.AdminController">
     <center>
-        <TabPane prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER">
+        <TabPane tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER">
             <tabs>
                 <Tab text="Użytkownicy">
                     <content>
-                        <GridPane style="-fx-background-color: #EEEEEE;">
-                            <children>
-                                <Label style="-fx-font-size: 20px;" text="Zarządzanie użytkownikami będzie kolejnym krokiem modernizacji." GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
-                            </children>
-                        </GridPane>
+                        <VBox spacing="8.0" style="-fx-padding: 12;">
+                            <Label fx:id="userCountLabel" text="Użytkownicy" style="-fx-font-size: 14px;"/>
+                            <TableView fx:id="usersTable" VBox.vgrow="ALWAYS">
+                                <columns>
+                                    <TableColumn fx:id="userIdCol" text="ID" prefWidth="50"/>
+                                    <TableColumn fx:id="userNameCol" text="Imię i nazwisko" prefWidth="200"/>
+                                    <TableColumn fx:id="userEmailCol" text="E-mail" prefWidth="240"/>
+                                    <TableColumn fx:id="userRoleCol" text="Rola" prefWidth="90"/>
+                                </columns>
+                            </TableView>
+                            <HBox spacing="8">
+                                <Button fx:id="deleteUserBtn" text="Usuń użytkownika" onAction="#onDeleteUser"
+                                        style="-fx-background-color: #c0392b; -fx-text-fill: white; -fx-padding: 6 12;"/>
+                            </HBox>
+                        </VBox>
                     </content>
                 </Tab>
+
                 <Tab text="Wypożyczenia">
                     <content>
-                        <GridPane style="-fx-background-color: #EEEEEE;">
-                            <children>
-                                <Label style="-fx-font-size: 20px;" text="Panel wypożyczeń wymaga jeszcze implementacji logiki biznesowej." GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
-                            </children>
-                        </GridPane>
+                        <VBox spacing="8.0" style="-fx-padding: 12;">
+                            <TableView fx:id="rentalsTable" VBox.vgrow="ALWAYS">
+                                <columns>
+                                    <TableColumn fx:id="rentalIdCol" text="ID" prefWidth="50"/>
+                                    <TableColumn fx:id="rentalUserCol" text="Użytkownik" prefWidth="150"/>
+                                    <TableColumn fx:id="rentalBookCol" text="Książka" prefWidth="200"/>
+                                    <TableColumn fx:id="rentalBorrowCol" text="Wypożyczono" prefWidth="110"/>
+                                    <TableColumn fx:id="rentalDueCol" text="Termin" prefWidth="110"/>
+                                    <TableColumn fx:id="rentalStatusCol" text="Status" prefWidth="110"/>
+                                </columns>
+                            </TableView>
+                            <HBox spacing="8">
+                                <Button fx:id="returnBookBtn" text="Zarejestruj zwrot" onAction="#onReturnBook"
+                                        style="-fx-background-color: #27ae60; -fx-text-fill: white; -fx-padding: 6 12;"/>
+                            </HBox>
+                        </VBox>
                     </content>
                 </Tab>
+
                 <Tab text="Baza książek">
                     <content>
                         <GridPane>
                             <columnConstraints>
-                                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0"/>
+                                <ColumnConstraints hgrow="SOMETIMES" percentWidth="55"/>
+                                <ColumnConstraints hgrow="SOMETIMES"/>
                             </columnConstraints>
                             <rowConstraints>
-                                <RowConstraints minHeight="10.0" percentHeight="75.0" prefHeight="30.0" vgrow="SOMETIMES"/>
-                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                                <RowConstraints minHeight="10" vgrow="ALWAYS"/>
                             </rowConstraints>
                             <children>
-                                <ScrollPane fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER" prefHeight="200.0" prefWidth="200.0">
-                                    <content>
-                                        <ListView fx:id="theList"/>
-                                    </content>
-                                </ScrollPane>
-                                <GridPane GridPane.rowIndex="1">
-                                    <columnConstraints>
-                                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="55.0" prefWidth="100.0"/>
-                                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
-                                    </columnConstraints>
-                                    <rowConstraints>
-                                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
-                                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
-                                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
-                                    </rowConstraints>
-                                    <children>
-                                        <TextField fx:id="bookAuthor" alignment="CENTER" editable="false" prefHeight="31.0" prefWidth="333.0" GridPane.halignment="LEFT" GridPane.valignment="CENTER">
-                                            <GridPane.margin>
-                                                <Insets left="20.0" right="20.0"/>
-                                            </GridPane.margin>
-                                            <cursor>
-                                                <Cursor fx:constant="DEFAULT"/>
-                                            </cursor>
-                                        </TextField>
-                                        <TextField fx:id="bookTitle" alignment="CENTER" editable="false" GridPane.rowIndex="1">
-                                            <GridPane.margin>
-                                                <Insets left="20.0" right="20.0"/>
-                                            </GridPane.margin>
-                                            <cursor>
-                                                <Cursor fx:constant="DEFAULT"/>
-                                            </cursor>
-                                        </TextField>
-                                        <TextField fx:id="pages" alignment="CENTER" editable="false" GridPane.rowIndex="2">
-                                            <GridPane.margin>
-                                                <Insets left="20.0" right="20.0"/>
-                                            </GridPane.margin>
-                                            <cursor>
-                                                <Cursor fx:constant="DEFAULT"/>
-                                            </cursor>
-                                        </TextField>
-                                    </children>
-                                </GridPane>
+                                <VBox spacing="6" style="-fx-padding: 10;">
+                                    <HBox spacing="6">
+                                        <TextField fx:id="searchField" promptText="Szukaj tytułu / autora…" HBox.hgrow="ALWAYS"/>
+                                        <Button text="Szukaj" onAction="#onSearchBook"
+                                                style="-fx-background-color: #002244; -fx-text-fill: white; -fx-padding: 6 10;"/>
+                                    </HBox>
+                                    <ScrollPane fitToWidth="true" fitToHeight="true" VBox.vgrow="ALWAYS">
+                                        <content>
+                                            <ListView fx:id="theList"/>
+                                        </content>
+                                    </ScrollPane>
+                                </VBox>
+                                <VBox spacing="10" style="-fx-padding: 10;" GridPane.columnIndex="1">
+                                    <Label text="Szczegóły" style="-fx-font-weight: bold;"/>
+                                    <TextField fx:id="bookAuthor" promptText="Autor"/>
+                                    <TextField fx:id="bookTitle" promptText="Tytuł"/>
+                                    <TextField fx:id="pages" promptText="Liczba stron"/>
+                                    <TextField fx:id="bookIsbn" promptText="ISBN (opcjonalnie)"/>
+                                    <HBox spacing="8">
+                                        <Button fx:id="addBookBtn" text="Dodaj / Zapisz" onAction="#onAddBook"
+                                                style="-fx-background-color: #002244; -fx-text-fill: white; -fx-padding: 6 10;"/>
+                                        <Button fx:id="deleteBookBtn" text="Usuń" onAction="#onDeleteBook"
+                                                style="-fx-background-color: #c0392b; -fx-text-fill: white; -fx-padding: 6 10;"/>
+                                    </HBox>
+                                </VBox>
                             </children>
                         </GridPane>
                     </content>
