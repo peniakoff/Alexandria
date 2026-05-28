@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ListView?>
@@ -42,10 +43,11 @@
                             <TableView fx:id="myRentalsTable" VBox.vgrow="ALWAYS">
                                 <columns>
                                     <TableColumn fx:id="myRentalIdCol" text="ID" prefWidth="50"/>
-                                    <TableColumn fx:id="myRentalBookCol" text="Title" prefWidth="300"/>
-                                    <TableColumn fx:id="myRentalBorrowCol" text="Borrowed" prefWidth="120"/>
-                                    <TableColumn fx:id="myRentalDueCol" text="Due date" prefWidth="120"/>
-                                    <TableColumn fx:id="myRentalStatusCol" text="Status" prefWidth="120"/>
+                                    <TableColumn fx:id="myRentalBookCol" text="Title" prefWidth="250"/>
+                                    <TableColumn fx:id="myRentalBorrowCol" text="Borrowed" prefWidth="100"/>
+                                    <TableColumn fx:id="myRentalDueCol" text="Due date" prefWidth="100"/>
+                                    <TableColumn fx:id="myRentalStatusCol" text="Status" prefWidth="100"/>
+                                    <TableColumn fx:id="myRentalActionCol" text="Action" prefWidth="140"/>
                                 </columns>
                             </TableView>
                         </VBox>
@@ -64,11 +66,12 @@
                             </rowConstraints>
                             <children>
                                 <VBox spacing="6" style="-fx-padding: 10;">
-                                    <HBox spacing="6">
+                                    <HBox spacing="6" alignment="CENTER_LEFT">
                                         <TextField fx:id="searchField" promptText="Search by title / author…" HBox.hgrow="ALWAYS"/>
                                         <Button text="Search" onAction="#onSearchBook"
                                                 style="-fx-background-color: #002244; -fx-text-fill: white; -fx-padding: 6 10;"/>
                                     </HBox>
+                                    <CheckBox fx:id="showUnavailableCheck" text="Show unavailable (borrowed) books" onAction="#onToggleShowUnavailable"/>
                                     <ScrollPane fitToWidth="true" fitToHeight="true" VBox.vgrow="ALWAYS">
                                         <content>
                                             <ListView fx:id="theList"/>
@@ -100,8 +103,12 @@
                                     <TextField fx:id="bookPublisher" editable="false" promptText="Publisher"/>
                                     <Label text="Status:" style="-fx-font-size: 11px; -fx-text-fill: #666;"/>
                                     <TextField fx:id="bookStatus" editable="false" promptText="Status"/>
-                                    <Button fx:id="borrowBtn" text="Borrow" onAction="#onBorrowBook"
-                                            style="-fx-background-color: #b3995d; -fx-padding: 8 14;"/>
+                                    <HBox spacing="8">
+                                        <Button fx:id="borrowBtn" text="Borrow" onAction="#onBorrowBook"
+                                                style="-fx-background-color: #b3995d; -fx-padding: 8 14;"/>
+                                        <Button fx:id="reserveBtn" text="Reserve next period" onAction="#onReserveBook"
+                                                style="-fx-background-color: #3498db; -fx-text-fill: white; -fx-padding: 8 14;"/>
+                                    </HBox>
                                 </VBox>
                             </children>
                         </GridPane>

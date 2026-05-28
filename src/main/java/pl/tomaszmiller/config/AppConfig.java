@@ -6,17 +6,23 @@ import pl.tomaszmiller.database.DatabaseConnector;
 import pl.tomaszmiller.database.MySqlConnector;
 import pl.tomaszmiller.database.SqliteConnector;
 import pl.tomaszmiller.repository.port.BookRepository;
+import pl.tomaszmiller.repository.port.ExtensionRequestRepository;
 import pl.tomaszmiller.repository.port.RentalRepository;
+import pl.tomaszmiller.repository.port.ReservationRepository;
 import pl.tomaszmiller.repository.port.UserRepository;
 import pl.tomaszmiller.repository.rest.SupabaseBookRepository;
 import pl.tomaszmiller.repository.rest.SupabaseRentalRepository;
 import pl.tomaszmiller.repository.rest.SupabaseUserRepository;
 import pl.tomaszmiller.repository.sql.SqlBookRepository;
+import pl.tomaszmiller.repository.sql.SqlExtensionRequestRepository;
 import pl.tomaszmiller.repository.sql.SqlRentalRepository;
+import pl.tomaszmiller.repository.sql.SqlReservationRepository;
 import pl.tomaszmiller.repository.sql.SqlUserRepository;
 import pl.tomaszmiller.service.AuthService;
 import pl.tomaszmiller.service.BookService;
+import pl.tomaszmiller.service.ExtensionRequestService;
 import pl.tomaszmiller.service.RentalService;
+import pl.tomaszmiller.service.ReservationService;
 import pl.tomaszmiller.service.UserService;
 
 import java.io.IOException;
@@ -43,10 +49,14 @@ public final class AppConfig {
     private final BookRepository bookRepository;
     private final UserRepository userRepository;
     private final RentalRepository rentalRepository;
+    private final ExtensionRequestRepository extensionRequestRepository;
+    private final ReservationRepository reservationRepository;
     private final BookService bookService;
     private final UserService userService;
     private final RentalService rentalService;
     private final AuthService authService;
+    private final ExtensionRequestService extensionRequestService;
+    private final ReservationService reservationService;
 
     private AppConfig() {
         Properties properties = loadProperties();
@@ -59,6 +69,8 @@ public final class AppConfig {
                 bookRepository = new SqlBookRepository(databaseConnector);
                 userRepository = new SqlUserRepository(databaseConnector);
                 rentalRepository = new SqlRentalRepository(databaseConnector);
+                extensionRequestRepository = new SqlExtensionRequestRepository(databaseConnector);
+                reservationRepository = new SqlReservationRepository(databaseConnector);
             }
             case REST_API -> {
                 databaseConnector = null;
@@ -75,12 +87,18 @@ public final class AppConfig {
                 bookRepository = new SupabaseBookRepository(apiUrl, apiKey);
                 userRepository = new SupabaseUserRepository(apiUrl, apiKey);
                 rentalRepository = new SupabaseRentalRepository(apiUrl, apiKey);
+                // REST API does not yet support extension requests / reservations;
+                // fall back to null (features will be unavailable)
+                extensionRequestRepository = null;
+                reservationRepository = null;
             }
             default -> {
                 databaseConnector = MySqlConnector.getInstance();
                 bookRepository = new SqlBookRepository(databaseConnector);
                 userRepository = new SqlUserRepository(databaseConnector);
                 rentalRepository = new SqlRentalRepository(databaseConnector);
+                extensionRequestRepository = new SqlExtensionRequestRepository(databaseConnector);
+                reservationRepository = new SqlReservationRepository(databaseConnector);
             }
         }
 
@@ -88,6 +106,12 @@ public final class AppConfig {
         userService = new UserService(userRepository);
         rentalService = new RentalService(rentalRepository);
         authService = new AuthService(userRepository);
+        extensionRequestService = extensionRequestRepository != null
+                ? new ExtensionRequestService(extensionRequestRepository, rentalRepository, reservationRepository)
+                : null;
+        reservationService = reservationRepository != null
+                ? new ReservationService(reservationRepository)
+                : null;
     }
 
     public static AppConfig getInstance() {
@@ -112,6 +136,14 @@ public final class AppConfig {
 
     public AuthService getAuthService() {
         return authService;
+    }
+
+    public ExtensionRequestService getExtensionRequestService() {
+        return extensionRequestService;
+    }
+
+    public ReservationService getReservationService() {
+        return reservationService;
     }
 
     /** Closes the database connector if applicable (called on application stop). */

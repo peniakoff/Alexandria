@@ -83,11 +83,31 @@ schema automatically, so `./alexandria.db` must already contain the `users`,
 - `src/test/java` – unit tests
 - `docker-compose.dev.yml` – DB-only local Docker setup
 
+## Test accounts
+
+The database is seeded with two test accounts:
+
+| Role  | E-mail                    | Password   |
+|-------|---------------------------|------------|
+| Admin | `admin@alexandria.local`  | `Admin123!` |
+| User  | `user@alexandria.local`   | `User1234!` |
+
+## Features
+
+- **Authentication**: Login, registration, logout, BCrypt password hashing
+- **Book catalog**: Browse, search (auto-debounce), paginated results (20/50/100 per page)
+- **Book details**: Author, title, pages, ISBN, year of publication, publisher, status with labeled fields
+- **Borrowing**: Borrow available books, 14-day loan period
+- **Rental status**: Color-coded (green=active, yellow=expiring soon, red=overdue)
+- **Extension requests**: Users can request a 7-day extension when ≤3 days remain; admin approves/rejects
+- **Reservations**: Users can reserve borrowed/unavailable books; admin approves/rejects
+- **Admin panel**: User management, rental tracking, book catalog CRUD, extension & reservation management
+- **Internationalization**: English and Polish language support with runtime switching
+- **Modern UI**: Rounded corners, subtle shadows, card-based layout, clean typography
+
 ## Remaining product work
 
-The modernization closes the main technical gaps, but some product features still need implementation:
-
-- admin user management
-- loan management flows
-- user settings persistence
-- internationalization
+- copy management (multiple copies per book title)
+- late fee calculation
+- account lockout / brute-force protection
+- REST API layer

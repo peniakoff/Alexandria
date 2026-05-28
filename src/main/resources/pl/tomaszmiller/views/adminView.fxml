@@ -122,6 +122,52 @@
                         </GridPane>
                     </content>
                 </Tab>
+
+                <Tab text="Extension Requests">
+                    <content>
+                        <VBox spacing="8.0" style="-fx-padding: 12;">
+                            <Label text="Pending Extension Requests" style="-fx-font-size: 14px; -fx-font-weight: bold;"/>
+                            <TableView fx:id="extRequestsTable" VBox.vgrow="ALWAYS">
+                                <columns>
+                                    <TableColumn fx:id="extReqIdCol" text="ID" prefWidth="50"/>
+                                    <TableColumn fx:id="extReqUserCol" text="User" prefWidth="150"/>
+                                    <TableColumn fx:id="extReqBookCol" text="Book" prefWidth="200"/>
+                                    <TableColumn fx:id="extReqDateCol" text="Request Date" prefWidth="110"/>
+                                    <TableColumn fx:id="extReqStatusCol" text="Status" prefWidth="100"/>
+                                </columns>
+                            </TableView>
+                            <HBox spacing="8">
+                                <Button text="Approve" onAction="#onApproveExtension"
+                                        style="-fx-background-color: #27ae60; -fx-text-fill: white; -fx-padding: 6 12;"/>
+                                <Button text="Reject" onAction="#onRejectExtension"
+                                        style="-fx-background-color: #c0392b; -fx-text-fill: white; -fx-padding: 6 12;"/>
+                            </HBox>
+                        </VBox>
+                    </content>
+                </Tab>
+
+                <Tab text="Reservations">
+                    <content>
+                        <VBox spacing="8.0" style="-fx-padding: 12;">
+                            <Label text="Pending Reservations" style="-fx-font-size: 14px; -fx-font-weight: bold;"/>
+                            <TableView fx:id="reservationsTable" VBox.vgrow="ALWAYS">
+                                <columns>
+                                    <TableColumn fx:id="resIdCol" text="ID" prefWidth="50"/>
+                                    <TableColumn fx:id="resUserCol" text="User" prefWidth="150"/>
+                                    <TableColumn fx:id="resBookCol" text="Book" prefWidth="200"/>
+                                    <TableColumn fx:id="resDateCol" text="Request Date" prefWidth="110"/>
+                                    <TableColumn fx:id="resStatusCol" text="Status" prefWidth="100"/>
+                                </columns>
+                            </TableView>
+                            <HBox spacing="8">
+                                <Button text="Approve" onAction="#onApproveReservation"
+                                        style="-fx-background-color: #27ae60; -fx-text-fill: white; -fx-padding: 6 12;"/>
+                                <Button text="Reject" onAction="#onRejectReservation"
+                                        style="-fx-background-color: #c0392b; -fx-text-fill: white; -fx-padding: 6 12;"/>
+                            </HBox>
+                        </VBox>
+                    </content>
+                </Tab>
             </tabs>
         </TabPane>
     </center>

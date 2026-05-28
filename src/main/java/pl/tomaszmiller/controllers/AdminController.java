@@ -23,11 +23,15 @@ import pl.tomaszmiller.Utils;
 import pl.tomaszmiller.config.AppConfig;
 import pl.tomaszmiller.model.Book;
 import pl.tomaszmiller.model.BookStatus;
+import pl.tomaszmiller.model.ExtensionRequest;
 import pl.tomaszmiller.model.Rental;
+import pl.tomaszmiller.model.Reservation;
 import pl.tomaszmiller.model.User;
 import pl.tomaszmiller.service.AuthService;
 import pl.tomaszmiller.service.BookService;
+import pl.tomaszmiller.service.ExtensionRequestService;
 import pl.tomaszmiller.service.RentalService;
+import pl.tomaszmiller.service.ReservationService;
 import pl.tomaszmiller.service.UserService;
 
 import java.io.IOException;
@@ -48,6 +52,8 @@ public class AdminController implements Initializable {
     private final UserService userService = AppConfig.getInstance().getUserService();
     private final RentalService rentalService = AppConfig.getInstance().getRentalService();
     private final AuthService authService = AppConfig.getInstance().getAuthService();
+    private final ExtensionRequestService extensionRequestService = AppConfig.getInstance().getExtensionRequestService();
+    private final ReservationService reservationService = AppConfig.getInstance().getReservationService();
 
     @FXML private Label welcomeLabel;
 
@@ -79,6 +85,20 @@ public class AdminController implements Initializable {
     @FXML private TableColumn<RentalRow, String> rentalStatusCol;
     @FXML private Button returnBookBtn;
 
+    @FXML private TableView<ExtRequestRow> extRequestsTable;
+    @FXML private TableColumn<ExtRequestRow, Long> extReqIdCol;
+    @FXML private TableColumn<ExtRequestRow, String> extReqUserCol;
+    @FXML private TableColumn<ExtRequestRow, String> extReqBookCol;
+    @FXML private TableColumn<ExtRequestRow, String> extReqDateCol;
+    @FXML private TableColumn<ExtRequestRow, String> extReqStatusCol;
+
+    @FXML private TableView<ReservationRow> reservationsTable;
+    @FXML private TableColumn<ReservationRow, Long> resIdCol;
+    @FXML private TableColumn<ReservationRow, String> resUserCol;
+    @FXML private TableColumn<ReservationRow, String> resBookCol;
+    @FXML private TableColumn<ReservationRow, String> resDateCol;
+    @FXML private TableColumn<ReservationRow, String> resStatusCol;
+
     private long selectedBookId = 0L;
     private long selectedRentalId = 0L;
     private PauseTransition searchDebounce;
@@ -88,6 +108,8 @@ public class AdminController implements Initializable {
         refreshBookList();
         setupUsersTable();
         setupRentalsTable();
+        setupExtRequestsTable();
+        setupReservationsTable();
         if (theList != null) {
             theList.getSelectionModel().selectedItemProperty()
                     .addListener((obs, old, newVal) -> onBookSelected(newVal));
@@ -354,9 +376,150 @@ public class AdminController implements Initializable {
         }
     }
 
+    // --- Extension Requests ---
+
+    private void setupExtRequestsTable() {
+        if (extRequestsTable == null) {
+            return;
+        }
+        extReqIdCol.setCellValueFactory(new PropertyValueFactory<>("id"));
+        extReqUserCol.setCellValueFactory(new PropertyValueFactory<>("userName"));
+        extReqBookCol.setCellValueFactory(new PropertyValueFactory<>("bookTitle"));
+        extReqDateCol.setCellValueFactory(new PropertyValueFactory<>("requestDate"));
+        extReqStatusCol.setCellValueFactory(new PropertyValueFactory<>("status"));
+        refreshExtRequests();
+    }
+
+    private void refreshExtRequests() {
+        if (extRequestsTable == null || extensionRequestService == null) {
+            return;
+        }
+        Map<Long, String> userNames = userService.findAll().stream()
+                .collect(java.util.stream.Collectors.toMap(User::id, User::fullName));
+        Map<Long, String> bookTitles = bookService.findAll().stream()
+                .collect(java.util.stream.Collectors.toMap(Book::id, Book::title));
+        Map<Long, Rental> rentalsById = rentalService.findAll().stream()
+                .collect(java.util.stream.Collectors.toMap(Rental::id, r -> r));
+
+        List<ExtRequestRow> rows = extensionRequestService.findAll().stream()
+                .map(req -> {
+                    String userName = userNames.getOrDefault(req.userId(), "(id=" + req.userId() + ")");
+                    Rental rental = rentalsById.get(req.rentalId());
+                    String bookTitle = rental != null
+                            ? bookTitles.getOrDefault(rental.bookId(), "(unknown)")
+                            : "(unknown)";
+                    return new ExtRequestRow(req.id(), userName, bookTitle,
+                            req.requestDate().toString(), req.status().name());
+                })
+                .toList();
+        extRequestsTable.setItems(FXCollections.observableArrayList(rows));
+    }
+
+    @FXML
+    private void onApproveExtension() {
+        if (extRequestsTable == null || extensionRequestService == null) {
+            return;
+        }
+        ExtRequestRow selected = extRequestsTable.getSelectionModel().getSelectedItem();
+        if (selected == null) {
+            Utils.openDialog("Extension Request", "Select a request from the table.");
+            return;
+        }
+        boolean approved = extensionRequestService.approve(selected.getId());
+        if (approved) {
+            Utils.confirmDialog("Extension Request", "Extension approved. Due date extended by 7 days.");
+            refreshExtRequests();
+            refreshRentals();
+        } else {
+            Utils.openDialog("Extension Request", "Cannot approve. The book may have a pending reservation.");
+        }
+    }
+
+    @FXML
+    private void onRejectExtension() {
+        if (extRequestsTable == null || extensionRequestService == null) {
+            return;
+        }
+        ExtRequestRow selected = extRequestsTable.getSelectionModel().getSelectedItem();
+        if (selected == null) {
+            Utils.openDialog("Extension Request", "Select a request from the table.");
+            return;
+        }
+        extensionRequestService.reject(selected.getId());
+        Utils.confirmDialog("Extension Request", "Extension request rejected.");
+        refreshExtRequests();
+    }
+
+    // --- Reservations ---
+
+    private void setupReservationsTable() {
+        if (reservationsTable == null) {
+            return;
+        }
+        resIdCol.setCellValueFactory(new PropertyValueFactory<>("id"));
+        resUserCol.setCellValueFactory(new PropertyValueFactory<>("userName"));
+        resBookCol.setCellValueFactory(new PropertyValueFactory<>("bookTitle"));
+        resDateCol.setCellValueFactory(new PropertyValueFactory<>("requestDate"));
+        resStatusCol.setCellValueFactory(new PropertyValueFactory<>("status"));
+        refreshReservations();
+    }
+
+    private void refreshReservations() {
+        if (reservationsTable == null || reservationService == null) {
+            return;
+        }
+        Map<Long, String> userNames = userService.findAll().stream()
+                .collect(java.util.stream.Collectors.toMap(User::id, User::fullName));
+        Map<Long, String> bookTitlesMap = bookService.findAll().stream()
+                .collect(java.util.stream.Collectors.toMap(Book::id, Book::title));
+
+        List<ReservationRow> rows = reservationService.findAll().stream()
+                .map(res -> {
+                    String userName = userNames.getOrDefault(res.userId(), "(id=" + res.userId() + ")");
+                    String bookTitle = bookTitlesMap.getOrDefault(res.bookId(), "(id=" + res.bookId() + ")");
+                    return new ReservationRow(res.id(), userName, bookTitle,
+                            res.requestDate().toString(), res.status().name());
+                })
+                .toList();
+        reservationsTable.setItems(FXCollections.observableArrayList(rows));
+    }
+
+    @FXML
+    private void onApproveReservation() {
+        if (reservationsTable == null || reservationService == null) {
+            return;
+        }
+        ReservationRow selected = reservationsTable.getSelectionModel().getSelectedItem();
+        if (selected == null) {
+            Utils.openDialog("Reservation", "Select a reservation from the table.");
+            return;
+        }
+        boolean approved = reservationService.approve(selected.getId());
+        if (approved) {
+            Utils.confirmDialog("Reservation", "Reservation approved.");
+            refreshReservations();
+        } else {
+            Utils.openDialog("Reservation", "Failed to approve reservation.");
+        }
+    }
+
+    @FXML
+    private void onRejectReservation() {
+        if (reservationsTable == null || reservationService == null) {
+            return;
+        }
+        ReservationRow selected = reservationsTable.getSelectionModel().getSelectedItem();
+        if (selected == null) {
+            Utils.openDialog("Reservation", "Select a reservation from the table.");
+            return;
+        }
+        reservationService.reject(selected.getId());
+        Utils.confirmDialog("Reservation", "Reservation rejected.");
+        refreshReservations();
+    }
+
     /**
      * Simple DTO for displaying rental data in a TableView.
-     * PropertyValueFactory requires public getters with JavaFX naming.
      */
     public static final class RentalRow {
         private final long id;
@@ -375,28 +538,61 @@ public class AdminController implements Initializable {
             this.status = status;
         }
 
-        public long getId() {
-            return id;
+        public long getId() { return id; }
+        public String getUserName() { return userName; }
+        public String getBookTitle() { return bookTitle; }
+        public String getBorrowDate() { return borrowDate; }
+        public String getDueDate() { return dueDate; }
+        public String getStatus() { return status; }
+    }
+
+    /**
+     * DTO for extension request table rows.
+     */
+    public static final class ExtRequestRow {
+        private final long id;
+        private final String userName;
+        private final String bookTitle;
+        private final String requestDate;
+        private final String status;
+
+        public ExtRequestRow(long id, String userName, String bookTitle, String requestDate, String status) {
+            this.id = id;
+            this.userName = userName;
+            this.bookTitle = bookTitle;
+            this.requestDate = requestDate;
+            this.status = status;
         }
 
-        public String getUserName() {
-            return userName;
+        public long getId() { return id; }
+        public String getUserName() { return userName; }
+        public String getBookTitle() { return bookTitle; }
+        public String getRequestDate() { return requestDate; }
+        public String getStatus() { return status; }
+    }
+
+    /**
+     * DTO for reservation table rows.
+     */
+    public static final class ReservationRow {
+        private final long id;
+        private final String userName;
+        private final String bookTitle;
+        private final String requestDate;
+        private final String status;
+
+        public ReservationRow(long id, String userName, String bookTitle, String requestDate, String status) {
+            this.id = id;
+            this.userName = userName;
+            this.bookTitle = bookTitle;
+            this.requestDate = requestDate;
+            this.status = status;
         }
 
-        public String getBookTitle() {
-            return bookTitle;
-        }
-
-        public String getBorrowDate() {
-            return borrowDate;
-        }
-
-        public String getDueDate() {
-            return dueDate;
-        }
-
-        public String getStatus() {
-            return status;
-        }
+        public long getId() { return id; }
+        public String getUserName() { return userName; }
+        public String getBookTitle() { return bookTitle; }
+        public String getRequestDate() { return requestDate; }
+        public String getStatus() { return status; }
     }
 }

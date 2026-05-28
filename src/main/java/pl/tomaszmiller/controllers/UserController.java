@@ -21,11 +21,14 @@ import javafx.util.Duration;
 import pl.tomaszmiller.Utils;
 import pl.tomaszmiller.config.AppConfig;
 import pl.tomaszmiller.model.Book;
+import pl.tomaszmiller.model.BookStatus;
 import pl.tomaszmiller.model.Rental;
 import pl.tomaszmiller.model.User;
 import pl.tomaszmiller.service.AuthService;
 import pl.tomaszmiller.service.BookService;
+import pl.tomaszmiller.service.ExtensionRequestService;
 import pl.tomaszmiller.service.RentalService;
+import pl.tomaszmiller.service.ReservationService;
 import pl.tomaszmiller.service.UserService;
 import pl.tomaszmiller.session.UserSession;
 
@@ -47,6 +50,8 @@ public class UserController implements Initializable {
     private final UserService userService = AppConfig.getInstance().getUserService();
     private final RentalService rentalService = AppConfig.getInstance().getRentalService();
     private final AuthService authService = AppConfig.getInstance().getAuthService();
+    private final ExtensionRequestService extensionRequestService = AppConfig.getInstance().getExtensionRequestService();
+    private final ReservationService reservationService = AppConfig.getInstance().getReservationService();
 
     @FXML private Label welcomeLabel;
 
@@ -60,6 +65,8 @@ public class UserController implements Initializable {
     @FXML private TextField bookStatus;
     @FXML private TextField searchField;
     @FXML private Button borrowBtn;
+    @FXML private Button reserveBtn;
+    @FXML private javafx.scene.control.CheckBox showUnavailableCheck;
     @FXML private ComboBox<Integer> pageSizeCombo;
     @FXML private Label pageInfoLabel;
     @FXML private Button prevPageBtn;
@@ -76,6 +83,7 @@ public class UserController implements Initializable {
     @FXML private TableColumn<RentalRow, String> myRentalBorrowCol;
     @FXML private TableColumn<RentalRow, String> myRentalDueCol;
     @FXML private TableColumn<RentalRow, String> myRentalStatusCol;
+    @FXML private TableColumn<RentalRow, Void> myRentalActionCol;
 
     @FXML private TextField settingsFirstName;
     @FXML private TextField settingsLastName;
@@ -136,11 +144,20 @@ public class UserController implements Initializable {
 
     private void performSearch() {
         String query = searchField.getText() == null ? "" : searchField.getText().trim();
+        boolean showUnavailable = showUnavailableCheck != null && showUnavailableCheck.isSelected();
+        List<Book> all = bookService.findAll();
+
+        if (!showUnavailable) {
+            all = all.stream()
+                    .filter(b -> b.status() == BookStatus.AVAILABLE)
+                    .toList();
+        }
+
         if (query.isEmpty()) {
-            allFilteredBooks = bookService.findAll();
+            allFilteredBooks = all;
         } else {
             String normalizedQuery = query.toLowerCase();
-            allFilteredBooks = bookService.findAll().stream()
+            allFilteredBooks = all.stream()
                     .filter(b -> b.title().toLowerCase().contains(normalizedQuery)
                             || b.author().toLowerCase().contains(normalizedQuery))
                     .sorted((a, c) -> a.title().compareToIgnoreCase(c.title()))
@@ -148,6 +165,11 @@ public class UserController implements Initializable {
         }
         currentPage = 0;
         updatePagedList();
+    }
+
+    @FXML
+    private void onToggleShowUnavailable() {
+        performSearch();
     }
 
     private void updatePagedList() {
@@ -220,6 +242,15 @@ public class UserController implements Initializable {
         if (bookStatus != null) {
             bookStatus.setText(b.status().name());
         }
+        // Show/hide borrow vs reserve based on availability
+        if (borrowBtn != null) {
+            borrowBtn.setVisible(b.status() == BookStatus.AVAILABLE);
+            borrowBtn.setManaged(b.status() == BookStatus.AVAILABLE);
+        }
+        if (reserveBtn != null) {
+            reserveBtn.setVisible(b.status() != BookStatus.AVAILABLE);
+            reserveBtn.setManaged(b.status() != BookStatus.AVAILABLE);
+        }
     }
 
     @FXML
@@ -238,6 +269,12 @@ public class UserController implements Initializable {
             Utils.openDialog("Borrow book", "First select a book from the list.");
             return;
         }
+        // Check if book is available
+        Optional<Book> bookOpt = bookService.findById(selectedBookId);
+        if (bookOpt.isPresent() && bookOpt.get().status() != BookStatus.AVAILABLE) {
+            Utils.openDialog("Borrow book", "This book is currently unavailable. You can reserve it instead.");
+            return;
+        }
         Optional<Rental> rental = rentalService.borrow(currentUser.id(), selectedBookId);
         if (rental.isPresent()) {
             Utils.confirmDialog("Borrow book",
@@ -245,6 +282,30 @@ public class UserController implements Initializable {
             refreshMyRentals();
         } else {
             Utils.openDialog("Borrow book", "Failed to borrow book.");
+        }
+    }
+
+    @FXML
+    private void onReserveBook() {
+        User currentUser = UserSession.getCurrentUser();
+        if (currentUser == null) {
+            Utils.openDialog("Reserve book", "You must be logged in to reserve a book.");
+            return;
+        }
+        if (selectedBookId <= 0) {
+            Utils.openDialog("Reserve book", "First select a book from the list.");
+            return;
+        }
+        if (reservationService == null) {
+            Utils.openDialog("Reserve book", "Reservation service is not available.");
+            return;
+        }
+        var result = reservationService.reserve(currentUser.id(), selectedBookId);
+        if (result.isPresent()) {
+            Utils.confirmDialog("Reserve book",
+                    "Your reservation request has been submitted. An administrator will review it.");
+        } else {
+            Utils.openDialog("Reserve book", "Failed to submit reservation.");
         }
     }
 
@@ -296,7 +357,75 @@ public class UserController implements Initializable {
         myRentalBorrowCol.setCellValueFactory(new PropertyValueFactory<>("borrowDate"));
         myRentalDueCol.setCellValueFactory(new PropertyValueFactory<>("dueDate"));
         myRentalStatusCol.setCellValueFactory(new PropertyValueFactory<>("status"));
+
+        // Color-coded status cell
+        myRentalStatusCol.setCellFactory(col -> new javafx.scene.control.TableCell<>() {
+            @Override
+            protected void updateItem(String item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null) {
+                    setText(null);
+                    setStyle("");
+                    return;
+                }
+                setText(item);
+                RentalRow row = getTableView().getItems().get(getIndex());
+                switch (row.getColorCode()) {
+                    case "GREEN" -> setStyle("-fx-background-color: #d4edda; -fx-text-fill: #155724;");
+                    case "YELLOW" -> setStyle("-fx-background-color: #fff3cd; -fx-text-fill: #856404;");
+                    case "RED" -> setStyle("-fx-background-color: #f8d7da; -fx-text-fill: #721c24;");
+                    default -> setStyle("");
+                }
+            }
+        });
+
+        // Action column with "Request Extension" button
+        if (myRentalActionCol != null) {
+            myRentalActionCol.setCellFactory(col -> new javafx.scene.control.TableCell<>() {
+                private final Button extBtn = new Button("Request Extension");
+                {
+                    extBtn.setStyle("-fx-background-color: #f0ad4e; -fx-text-fill: white; -fx-padding: 2 8; -fx-font-size: 11px;");
+                    extBtn.setOnAction(e -> {
+                        RentalRow row = getTableView().getItems().get(getIndex());
+                        onRequestExtension(row);
+                    });
+                }
+
+                @Override
+                protected void updateItem(Void item, boolean empty) {
+                    super.updateItem(item, empty);
+                    if (empty) {
+                        setGraphic(null);
+                        return;
+                    }
+                    RentalRow row = getTableView().getItems().get(getIndex());
+                    if ("YELLOW".equals(row.getColorCode())) {
+                        setGraphic(extBtn);
+                    } else {
+                        setGraphic(null);
+                    }
+                }
+            });
+        }
+
         refreshMyRentals();
+    }
+
+    private void onRequestExtension(RentalRow row) {
+        if (extensionRequestService == null) {
+            Utils.openDialog("Extension", "Extension requests are not available.");
+            return;
+        }
+        User currentUser = UserSession.getCurrentUser();
+        if (currentUser == null) {
+            return;
+        }
+        var result = extensionRequestService.requestExtension(row.getRentalId(), currentUser.id());
+        if (result.isPresent()) {
+            Utils.confirmDialog("Extension Request", "Your request to extend the rental has been submitted. An administrator will review it.");
+        } else {
+            Utils.openDialog("Extension Request", "Failed to submit extension request.");
+        }
     }
 
     private void refreshMyRentals() {
@@ -313,11 +442,29 @@ public class UserController implements Initializable {
         List<RentalRow> rows = rentalService.findByUser(currentUser.id()).stream()
                 .map(r -> {
                     String bookTitleStr = bookTitles.getOrDefault(r.bookId(), "(id=" + r.bookId() + ")");
-                    return new RentalRow(r.id(), bookTitleStr,
-                            r.borrowDate().toString(), r.dueDate().toString(), r.status().name());
+                    String colorCode = computeColorCode(r);
+                    return new RentalRow(r.id(), r.id(), bookTitleStr,
+                            r.borrowDate().toString(), r.dueDate().toString(), r.status().name(), colorCode);
                 })
                 .toList();
         myRentalsTable.setItems(FXCollections.observableArrayList(rows));
+    }
+
+    private String computeColorCode(Rental r) {
+        if (r.status() == pl.tomaszmiller.model.RentalStatus.OVERDUE
+                || r.status() == pl.tomaszmiller.model.RentalStatus.RETURNED_LATE
+                || (r.isActive() && r.isOverdue())) {
+            return "RED";
+        }
+        if (r.isActive()) {
+            long daysUntilDue = java.time.temporal.ChronoUnit.DAYS.between(
+                    java.time.LocalDate.now(), r.dueDate());
+            if (daysUntilDue <= 3) {
+                return "YELLOW";
+            }
+            return "GREEN";
+        }
+        return "";
     }
 
     private void loadUserSettings() {
@@ -392,21 +539,30 @@ public class UserController implements Initializable {
      */
     public static final class RentalRow {
         private final long id;
+        private final long rentalId;
         private final String bookTitle;
         private final String borrowDate;
         private final String dueDate;
         private final String status;
+        private final String colorCode;
 
-        public RentalRow(long id, String bookTitle, String borrowDate, String dueDate, String status) {
+        public RentalRow(long id, long rentalId, String bookTitle, String borrowDate,
+                         String dueDate, String status, String colorCode) {
             this.id = id;
+            this.rentalId = rentalId;
             this.bookTitle = bookTitle;
             this.borrowDate = borrowDate;
             this.dueDate = dueDate;
             this.status = status;
+            this.colorCode = colorCode;
         }
 
         public long getId() {
             return id;
+        }
+
+        public long getRentalId() {
+            return rentalId;
         }
 
         public String getBookTitle() {
@@ -423,6 +579,10 @@ public class UserController implements Initializable {
 
         public String getStatus() {
             return status;
+        }
+
+        public String getColorCode() {
+            return colorCode;
         }
     }
 }

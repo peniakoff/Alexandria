@@ -1,11 +1,14 @@
 package pl.tomaszmiller.controllers;
 
+import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
@@ -13,22 +16,26 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pl.tomaszmiller.Utils;
 import pl.tomaszmiller.config.AppConfig;
+import pl.tomaszmiller.i18n.I18n;
 import pl.tomaszmiller.model.User;
 import pl.tomaszmiller.model.UserRole;
 import pl.tomaszmiller.service.AuthService;
 import pl.tomaszmiller.service.UserService;
 
 import java.io.IOException;
+import java.net.URL;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.ResourceBundle;
 
-public class StartController {
+public class StartController implements Initializable {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(StartController.class);
 
     private final AuthService authService = AppConfig.getInstance().getAuthService();
     private final UserService userService = AppConfig.getInstance().getUserService();
 
+    @FXML private ComboBox<String> languageCombo;
     @FXML private TextField userEmail;
     @FXML private PasswordField userPassword;
     @FXML private TextField firstName;
@@ -38,6 +45,37 @@ public class StartController {
     @FXML private TextField emailConfirmed;
     @FXML private PasswordField password;
     @FXML private PasswordField passwordConfirmed;
+
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        if (languageCombo != null) {
+            languageCombo.setItems(FXCollections.observableArrayList("English", "Polski"));
+            languageCombo.setValue(I18n.getCurrentLocale().getLanguage().equals("pl") ? "Polski" : "English");
+        }
+    }
+
+    @FXML
+    private void onLanguageChange() {
+        if (languageCombo == null) {
+            return;
+        }
+        String selected = languageCombo.getValue();
+        if ("Polski".equals(selected)) {
+            I18n.switchToPolish();
+        } else {
+            I18n.switchToEnglish();
+        }
+        // Reload the login view to reflect the new language
+        try {
+            Parent loginView = FXMLLoader.load(Objects.requireNonNull(
+                    getClass().getResource("/pl/tomaszmiller/views/loginView.fxml")));
+            Stage stage = (Stage) languageCombo.getScene().getWindow();
+            stage.setScene(new Scene(loginView, 800, 600));
+            stage.show();
+        } catch (IOException e) {
+            LOGGER.error("Failed to reload login view after language change.", e);
+        }
+    }
 
     @FXML
     private void login(ActionEvent event) {
