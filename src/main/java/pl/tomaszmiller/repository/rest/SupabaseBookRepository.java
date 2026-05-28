@@ -2,6 +2,7 @@ package pl.tomaszmiller.repository.rest;
 
 import com.google.gson.*;
 import pl.tomaszmiller.model.Book;
+import pl.tomaszmiller.model.BookInventory;
 import pl.tomaszmiller.model.BookStatus;
 import pl.tomaszmiller.repository.port.BookRepository;
 
@@ -176,7 +177,14 @@ public class SupabaseBookRepository implements BookRepository {
                 obj.has("isbn") && !obj.get("isbn").isJsonNull() ? obj.get("isbn").getAsString() : null,
                 status,
                 obj.has("publish_year") ? obj.get("publish_year").getAsInt() : 0,
-                obj.has("publisher") && !obj.get("publisher").isJsonNull() ? obj.get("publisher").getAsString() : null
+                obj.has("publisher") && !obj.get("publisher").isJsonNull() ? obj.get("publisher").getAsString() : null,
+                new BookInventory(
+                        obj.has("active_copies") ? obj.get("active_copies").getAsInt() : 1,
+                        obj.has("available_copies") ? obj.get("available_copies").getAsInt() : 1,
+                        obj.has("archived_copies") ? obj.get("archived_copies").getAsInt() : 0,
+                        obj.has("removed_damaged_copies") ? obj.get("removed_damaged_copies").getAsInt() : 0,
+                        obj.has("removed_stolen_copies") ? obj.get("removed_stolen_copies").getAsInt() : 0
+                )
         );
     }
 
@@ -194,6 +202,11 @@ public class SupabaseBookRepository implements BookRepository {
         if (book.publisher() != null) {
             obj.addProperty("publisher", book.publisher());
         }
+        obj.addProperty("active_copies", book.inventory().activeCopies());
+        obj.addProperty("available_copies", book.inventory().availableCopies());
+        obj.addProperty("archived_copies", book.inventory().archivedCopies());
+        obj.addProperty("removed_damaged_copies", book.inventory().removedDamagedCopies());
+        obj.addProperty("removed_stolen_copies", book.inventory().removedStolenCopies());
         return obj;
     }
 }

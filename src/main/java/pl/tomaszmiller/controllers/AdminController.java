@@ -16,10 +16,7 @@ import javafx.util.Duration;
 import pl.tomaszmiller.Utils;
 import pl.tomaszmiller.config.AppConfig;
 import pl.tomaszmiller.i18n.I18n;
-import pl.tomaszmiller.model.Book;
-import pl.tomaszmiller.model.BookStatus;
-import pl.tomaszmiller.model.Rental;
-import pl.tomaszmiller.model.User;
+import pl.tomaszmiller.model.*;
 import pl.tomaszmiller.service.*;
 
 import java.io.IOException;
@@ -41,10 +38,10 @@ public class AdminController implements Initializable {
     private final AuthService authService = AppConfig.getInstance().getAuthService();
     private final ExtensionRequestService extensionRequestService = AppConfig.getInstance().getExtensionRequestService();
     private final ReservationService reservationService = AppConfig.getInstance().getReservationService();
+    private final OpenLibraryService openLibraryService = AppConfig.getInstance().getOpenLibraryService();
 
     @FXML
     private Label welcomeLabel;
-
     @FXML
     private ListView<String> theList;
     @FXML
@@ -60,11 +57,13 @@ public class AdminController implements Initializable {
     @FXML
     private TextField bookPublisher;
     @FXML
+    private TextField inventoryQuantityField;
+    @FXML
+    private Label inventorySummaryLabel;
+    @FXML
+    private Label inventoryStatusLabel;
+    @FXML
     private TextField searchField;
-    @FXML
-    private Button addBookBtn;
-    @FXML
-    private Button deleteBookBtn;
 
     @FXML
     private TableView<User> usersTable;
@@ -76,8 +75,6 @@ public class AdminController implements Initializable {
     private TableColumn<User, String> userEmailCol;
     @FXML
     private TableColumn<User, String> userRoleCol;
-    @FXML
-    private Button deleteUserBtn;
     @FXML
     private Label userCountLabel;
 
@@ -95,8 +92,6 @@ public class AdminController implements Initializable {
     private TableColumn<RentalRow, String> rentalDueCol;
     @FXML
     private TableColumn<RentalRow, String> rentalStatusCol;
-    @FXML
-    private Button returnBookBtn;
 
     @FXML
     private TableView<ExtRequestRow> extRequestsTable;
@@ -150,6 +145,7 @@ public class AdminController implements Initializable {
                 welcomeLabel.setText(I18n.get("nav.admin", user.fullName()));
             }
         }
+        refreshInventoryDetails(null);
     }
 
     @FXML
@@ -188,99 +184,146 @@ public class AdminController implements Initializable {
         bookTitle.setText(b.title());
         pages.setText(String.valueOf(b.pages()));
         bookIsbn.setText(b.isbn() != null ? b.isbn() : "");
-        if (bookYear != null) {
-            bookYear.setText(b.publishYear() > 0 ? String.valueOf(b.publishYear()) : "");
-        }
-        if (bookPublisher != null) {
-            bookPublisher.setText(b.publisher() != null ? b.publisher() : "");
-        }
+        bookYear.setText(b.publishYear() > 0 ? String.valueOf(b.publishYear()) : "");
+        bookPublisher.setText(b.publisher() != null ? b.publisher() : "");
+        refreshInventoryDetails(b);
     }
 
     @FXML
-    private void onAddBook() {
-        String author = bookAuthor.getText() == null ? "" : bookAuthor.getText().trim();
-        String title = bookTitle.getText() == null ? "" : bookTitle.getText().trim();
-        String pagesStr = pages.getText() == null ? "" : pages.getText().trim();
-        String isbn = bookIsbn.getText() == null ? null : bookIsbn.getText().trim();
-        String yearStr = bookYear != null && bookYear.getText() != null ? bookYear.getText().trim() : "";
-        String publisher = bookPublisher != null && bookPublisher.getText() != null ? bookPublisher.getText().trim() : "";
-
-        if (author.isEmpty() || title.isEmpty() || pagesStr.isEmpty()) {
-            Utils.openDialog(I18n.get("dialog.addbook"), I18n.get("admin.books.fields"));
+    private void onFetchFromOpenLibrary() {
+        String isbn = normalize(bookIsbn.getText());
+        if (isbn.isBlank()) {
+            Utils.openDialog(I18n.get("dialog.openlibrary"), I18n.get("admin.books.lookup.isbnrequired"));
             return;
         }
-        int pageCount;
-        try {
-            pageCount = Integer.parseInt(pagesStr);
-        } catch (NumberFormatException e) {
-            Utils.openDialog(I18n.get("dialog.addbook"), I18n.get("admin.books.pagesinvalid"));
+        Optional<BookMetadata> metadata = openLibraryService.lookupByIsbn(isbn);
+        if (metadata.isEmpty()) {
+            Utils.openDialog(I18n.get("dialog.openlibrary"), I18n.get("admin.books.lookup.notfound"));
             return;
         }
-        int publishYear = 0;
-        if (!yearStr.isEmpty()) {
-            try {
-                publishYear = Integer.parseInt(yearStr);
-            } catch (NumberFormatException e) {
-                Utils.openDialog(I18n.get("dialog.addbook"), I18n.get("admin.books.yearinvalid"));
-                return;
-            }
-        }
+        BookMetadata bookMetadata = metadata.get();
+        bookAuthor.setText(bookMetadata.author());
+        bookTitle.setText(bookMetadata.title());
+        pages.setText(bookMetadata.pages() > 0 ? String.valueOf(bookMetadata.pages()) : "");
+        bookIsbn.setText(bookMetadata.isbn());
+        bookYear.setText(bookMetadata.publishYear() > 0 ? String.valueOf(bookMetadata.publishYear()) : "");
+        bookPublisher.setText(bookMetadata.publisher());
+        Utils.confirmDialog(I18n.get("dialog.openlibrary"), I18n.get("admin.books.lookup.loaded"));
+    }
 
+    @FXML
+    private void onSaveBook() {
+        BookFormData formData = readBookFormData();
+        if (formData == null) {
+            return;
+        }
         if (selectedBookId > 0) {
-            Book updatedBook = new Book(selectedBookId, author, title, pageCount,
-                    isbn == null || isbn.isEmpty() ? null : isbn, BookStatus.AVAILABLE,
-                    publishYear, publisher.isEmpty() ? null : publisher);
-            boolean updated = bookService.updateBook(updatedBook);
+            boolean updated = bookService.updateBook(new Book(selectedBookId, formData.author(), formData.title(),
+                    formData.pageCount(), formData.isbn(), BookStatus.AVAILABLE,
+                    formData.publishYear(), formData.publisher()));
             if (updated) {
-                Utils.confirmDialog(I18n.get("dialog.editbook"), I18n.get("admin.books.updated", title));
+                Utils.confirmDialog(I18n.get("dialog.editbook"), I18n.get("admin.books.updated", formData.title()));
                 refreshBookList();
-                clearBookDetails();
+                selectBookByTitle(formData.title());
             } else {
                 Utils.openDialog(I18n.get("dialog.editbook"), I18n.get("admin.books.updatefailed"));
             }
+            return;
+        }
+
+        Integer quantity = readQuantity(false);
+        if (quantity == null) {
+            return;
+        }
+        Optional<Book> saved = bookService.addBook(new Book(0L, formData.author(), formData.title(), formData.pageCount(),
+                formData.isbn(), BookStatus.AVAILABLE, formData.publishYear(), formData.publisher()), quantity);
+        if (saved.isPresent()) {
+            Utils.confirmDialog(I18n.get("dialog.addbook"), I18n.get("admin.books.added", formData.title()));
+            refreshBookList();
+            selectBookByTitle(saved.get().title());
         } else {
-            Book newBook = new Book(0L, author, title, pageCount,
-                    isbn == null || isbn.isEmpty() ? null : isbn, BookStatus.AVAILABLE,
-                    publishYear, publisher.isEmpty() ? null : publisher);
-            Optional<Book> saved = bookService.addBook(newBook);
-            if (saved.isPresent()) {
-                Utils.confirmDialog(I18n.get("dialog.addbook"), I18n.get("admin.books.added", title));
-                refreshBookList();
-                clearBookDetails();
-            } else {
-                Utils.openDialog(I18n.get("dialog.addbook"), I18n.get("admin.books.addfailed"));
-            }
+            Utils.openDialog(I18n.get("dialog.addbook"), I18n.get("admin.books.addfailed"));
         }
     }
 
     @FXML
-    private void onDeleteBook() {
+    private void onAddCopies() {
+        updateInventory(BookOperation.ADD);
+    }
+
+    @FXML
+    private void onRemoveCopies() {
+        updateInventory(BookOperation.REMOVE);
+    }
+
+    @FXML
+    private void onArchiveCopies() {
+        updateInventory(BookOperation.ARCHIVE);
+    }
+
+    @FXML
+    private void onWithdrawDamagedCopies() {
+        updateInventory(BookOperation.WITHDRAW_DAMAGED);
+    }
+
+    @FXML
+    private void onWithdrawStolenCopies() {
+        updateInventory(BookOperation.WITHDRAW_STOLEN);
+    }
+
+    @FXML
+    private void onClearBookForm() {
+        clearBookDetails();
+    }
+
+    private void updateInventory(BookOperation operation) {
         if (selectedBookId <= 0) {
-            Utils.openDialog(I18n.get("dialog.removebook"), I18n.get("admin.books.selectfirst"));
+            Utils.openDialog(I18n.get("dialog.inventory"), I18n.get("admin.books.selectfirst"));
             return;
         }
-        boolean deleted = bookService.deleteBook(selectedBookId);
-        if (deleted) {
-            Utils.confirmDialog(I18n.get("dialog.removebook"), I18n.get("admin.books.removed"));
+        Integer quantity = readQuantity(true);
+        if (quantity == null) {
+            return;
+        }
+        BookService.InventoryOperationResult result = switch (operation) {
+            case ADD -> bookService.addCopies(selectedBookId, quantity);
+            case REMOVE -> bookService.removeCopies(selectedBookId, quantity);
+            case ARCHIVE -> bookService.archiveCopies(selectedBookId, quantity);
+            case WITHDRAW_DAMAGED -> bookService.withdrawCopies(selectedBookId, quantity, InventoryRemovalReason.DAMAGED);
+            case WITHDRAW_STOLEN -> bookService.withdrawCopies(selectedBookId, quantity, InventoryRemovalReason.STOLEN);
+        };
+        if (result == BookService.InventoryOperationResult.SUCCESS) {
+            String key = switch (operation) {
+                case ADD -> "admin.books.inventory.added";
+                case REMOVE -> "admin.books.inventory.removed";
+                case ARCHIVE -> "admin.books.inventory.archived";
+                case WITHDRAW_DAMAGED -> "admin.books.inventory.damaged";
+                case WITHDRAW_STOLEN -> "admin.books.inventory.stolen";
+            };
+            Utils.confirmDialog(I18n.get("dialog.inventory"), I18n.get(key, quantity));
             refreshBookList();
-            clearBookDetails();
-            selectedBookId = 0L;
+            bookService.findById(selectedBookId).ifPresent(this::fillBookDetails);
         } else {
-            Utils.openDialog(I18n.get("dialog.removebook"), I18n.get("admin.books.removefailed"));
+            String errorKey = result == BookService.InventoryOperationResult.INVALID_QUANTITY
+                    ? "admin.books.quantity.invalid"
+                    : result == BookService.InventoryOperationResult.NOT_ENOUGH_AVAILABLE_COPIES
+                    ? "admin.books.inventory.insufficient"
+                    : "admin.books.updatefailed";
+            Utils.openDialog(I18n.get("dialog.inventory"), I18n.get(errorKey));
         }
     }
 
     @FXML
     private void onSearchBook() {
-        String query = searchField.getText() == null ? "" : searchField.getText().trim();
+        String query = normalize(searchField.getText()).toLowerCase();
         if (query.isEmpty()) {
             refreshBookList();
             return;
         }
-        String normalizedQuery = query.toLowerCase();
         List<String> filtered = bookService.findAll().stream()
-                .filter(b -> b.title().toLowerCase().contains(normalizedQuery)
-                        || b.author().toLowerCase().contains(normalizedQuery))
+                .filter(b -> b.title().toLowerCase().contains(query)
+                        || b.author().toLowerCase().contains(query)
+                        || (b.isbn() != null && b.isbn().toLowerCase().contains(query)))
                 .map(Book::title)
                 .sorted()
                 .toList();
@@ -307,6 +350,111 @@ public class AdminController implements Initializable {
         if (bookPublisher != null) {
             bookPublisher.clear();
         }
+        if (inventoryQuantityField != null) {
+            inventoryQuantityField.setText("1");
+        }
+        refreshInventoryDetails(null);
+        if (theList != null) {
+            theList.getSelectionModel().clearSelection();
+        }
+    }
+
+    private void fillBookDetails(Book book) {
+        selectedBookId = book.id();
+        bookAuthor.setText(book.author());
+        bookTitle.setText(book.title());
+        pages.setText(String.valueOf(book.pages()));
+        bookIsbn.setText(book.isbn() != null ? book.isbn() : "");
+        bookYear.setText(book.publishYear() > 0 ? String.valueOf(book.publishYear()) : "");
+        bookPublisher.setText(book.publisher() != null ? book.publisher() : "");
+        refreshInventoryDetails(book);
+    }
+
+    private void refreshInventoryDetails(Book book) {
+        if (inventorySummaryLabel == null || inventoryStatusLabel == null) {
+            return;
+        }
+        if (book == null) {
+            inventoryStatusLabel.setText(I18n.get("admin.books.inventory.empty"));
+            inventorySummaryLabel.setText(I18n.get("admin.books.inventory.summary", 0, 0, 0, 0, 0));
+            return;
+        }
+        BookInventory inventory = book.inventory();
+        inventoryStatusLabel.setText(I18n.getEnum(book.status()));
+        inventorySummaryLabel.setText(I18n.get("admin.books.inventory.summary",
+                inventory.availableCopies(),
+                inventory.activeCopies(),
+                inventory.archivedCopies(),
+                inventory.removedDamagedCopies(),
+                inventory.removedStolenCopies()));
+    }
+
+    private BookFormData readBookFormData() {
+        String author = normalize(bookAuthor.getText());
+        String title = normalize(bookTitle.getText());
+        String pagesStr = normalize(pages.getText());
+        String isbn = normalize(bookIsbn.getText());
+        String yearStr = normalize(bookYear.getText());
+        String publisher = normalize(bookPublisher.getText());
+
+        if (author.isEmpty() || title.isEmpty()) {
+            Utils.openDialog(I18n.get("dialog.addbook"), I18n.get("admin.books.fields"));
+            return null;
+        }
+        int pageCount = 0;
+        if (!pagesStr.isEmpty()) {
+            try {
+                pageCount = Integer.parseInt(pagesStr);
+            } catch (NumberFormatException e) {
+                Utils.openDialog(I18n.get("dialog.addbook"), I18n.get("admin.books.pagesinvalid"));
+                return null;
+            }
+        }
+        int publishYear = 0;
+        if (!yearStr.isEmpty()) {
+            try {
+                publishYear = Integer.parseInt(yearStr);
+            } catch (NumberFormatException e) {
+                Utils.openDialog(I18n.get("dialog.addbook"), I18n.get("admin.books.yearinvalid"));
+                return null;
+            }
+        }
+        return new BookFormData(author, title, pageCount, isbn.isEmpty() ? null : isbn,
+                publishYear, publisher.isEmpty() ? null : publisher);
+    }
+
+    private Integer readQuantity(boolean allowExisting) {
+        if (inventoryQuantityField == null) {
+            return 1;
+        }
+        String value = normalize(inventoryQuantityField.getText());
+        if (value.isEmpty() && !allowExisting) {
+            Utils.openDialog(I18n.get("dialog.inventory"), I18n.get("admin.books.quantity.required"));
+            return null;
+        }
+        try {
+            int quantity = Integer.parseInt(value);
+            if (quantity <= 0) {
+                throw new NumberFormatException();
+            }
+            return quantity;
+        } catch (NumberFormatException e) {
+            Utils.openDialog(I18n.get("dialog.inventory"), I18n.get("admin.books.quantity.invalid"));
+            return null;
+        }
+    }
+
+    private void selectBookByTitle(String title) {
+        if (theList == null) {
+            return;
+        }
+        refreshBookList();
+        theList.getSelectionModel().select(title);
+        onBookSelected(title);
+    }
+
+    private String normalize(String value) {
+        return value == null ? "" : value.trim();
     }
 
     private void setupUsersTable() {
@@ -375,12 +523,12 @@ public class AdminController implements Initializable {
         Map<Long, String> bookTitles = bookService.findAll().stream()
                 .collect(java.util.stream.Collectors.toMap(Book::id, Book::title));
         List<RentalRow> rows = rentalService.findAll().stream()
-                .map(r -> {
-                    String userName = userNames.getOrDefault(r.userId(), "(id=" + r.userId() + ")");
-                    String bookTitleStr = bookTitles.getOrDefault(r.bookId(), "(id=" + r.bookId() + ")");
-                    return new RentalRow(r.id(), userName, bookTitleStr,
-                            r.borrowDate().toString(), r.dueDate().toString(), I18n.getEnum(r.status()));
-                })
+                .map(r -> new RentalRow(r.id(),
+                        userNames.getOrDefault(r.userId(), "(id=" + r.userId() + ")"),
+                        bookTitles.getOrDefault(r.bookId(), "(id=" + r.bookId() + ")"),
+                        r.borrowDate().toString(),
+                        r.dueDate().toString(),
+                        I18n.getEnum(r.status())))
                 .toList();
         rentalsTable.setItems(FXCollections.observableArrayList(rows));
     }
@@ -395,13 +543,15 @@ public class AdminController implements Initializable {
         if (done) {
             Utils.confirmDialog(I18n.get("dialog.bookreturn"), I18n.get("admin.rentals.returned"));
             refreshRentals();
+            refreshBookList();
+            if (selectedBookId > 0) {
+                bookService.findById(selectedBookId).ifPresent(this::fillBookDetails);
+            }
             selectedRentalId = 0L;
         } else {
             Utils.openDialog(I18n.get("dialog.bookreturn"), I18n.get("admin.rentals.returnfailed"));
         }
     }
-
-    // --- Extension Requests ---
 
     private void setupExtRequestsTable() {
         if (extRequestsTable == null) {
@@ -482,8 +632,6 @@ public class AdminController implements Initializable {
         refreshExtRequests();
     }
 
-    // --- Reservations ---
-
     private void setupReservationsTable() {
         if (reservationsTable == null) {
             return;
@@ -506,12 +654,11 @@ public class AdminController implements Initializable {
                 .collect(java.util.stream.Collectors.toMap(Book::id, Book::title));
 
         List<ReservationRow> rows = reservationService.findPending().stream()
-                .map(res -> {
-                    String userName = userNames.getOrDefault(res.userId(), "(id=" + res.userId() + ")");
-                    String bookTitle = bookTitlesMap.getOrDefault(res.bookId(), "(id=" + res.bookId() + ")");
-                    return new ReservationRow(res.id(), userName, bookTitle,
-                            res.requestDate().toString(), I18n.getEnum(res.status()));
-                })
+                .map(res -> new ReservationRow(res.id(),
+                        userNames.getOrDefault(res.userId(), "(id=" + res.userId() + ")"),
+                        bookTitlesMap.getOrDefault(res.bookId(), "(id=" + res.bookId() + ")"),
+                        res.requestDate().toString(),
+                        I18n.getEnum(res.status())))
                 .toList();
         reservationsTable.setItems(FXCollections.observableArrayList(rows));
     }
@@ -550,22 +697,25 @@ public class AdminController implements Initializable {
         refreshReservations();
     }
 
-    /**
-     * Simple DTO for displaying rental data in a TableView.
-     */
+    private enum BookOperation {
+        ADD,
+        REMOVE,
+        ARCHIVE,
+        WITHDRAW_DAMAGED,
+        WITHDRAW_STOLEN
+    }
+
+    private record BookFormData(String author, String title, int pageCount, String isbn,
+                                int publishYear, String publisher) {
+    }
+
     public record RentalRow(long id, String userName, String bookTitle, String borrowDate, String dueDate,
                             String status) {
     }
 
-    /**
-     * DTO for extension request table rows.
-     */
     public record ExtRequestRow(long id, String userName, String bookTitle, String requestDate, String status) {
     }
 
-    /**
-     * DTO for reservation table rows.
-     */
     public record ReservationRow(long id, String userName, String bookTitle, String requestDate, String status) {
     }
 }

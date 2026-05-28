@@ -43,14 +43,19 @@ public abstract class H2TestBase {
                     """);
             st.execute("""
                     CREATE TABLE IF NOT EXISTS books (
-                        id           BIGINT AUTO_INCREMENT PRIMARY KEY,
-                        author       VARCHAR(200) NOT NULL,
-                        title        VARCHAR(300) NOT NULL,
-                        pages        INT NOT NULL DEFAULT 0,
-                        isbn         VARCHAR(20),
-                        status       VARCHAR(30) NOT NULL DEFAULT 'AVAILABLE',
-                        publish_year INT DEFAULT 0,
-                        publisher    VARCHAR(200)
+                        id                     BIGINT AUTO_INCREMENT PRIMARY KEY,
+                        author                 VARCHAR(200) NOT NULL,
+                        title                  VARCHAR(300) NOT NULL,
+                        pages                  INT NOT NULL DEFAULT 0,
+                        isbn                   VARCHAR(20),
+                        status                 VARCHAR(30) NOT NULL DEFAULT 'AVAILABLE',
+                        publish_year           INT DEFAULT 0,
+                        publisher              VARCHAR(200),
+                        active_copies          INT NOT NULL DEFAULT 1,
+                        available_copies       INT NOT NULL DEFAULT 1,
+                        archived_copies        INT NOT NULL DEFAULT 0,
+                        removed_damaged_copies INT NOT NULL DEFAULT 0,
+                        removed_stolen_copies  INT NOT NULL DEFAULT 0
                     )
                     """);
             st.execute("""

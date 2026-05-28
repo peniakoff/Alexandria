@@ -19,5 +19,13 @@ public enum BookStatus {
     /**
      * The book is temporarily unavailable (maintenance, lost, etc.).
      */
-    UNAVAILABLE
+    UNAVAILABLE,
+    /**
+     * No copies remain in circulation but archived copies still exist.
+     */
+    ARCHIVED,
+    /**
+     * No copies remain because all were removed permanently.
+     */
+    REMOVED
 }
