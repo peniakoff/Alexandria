@@ -1,0 +1,42 @@
+plugins {
+    id 'application'
+    id 'org.openjfx.javafxplugin' version '0.1.0'
+    id 'jacoco'
+}
+
+description = 'Alexandria desktop (JavaFX).'
+
+dependencies {
+    implementation project(':core')
+
+    implementation "org.mindrot:jbcrypt:${rootProject.ext.jbcryptVersion}"
+    implementation "org.slf4j:slf4j-api:${rootProject.ext.slf4jVersion}"
+    implementation "ch.qos.logback:logback-classic:${rootProject.ext.logbackVersion}"
+    implementation "com.google.code.gson:gson:${rootProject.ext.gsonVersion}"
+
+    testImplementation "org.junit.jupiter:junit-jupiter:${rootProject.ext.junitVersion}"
+    testRuntimeOnly    "org.junit.platform:junit-platform-launcher:${rootProject.ext.junitPlatformVersion}"
+    testImplementation "org.mockito:mockito-core:${rootProject.ext.mockitoVersion}"
+    testImplementation "org.mockito:mockito-junit-jupiter:${rootProject.ext.mockitoVersion}"
+}
+
+javafx {
+    version = rootProject.ext.javafxVersion
+    modules = ['javafx.controls', 'javafx.fxml']
+}
+
+application {
+    mainClass = 'pl.tomaszmiller.Main'
+}
+
+tasks.withType(Test).configureEach {
+    finalizedBy jacocoTestReport
+}
+
+jacocoTestReport {
+    dependsOn test
+    reports {
+        xml.required = true
+        html.required = true
+    }
+}

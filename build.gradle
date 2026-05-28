@@ -1,24 +1,10 @@
 plugins {
-    id 'application'
-    id 'java'
-    id 'org.openjfx.javafxplugin' version '0.1.0'
-    id 'checkstyle'
-    id 'jacoco'
+    id 'base'
 }
 
 group = 'pl.tomaszmiller'
 version = '2.0.0-SNAPSHOT'
-description = 'Alexandria – modernized library management application (Java 21 + JavaFX + multi-datasource).'
-
-java {
-    toolchain {
-        languageVersion = JavaLanguageVersion.of(21)
-    }
-}
-
-repositories {
-    mavenCentral()
-}
+description = 'Alexandria – library management application.'
 
 ext {
     javafxVersion        = '23.0.2'
@@ -35,46 +21,29 @@ ext {
     mockitoVersion       = '5.15.2'
 }
 
-dependencies {
-    implementation "com.mysql:mysql-connector-j:${mysqlVersion}"
-    implementation "org.xerial:sqlite-jdbc:${sqliteVersion}"
-    implementation "com.zaxxer:HikariCP:${hikaricpVersion}"
-    implementation "org.mindrot:jbcrypt:${jbcryptVersion}"
-    implementation "org.slf4j:slf4j-api:${slf4jVersion}"
-    implementation "ch.qos.logback:logback-classic:${logbackVersion}"
-    implementation "com.google.code.gson:gson:${gsonVersion}"
-
-    testImplementation "org.junit.jupiter:junit-jupiter:${junitVersion}"
-    testRuntimeOnly    "org.junit.platform:junit-platform-launcher:${junitPlatformVersion}"
-    testImplementation "org.mockito:mockito-core:${mockitoVersion}"
-    testImplementation "org.mockito:mockito-junit-jupiter:${mockitoVersion}"
-    testImplementation "com.h2database:h2:${h2Version}"
-}
-
-javafx {
-    version = javafxVersion
-    modules = ['javafx.controls', 'javafx.fxml']
-}
-
-application {
-    mainClass = 'pl.tomaszmiller.Main'
-}
-
-tasks.withType(Test).configureEach {
-    useJUnitPlatform()
-    finalizedBy jacocoTestReport
-}
-
-jacocoTestReport {
-    dependsOn test
-    reports {
-        xml.required = true
-        html.required = true
+allprojects {
+    repositories {
+        mavenCentral()
     }
 }
 
-checkstyle {
-    toolVersion = '10.21.1'
-    configFile = file("${rootDir}/config/checkstyle/checkstyle.xml")
-    ignoreFailures = true
+subprojects {
+    apply plugin: 'java'
+    apply plugin: 'checkstyle'
+
+    java {
+        toolchain {
+            languageVersion = JavaLanguageVersion.of(21)
+        }
+    }
+
+    tasks.withType(Test).configureEach {
+        useJUnitPlatform()
+    }
+
+    checkstyle {
+        toolVersion = '10.21.1'
+        configFile = file("${rootDir}/config/checkstyle/checkstyle.xml")
+        ignoreFailures = true
+    }
 }

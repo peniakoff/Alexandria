@@ -24,27 +24,65 @@ services:
     networks:
       - alexandria-net
 
-  app:
-    build: .
-    container_name: alexandria-app
+  keycloak:
+    image: quay.io/keycloak/keycloak:26.3
+    container_name: alexandria-keycloak
+    command: [ "start-dev", "--import-realm" ]
+    restart: unless-stopped
+    environment:
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
+    ports:
+      - "8081:8080"
+    volumes:
+      - ./docker/keycloak/realm-alexandria.json:/opt/keycloak/data/import/realm-alexandria.json:ro
+    networks:
+      - alexandria-net
+
+  keycloak-init:
+    image: alpine:3.20
+    container_name: alexandria-keycloak-init
+    depends_on:
+      keycloak:
+        condition: service_started
+    environment:
+      KC_BASE_URL: "http://keycloak:8080"
+      KC_ADMIN_USER: "admin"
+      KC_ADMIN_PASSWORD: "admin"
+      REALM: "alexandria"
+    volumes:
+      - ./docker/keycloak/init-users.sh:/init-users.sh:ro
+    entrypoint: ["/bin/sh", "-c", "apk add --no-cache curl jq >/dev/null && /bin/sh /init-users.sh"]
+    networks:
+      - alexandria-net
+
+  api:
+    build:
+      context: .
+      dockerfile: api/Dockerfile
+    container_name: alexandria-api
     restart: unless-stopped
     depends_on:
       db:
         condition: service_healthy
+      keycloak:
+        condition: service_started
+      keycloak-init:
+        condition: service_completed_successfully
     environment:
-      ALEXANDRIA_DATASOURCE_TYPE: MYSQL
       ALEXANDRIA_DB_URL: "jdbc:mysql://db:3306/alexandria?serverTimezone=UTC&useSSL=false&allowPublicKeyRetrieval=true"
       ALEXANDRIA_DB_USERNAME: alexandria
       ALEXANDRIA_DB_PASSWORD: changeme
       ALEXANDRIA_DB_POOL_SIZE: 5
       ALEXANDRIA_DB_MINIMUM_IDLE: 1
-    # JavaFX desktop app – needs DISPLAY for GUI; use host network or X11 forwarding.
-    # Uncomment network_mode and comment out the networks section below for X11 forwarding on Linux.
-    # network_mode: host
+      ALEXANDRIA_OIDC_ISSUER_CLAIM: "http://localhost:8081/realms/alexandria"
+      ALEXANDRIA_OIDC_JWKS_URL: "http://keycloak:8080/realms/alexandria/protocol/openid-connect/certs"
+      ALEXANDRIA_OIDC_CLIENT_ID: "alexandria-swagger"
+      ALEXANDRIA_OIDC_CLIENT_SECRET: "change-me"
+    ports:
+      - "8080:8080"
     networks:
       - alexandria-net
-    volumes:
-      - ./src/main/resources/application.properties:/app/application.properties:ro
 
 volumes:
   alexandria-data:
