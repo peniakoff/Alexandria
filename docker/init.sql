@@ -75,6 +75,11 @@ CREATE INDEX idx_rentals_status   ON rentals(status);
 CREATE INDEX idx_ext_req_status   ON extension_requests(status);
 CREATE INDEX idx_reserv_status    ON reservations(status);
 
+-- ============================================================
+-- Development-only seed accounts. DO NOT use in production.
+-- Remove or replace these credentials before deploying.
+-- ============================================================
+
 -- Test admin account: admin@alexandria.local / Admin123!
 INSERT IGNORE INTO users (f_name, l_name, email, password, phone_number, user_rank)
 VALUES ('Admin', 'Alexandria', 'admin@alexandria.local',

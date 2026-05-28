@@ -67,8 +67,10 @@ public class StartController implements Initializable {
         }
         // Reload the login view to reflect the new language
         try {
-            Parent loginView = FXMLLoader.load(Objects.requireNonNull(
-                    getClass().getResource("/pl/tomaszmiller/views/loginView.fxml")));
+            FXMLLoader loader = new FXMLLoader(
+                    Objects.requireNonNull(getClass().getResource("/pl/tomaszmiller/views/loginView.fxml")),
+                    I18n.getBundle());
+            Parent loginView = loader.load();
             Stage stage = (Stage) languageCombo.getScene().getWindow();
             stage.setScene(new Scene(loginView, 800, 600));
             stage.show();

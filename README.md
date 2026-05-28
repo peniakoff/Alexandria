@@ -83,9 +83,9 @@ schema automatically, so `./alexandria.db` must already contain the `users`,
 - `src/test/java` – unit tests
 - `docker-compose.dev.yml` – DB-only local Docker setup
 
-## Test accounts
+## Test accounts (development only)
 
-The database is seeded with two test accounts:
+The database is seeded with two test accounts for local development. **Do not use these accounts in production deployments.**
 
 | Role  | E-mail                    | Password   |
 |-------|---------------------------|------------|

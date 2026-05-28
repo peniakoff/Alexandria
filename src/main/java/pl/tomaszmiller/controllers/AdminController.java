@@ -401,7 +401,7 @@ public class AdminController implements Initializable {
         Map<Long, Rental> rentalsById = rentalService.findAll().stream()
                 .collect(java.util.stream.Collectors.toMap(Rental::id, r -> r));
 
-        List<ExtRequestRow> rows = extensionRequestService.findAll().stream()
+        List<ExtRequestRow> rows = extensionRequestService.findPending().stream()
                 .map(req -> {
                     String userName = userNames.getOrDefault(req.userId(), "(id=" + req.userId() + ")");
                     Rental rental = rentalsById.get(req.rentalId());
@@ -425,13 +425,21 @@ public class AdminController implements Initializable {
             Utils.openDialog("Extension Request", "Select a request from the table.");
             return;
         }
-        boolean approved = extensionRequestService.approve(selected.getId());
-        if (approved) {
-            Utils.confirmDialog("Extension Request", "Extension approved. Due date extended by 7 days.");
-            refreshExtRequests();
-            refreshRentals();
-        } else {
-            Utils.openDialog("Extension Request", "Cannot approve. The book may have a pending reservation.");
+        ExtensionRequestService.ApprovalResult result = extensionRequestService.approve(selected.getId());
+        switch (result) {
+            case APPROVED -> {
+                Utils.confirmDialog("Extension Request", "Extension approved. Due date extended by 7 days.");
+                refreshExtRequests();
+                refreshRentals();
+            }
+            case RESERVATION_CONFLICT ->
+                Utils.openDialog("Extension Request", "Cannot approve. The book has a pending or approved reservation.");
+            case REQUEST_NOT_FOUND ->
+                Utils.openDialog("Extension Request", "Extension request not found.");
+            case RENTAL_NOT_FOUND ->
+                Utils.openDialog("Extension Request", "Associated rental not found.");
+            default ->
+                Utils.openDialog("Extension Request", "An unexpected error occurred while approving the request.");
         }
     }
 
@@ -473,7 +481,7 @@ public class AdminController implements Initializable {
         Map<Long, String> bookTitlesMap = bookService.findAll().stream()
                 .collect(java.util.stream.Collectors.toMap(Book::id, Book::title));
 
-        List<ReservationRow> rows = reservationService.findAll().stream()
+        List<ReservationRow> rows = reservationService.findPending().stream()
                 .map(res -> {
                     String userName = userNames.getOrDefault(res.userId(), "(id=" + res.userId() + ")");
                     String bookTitle = bookTitlesMap.getOrDefault(res.bookId(), "(id=" + res.bookId() + ")");

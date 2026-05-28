@@ -132,14 +132,6 @@ public class SqlBookRepository implements BookRepository {
         } catch (IllegalArgumentException | NullPointerException e) {
             status = BookStatus.AVAILABLE;
         }
-        int publishYear = 0;
-        String publisher = null;
-        try {
-            publishYear = rs.getInt("publish_year");
-            publisher = rs.getString("publisher");
-        } catch (SQLException ignored) {
-            // columns may not exist in older schemas
-        }
         return new Book(
                 rs.getLong("id"),
                 rs.getString("author"),
@@ -147,8 +139,8 @@ public class SqlBookRepository implements BookRepository {
                 rs.getInt("pages"),
                 rs.getString("isbn"),
                 status,
-                publishYear,
-                publisher
+                rs.getInt("publish_year"),
+                rs.getString("publisher")
         );
     }
 }

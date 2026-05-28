@@ -114,9 +114,20 @@ public class UserController implements Initializable {
     }
 
     private void refreshBookList() {
-        allFilteredBooks = bookService.findAll();
         currentPage = 0;
-        updatePagedList();
+        if (searchField != null) {
+            performSearch();
+        } else {
+            boolean showUnavailable = showUnavailableCheck != null && showUnavailableCheck.isSelected();
+            List<Book> all = bookService.findAll();
+            if (!showUnavailable) {
+                all = all.stream()
+                        .filter(b -> b.status() == BookStatus.AVAILABLE)
+                        .toList();
+            }
+            allFilteredBooks = all;
+            updatePagedList();
+        }
     }
 
     private void setupSearchDebounce() {
@@ -368,8 +379,14 @@ public class UserController implements Initializable {
                     setStyle("");
                     return;
                 }
+                int idx = getIndex();
+                if (idx < 0 || idx >= getTableView().getItems().size()) {
+                    setText(item);
+                    setStyle("");
+                    return;
+                }
                 setText(item);
-                RentalRow row = getTableView().getItems().get(getIndex());
+                RentalRow row = getTableView().getItems().get(idx);
                 switch (row.getColorCode()) {
                     case "GREEN" -> setStyle("-fx-background-color: #d4edda; -fx-text-fill: #155724;");
                     case "YELLOW" -> setStyle("-fx-background-color: #fff3cd; -fx-text-fill: #856404;");
@@ -386,7 +403,9 @@ public class UserController implements Initializable {
                 {
                     extBtn.setStyle("-fx-background-color: #f0ad4e; -fx-text-fill: white; -fx-padding: 2 8; -fx-font-size: 11px;");
                     extBtn.setOnAction(e -> {
-                        RentalRow row = getTableView().getItems().get(getIndex());
+                        int idx = getIndex();
+                        if (idx < 0 || idx >= getTableView().getItems().size()) return;
+                        RentalRow row = getTableView().getItems().get(idx);
                         onRequestExtension(row);
                     });
                 }
@@ -398,7 +417,12 @@ public class UserController implements Initializable {
                         setGraphic(null);
                         return;
                     }
-                    RentalRow row = getTableView().getItems().get(getIndex());
+                    int idx = getIndex();
+                    if (idx < 0 || idx >= getTableView().getItems().size()) {
+                        setGraphic(null);
+                        return;
+                    }
+                    RentalRow row = getTableView().getItems().get(idx);
                     if ("YELLOW".equals(row.getColorCode())) {
                         setGraphic(extBtn);
                     } else {

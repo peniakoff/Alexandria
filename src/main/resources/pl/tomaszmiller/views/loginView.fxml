@@ -20,14 +20,14 @@
 <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="600.0" minWidth="800.0" prefHeight="600.0" prefWidth="800.0" stylesheets="@style.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pl.tomaszmiller.controllers.StartController">
     <top>
         <HBox alignment="CENTER_RIGHT" style="-fx-padding: 6 16; -fx-background-color: #f0f0f0;">
-            <Label text="Language:" style="-fx-font-size: 12px;"/>
+            <Label text="%lang.switch" style="-fx-font-size: 12px;"/>
             <ComboBox fx:id="languageCombo" onAction="#onLanguageChange" style="-fx-font-size: 12px;"/>
         </HBox>
     </top>
     <center>
         <TabPane prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER">
             <tabs>
-                <Tab text="Login">
+                <Tab text="%login.tab">
                     <content>
                         <GridPane style="-fx-background-color: #EEEEEE;">
                             <columnConstraints>
@@ -41,12 +41,12 @@
                             <children>
                                 <AnchorPane prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #002244; -fx-border-color: #b3995d; -fx-border-width: 3 0 3 0;">
                                     <children>
-                                        <Label layoutX="218.0" layoutY="75.0" text="Alexandria" textFill="WHITE">
+                                        <Label layoutX="218.0" layoutY="75.0" text="%login.title" textFill="WHITE">
                                             <font>
                                                 <Font size="42.0" />
                                             </font>
                                         </Label>
-                                        <Label layoutX="247.0" layoutY="130.0" text="simple library management" textFill="#b3995d">
+                                        <Label layoutX="247.0" layoutY="130.0" text="%login.subtitle" textFill="#b3995d">
                                             <font>
                                                 <Font size="18.0" />
                                             </font>
@@ -65,7 +65,7 @@
                                         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                     </rowConstraints>
                                     <children>
-                                        <Label text="e-mail address" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.valignment="BOTTOM">
+                                        <Label text="%login.email" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.valignment="BOTTOM">
                                             <font>
                                                 <Font size="18.0" />
                                             </font>
@@ -76,7 +76,7 @@
                                                 <Insets right="26.0" />
                                             </padding>
                                         </Label>
-                                        <Label text="password" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="1" GridPane.valignment="TOP">
+                                        <Label text="%login.password" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="1" GridPane.valignment="TOP">
                                             <font>
                                                 <Font size="18.0" />
                                             </font>
@@ -87,7 +87,7 @@
                                                 <Insets right="26.0" />
                                             </padding>
                                         </Label>
-                                        <TextField fx:id="userEmail" prefHeight="31.0" prefWidth="280.0" promptText="enter e-mail address" GridPane.columnIndex="2" GridPane.valignment="BOTTOM">
+                                        <TextField fx:id="userEmail" prefHeight="31.0" prefWidth="280.0" promptText="%login.email.prompt" GridPane.columnIndex="2" GridPane.valignment="BOTTOM">
                                             <GridPane.margin>
                                                 <Insets bottom="20.0" />
                                             </GridPane.margin>
@@ -95,7 +95,7 @@
                                                 <Font size="18.0" />
                                             </font>
                                         </TextField>
-                                        <PasswordField fx:id="userPassword" promptText="enter password" GridPane.columnIndex="2" GridPane.rowIndex="1" GridPane.valignment="TOP">
+                                        <PasswordField fx:id="userPassword" promptText="%login.password.prompt" GridPane.columnIndex="2" GridPane.rowIndex="1" GridPane.valignment="TOP">
                                             <GridPane.margin>
                                                 <Insets top="20.0" />
                                             </GridPane.margin>
@@ -105,7 +105,7 @@
                                         </PasswordField>
                                     </children>
                                 </GridPane>
-                                <Button mnemonicParsing="false" onAction="#login" style="-fx-padding: 10px; -fx-background-color: #b3995d;" text="Log in" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="CENTER">
+                                <Button mnemonicParsing="false" onAction="#login" style="-fx-padding: 10px; -fx-background-color: #b3995d;" text="%login.button" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="CENTER">
                                     <font>
                                         <Font size="18.0" />
                                     </font>
@@ -117,18 +117,18 @@
                         </GridPane>
                     </content>
                 </Tab>
-                <Tab text="Register">
+                <Tab text="%register.tab">
                     <content>
                         <GridPane style="-fx-background-color: #EEEEEE;">
                             <children>
                                 <AnchorPane prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #002244; -fx-border-color: #b3995d; -fx-border-width: 3 0 3 0;">
                                     <children>
-                                        <Label layoutX="285.0" layoutY="40.0" text="New account" textFill="WHITE">
+                                        <Label layoutX="285.0" layoutY="40.0" text="%register.title" textFill="WHITE">
                                             <font>
                                                 <Font size="32.0" />
                                             </font>
                                         </Label>
-                                        <Label layoutX="204.0" layoutY="90.0" text="Fill in the form to create an account" textFill="#b3995d">
+                                        <Label layoutX="204.0" layoutY="90.0" text="%register.subtitle" textFill="#b3995d">
                                             <font>
                                                 <Font size="18.0" />
                                             </font>
@@ -137,7 +137,7 @@
                                 </AnchorPane>
                                 <GridPane GridPane.rowIndex="1">
                                     <children>
-                                        <Label text="first name" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.valignment="CENTER">
+                                        <Label text="%register.firstname" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.valignment="CENTER">
                                             <font>
                                                 <Font size="18.0" />
                                             </font>
@@ -145,8 +145,8 @@
                                                 <Insets right="26.0" />
                                             </GridPane.margin>
                                         </Label>
-                                        <TextField fx:id="firstName" prefHeight="31.0" prefWidth="280.0" promptText="enter first name" GridPane.columnIndex="2" />
-                                        <Label text="last name" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="1" GridPane.valignment="CENTER">
+                                        <TextField fx:id="firstName" prefHeight="31.0" prefWidth="280.0" promptText="%register.firstname.prompt" GridPane.columnIndex="2" />
+                                        <Label text="%register.lastname" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="1" GridPane.valignment="CENTER">
                                             <font>
                                                 <Font size="18.0" />
                                             </font>
@@ -154,8 +154,8 @@
                                                 <Insets right="26.0" />
                                             </GridPane.margin>
                                         </Label>
-                                        <TextField fx:id="lastName" prefHeight="31.0" prefWidth="280.0" promptText="enter last name" GridPane.columnIndex="2" GridPane.rowIndex="1" />
-                                        <Label text="phone number" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="2">
+                                        <TextField fx:id="lastName" prefHeight="31.0" prefWidth="280.0" promptText="%register.lastname.prompt" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+                                        <Label text="%register.phone" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="2">
                                             <font>
                                                 <Font size="18.0" />
                                             </font>
@@ -163,8 +163,8 @@
                                                 <Insets right="26.0" />
                                             </padding>
                                         </Label>
-                                        <TextField fx:id="phoneNumber" prefHeight="31.0" prefWidth="280.0" promptText="enter phone number" GridPane.columnIndex="2" GridPane.rowIndex="2" />
-                                        <Label text="e-mail address" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="3" GridPane.valignment="CENTER">
+                                        <TextField fx:id="phoneNumber" prefHeight="31.0" prefWidth="280.0" promptText="%register.phone.prompt" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+                                        <Label text="%register.email" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="3" GridPane.valignment="CENTER">
                                             <font>
                                                 <Font size="18.0" />
                                             </font>
@@ -172,8 +172,8 @@
                                                 <Insets right="26.0" />
                                             </GridPane.margin>
                                         </Label>
-                                        <TextField fx:id="email" prefHeight="31.0" prefWidth="280.0" promptText="enter e-mail address" GridPane.columnIndex="2" GridPane.rowIndex="3" />
-                                        <Label text="confirm e-mail address" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="4" GridPane.valignment="CENTER">
+                                        <TextField fx:id="email" prefHeight="31.0" prefWidth="280.0" promptText="%register.email.prompt" GridPane.columnIndex="2" GridPane.rowIndex="3" />
+                                        <Label text="%register.email.confirm" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="4" GridPane.valignment="CENTER">
                                             <font>
                                                 <Font size="18.0" />
                                             </font>
@@ -181,8 +181,8 @@
                                                 <Insets right="26.0" />
                                             </GridPane.margin>
                                         </Label>
-                                        <TextField fx:id="emailConfirmed" prefHeight="31.0" prefWidth="280.0" promptText="re-enter e-mail address" GridPane.columnIndex="2" GridPane.rowIndex="4" />
-                                        <Label text="password" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="5" GridPane.valignment="CENTER">
+                                        <TextField fx:id="emailConfirmed" prefHeight="31.0" prefWidth="280.0" promptText="%register.email.confirm.prompt" GridPane.columnIndex="2" GridPane.rowIndex="4" />
+                                        <Label text="%register.password" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="5" GridPane.valignment="CENTER">
                                             <font>
                                                 <Font size="18.0" />
                                             </font>
@@ -190,8 +190,8 @@
                                                 <Insets right="26.0" />
                                             </GridPane.margin>
                                         </Label>
-                                        <PasswordField fx:id="password" promptText="minimum 8 characters" GridPane.columnIndex="2" GridPane.rowIndex="5" />
-                                        <Label text="confirm password" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="6" GridPane.valignment="CENTER">
+                                        <PasswordField fx:id="password" promptText="%register.password.prompt" GridPane.columnIndex="2" GridPane.rowIndex="5" />
+                                        <Label text="%register.password.confirm" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="6" GridPane.valignment="CENTER">
                                             <font>
                                                 <Font size="18.0" />
                                             </font>
@@ -199,7 +199,7 @@
                                                 <Insets right="26.0" />
                                             </GridPane.margin>
                                         </Label>
-                                        <PasswordField fx:id="passwordConfirmed" promptText="re-enter password" GridPane.columnIndex="2" GridPane.rowIndex="6" />
+                                        <PasswordField fx:id="passwordConfirmed" promptText="%register.password.confirm.prompt" GridPane.columnIndex="2" GridPane.rowIndex="6" />
                                     </children>
                                     <columnConstraints>
                                         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="15.0" />
@@ -220,7 +220,7 @@
                                         <Insets top="10.0" />
                                     </GridPane.margin>
                                 </GridPane>
-                                <Button mnemonicParsing="false" onAction="#createAccount" style="-fx-padding: 10px; -fx-background-color: #b3995d;" text="Register" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="CENTER">
+                                <Button mnemonicParsing="false" onAction="#createAccount" style="-fx-padding: 10px; -fx-background-color: #b3995d;" text="%register.button" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="CENTER">
                                     <font>
                                         <Font size="18.0" />
                                     </font>

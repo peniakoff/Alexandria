@@ -21,6 +21,15 @@ import java.util.Optional;
  */
 public class ExtensionRequestService {
 
+    /** Detailed result of an extension-approval attempt. */
+    public enum ApprovalResult {
+        APPROVED,
+        REQUEST_NOT_FOUND,
+        RENTAL_NOT_FOUND,
+        RESERVATION_CONFLICT,
+        ERROR
+    }
+
     private static final Logger LOGGER = LoggerFactory.getLogger(ExtensionRequestService.class);
 
     private final ExtensionRequestRepository extensionRepo;
@@ -80,16 +89,16 @@ public class ExtensionRequestService {
      * Approves an extension request: extends the rental due date by 7 days.
      * Will be rejected if the book has a pending/approved reservation.
      */
-    public boolean approve(long requestId) {
+    public ApprovalResult approve(long requestId) {
         try {
             Optional<ExtensionRequest> reqOpt = extensionRepo.findById(requestId);
             if (reqOpt.isEmpty()) {
-                return false;
+                return ApprovalResult.REQUEST_NOT_FOUND;
             }
             ExtensionRequest req = reqOpt.get();
             Optional<Rental> rentalOpt = rentalRepo.findById(req.rentalId());
             if (rentalOpt.isEmpty()) {
-                return false;
+                return ApprovalResult.RENTAL_NOT_FOUND;
             }
 
             // Check if the book has a pending/approved reservation
@@ -99,7 +108,7 @@ public class ExtensionRequestService {
                     .anyMatch(r -> r.status() == RequestStatus.PENDING || r.status() == RequestStatus.APPROVED);
             if (hasActiveReservation) {
                 extensionRepo.updateStatus(requestId, RequestStatus.REJECTED);
-                return false;
+                return ApprovalResult.RESERVATION_CONFLICT;
             }
 
             // Extend the due date
@@ -108,10 +117,10 @@ public class ExtensionRequestService {
                     rental.borrowDate(), newDueDate, rental.returnDate(), RentalStatus.ACTIVE);
             rentalRepo.update(extended);
             extensionRepo.updateStatus(requestId, RequestStatus.APPROVED);
-            return true;
+            return ApprovalResult.APPROVED;
         } catch (Exception e) {
             LOGGER.error("Unable to approve extension request {}.", requestId, e);
-            return false;
+            return ApprovalResult.ERROR;
         }
     }
 
