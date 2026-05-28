@@ -1,11 +1,15 @@
 package pl.tomaszmiller.controllers;
 
+import javafx.animation.PauseTransition;
 import javafx.beans.property.SimpleLongProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
@@ -13,19 +17,24 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.stage.Stage;
+import javafx.util.Duration;
 import pl.tomaszmiller.Utils;
 import pl.tomaszmiller.config.AppConfig;
 import pl.tomaszmiller.model.Book;
 import pl.tomaszmiller.model.BookStatus;
 import pl.tomaszmiller.model.Rental;
 import pl.tomaszmiller.model.User;
+import pl.tomaszmiller.service.AuthService;
 import pl.tomaszmiller.service.BookService;
 import pl.tomaszmiller.service.RentalService;
 import pl.tomaszmiller.service.UserService;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
@@ -38,12 +47,17 @@ public class AdminController implements Initializable {
     private final BookService bookService = AppConfig.getInstance().getBookService();
     private final UserService userService = AppConfig.getInstance().getUserService();
     private final RentalService rentalService = AppConfig.getInstance().getRentalService();
+    private final AuthService authService = AppConfig.getInstance().getAuthService();
+
+    @FXML private Label welcomeLabel;
 
     @FXML private ListView<String> theList;
     @FXML private TextField bookAuthor;
     @FXML private TextField bookTitle;
     @FXML private TextField pages;
     @FXML private TextField bookIsbn;
+    @FXML private TextField bookYear;
+    @FXML private TextField bookPublisher;
     @FXML private TextField searchField;
     @FXML private Button addBookBtn;
     @FXML private Button deleteBookBtn;
@@ -67,6 +81,7 @@ public class AdminController implements Initializable {
 
     private long selectedBookId = 0L;
     private long selectedRentalId = 0L;
+    private PauseTransition searchDebounce;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -76,6 +91,31 @@ public class AdminController implements Initializable {
         if (theList != null) {
             theList.getSelectionModel().selectedItemProperty()
                     .addListener((obs, old, newVal) -> onBookSelected(newVal));
+        }
+        if (searchField != null) {
+            searchDebounce = new PauseTransition(Duration.millis(500));
+            searchDebounce.setOnFinished(e -> onSearchBook());
+            searchField.textProperty().addListener((obs, oldVal, newVal) -> searchDebounce.playFromStart());
+        }
+        if (welcomeLabel != null) {
+            User user = pl.tomaszmiller.session.UserSession.getCurrentUser();
+            if (user != null) {
+                welcomeLabel.setText("Admin: " + user.fullName());
+            }
+        }
+    }
+
+    @FXML
+    private void onLogout() {
+        authService.logout();
+        try {
+            Parent loginView = FXMLLoader.load(Objects.requireNonNull(
+                    getClass().getResource("/pl/tomaszmiller/views/loginView.fxml")));
+            Stage stage = (Stage) theList.getScene().getWindow();
+            stage.setScene(new Scene(loginView, 800, 600));
+            stage.show();
+        } catch (IOException e) {
+            Utils.openDialog("Logout", "Failed to return to login screen.");
         }
     }
 
@@ -101,6 +141,12 @@ public class AdminController implements Initializable {
         bookTitle.setText(b.title());
         pages.setText(String.valueOf(b.pages()));
         bookIsbn.setText(b.isbn() != null ? b.isbn() : "");
+        if (bookYear != null) {
+            bookYear.setText(b.publishYear() > 0 ? String.valueOf(b.publishYear()) : "");
+        }
+        if (bookPublisher != null) {
+            bookPublisher.setText(b.publisher() != null ? b.publisher() : "");
+        }
     }
 
     @FXML
@@ -109,6 +155,8 @@ public class AdminController implements Initializable {
         String title = bookTitle.getText() == null ? "" : bookTitle.getText().trim();
         String pagesStr = pages.getText() == null ? "" : pages.getText().trim();
         String isbn = bookIsbn.getText() == null ? null : bookIsbn.getText().trim();
+        String yearStr = bookYear != null && bookYear.getText() != null ? bookYear.getText().trim() : "";
+        String publisher = bookPublisher != null && bookPublisher.getText() != null ? bookPublisher.getText().trim() : "";
 
         if (author.isEmpty() || title.isEmpty() || pagesStr.isEmpty()) {
             Utils.openDialog("Add book", "Please fill in all fields: author, title and number of pages.");
@@ -121,9 +169,20 @@ public class AdminController implements Initializable {
             Utils.openDialog("Add book", "Number of pages must be an integer.");
             return;
         }
+        int publishYear = 0;
+        if (!yearStr.isEmpty()) {
+            try {
+                publishYear = Integer.parseInt(yearStr);
+            } catch (NumberFormatException e) {
+                Utils.openDialog("Add book", "Publication year must be an integer.");
+                return;
+            }
+        }
 
         if (selectedBookId > 0) {
-            Book updatedBook = new Book(selectedBookId, author, title, pageCount, isbn == null || isbn.isEmpty() ? null : isbn, BookStatus.AVAILABLE);
+            Book updatedBook = new Book(selectedBookId, author, title, pageCount,
+                    isbn == null || isbn.isEmpty() ? null : isbn, BookStatus.AVAILABLE,
+                    publishYear, publisher.isEmpty() ? null : publisher);
             boolean updated = bookService.updateBook(updatedBook);
             if (updated) {
                 Utils.confirmDialog("Edit book", "Book \"" + title + "\" has been updated.");
@@ -133,7 +192,9 @@ public class AdminController implements Initializable {
                 Utils.openDialog("Edit book", "Failed to update book.");
             }
         } else {
-            Book newBook = new Book(0L, author, title, pageCount, isbn == null || isbn.isEmpty() ? null : isbn, BookStatus.AVAILABLE);
+            Book newBook = new Book(0L, author, title, pageCount,
+                    isbn == null || isbn.isEmpty() ? null : isbn, BookStatus.AVAILABLE,
+                    publishYear, publisher.isEmpty() ? null : publisher);
             Optional<Book> saved = bookService.addBook(newBook);
             if (saved.isPresent()) {
                 Utils.confirmDialog("Add book", "Book \"" + title + "\" has been added.");
@@ -192,6 +253,12 @@ public class AdminController implements Initializable {
         }
         if (bookIsbn != null) {
             bookIsbn.clear();
+        }
+        if (bookYear != null) {
+            bookYear.clear();
+        }
+        if (bookPublisher != null) {
+            bookPublisher.clear();
         }
     }
 

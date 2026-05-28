@@ -31,6 +31,8 @@ public abstract class H2TestBase {
     @BeforeEach
     void clearTables() throws SQLException {
         try (Connection c = connector.getConnection(); Statement st = c.createStatement()) {
+            st.execute("DELETE FROM extension_requests");
+            st.execute("DELETE FROM reservations");
             st.execute("DELETE FROM rentals");
             st.execute("DELETE FROM books");
             st.execute("DELETE FROM users");
@@ -52,12 +54,14 @@ public abstract class H2TestBase {
                     """);
             st.execute("""
                     CREATE TABLE IF NOT EXISTS books (
-                        id     BIGINT AUTO_INCREMENT PRIMARY KEY,
-                        author VARCHAR(200) NOT NULL,
-                        title  VARCHAR(300) NOT NULL,
-                        pages  INT NOT NULL DEFAULT 0,
-                        isbn   VARCHAR(20),
-                        status VARCHAR(30) NOT NULL DEFAULT 'AVAILABLE'
+                        id           BIGINT AUTO_INCREMENT PRIMARY KEY,
+                        author       VARCHAR(200) NOT NULL,
+                        title        VARCHAR(300) NOT NULL,
+                        pages        INT NOT NULL DEFAULT 0,
+                        isbn         VARCHAR(20),
+                        status       VARCHAR(30) NOT NULL DEFAULT 'AVAILABLE',
+                        publish_year INT DEFAULT 0,
+                        publisher    VARCHAR(200)
                     )
                     """);
             st.execute("""
@@ -69,6 +73,24 @@ public abstract class H2TestBase {
                         due_date    DATE NOT NULL,
                         return_date DATE,
                         status      VARCHAR(30) NOT NULL DEFAULT 'ACTIVE'
+                    )
+                    """);
+            st.execute("""
+                    CREATE TABLE IF NOT EXISTS extension_requests (
+                        id           BIGINT AUTO_INCREMENT PRIMARY KEY,
+                        rental_id    BIGINT NOT NULL,
+                        user_id      BIGINT NOT NULL,
+                        status       VARCHAR(30) NOT NULL DEFAULT 'PENDING',
+                        request_date DATE NOT NULL
+                    )
+                    """);
+            st.execute("""
+                    CREATE TABLE IF NOT EXISTS reservations (
+                        id           BIGINT AUTO_INCREMENT PRIMARY KEY,
+                        user_id      BIGINT NOT NULL,
+                        book_id      BIGINT NOT NULL,
+                        status       VARCHAR(30) NOT NULL DEFAULT 'PENDING',
+                        request_date DATE NOT NULL
                     )
                     """);
         } catch (SQLException e) {

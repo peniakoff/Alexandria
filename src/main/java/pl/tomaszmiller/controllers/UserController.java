@@ -1,28 +1,39 @@
 package pl.tomaszmiller.controllers;
 
+import javafx.animation.PauseTransition;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.stage.Stage;
+import javafx.util.Duration;
 import pl.tomaszmiller.Utils;
 import pl.tomaszmiller.config.AppConfig;
 import pl.tomaszmiller.model.Book;
 import pl.tomaszmiller.model.Rental;
 import pl.tomaszmiller.model.User;
+import pl.tomaszmiller.service.AuthService;
 import pl.tomaszmiller.service.BookService;
 import pl.tomaszmiller.service.RentalService;
 import pl.tomaszmiller.service.UserService;
 import pl.tomaszmiller.session.UserSession;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
@@ -35,13 +46,29 @@ public class UserController implements Initializable {
     private final BookService bookService = AppConfig.getInstance().getBookService();
     private final UserService userService = AppConfig.getInstance().getUserService();
     private final RentalService rentalService = AppConfig.getInstance().getRentalService();
+    private final AuthService authService = AppConfig.getInstance().getAuthService();
+
+    @FXML private Label welcomeLabel;
 
     @FXML private ListView<String> theList;
     @FXML private TextField bookAuthor;
     @FXML private TextField bookTitle;
     @FXML private TextField pages;
+    @FXML private TextField bookIsbn;
+    @FXML private TextField bookYear;
+    @FXML private TextField bookPublisher;
+    @FXML private TextField bookStatus;
     @FXML private TextField searchField;
     @FXML private Button borrowBtn;
+    @FXML private ComboBox<Integer> pageSizeCombo;
+    @FXML private Label pageInfoLabel;
+    @FXML private Button prevPageBtn;
+    @FXML private Button nextPageBtn;
+
+    private PauseTransition searchDebounce;
+    private int currentPage = 0;
+    private int pageSize = 20;
+    private List<Book> allFilteredBooks = List.of();
 
     @FXML private TableView<RentalRow> myRentalsTable;
     @FXML private TableColumn<RentalRow, Long> myRentalIdCol;
@@ -68,11 +95,101 @@ public class UserController implements Initializable {
         }
         setupMyRentalsTable();
         loadUserSettings();
+        if (welcomeLabel != null) {
+            User user = UserSession.getCurrentUser();
+            if (user != null) {
+                welcomeLabel.setText("Welcome, " + user.fullName());
+            }
+        }
+        setupSearchDebounce();
+        setupPagination();
     }
 
     private void refreshBookList() {
-        if (theList != null) {
-            theList.setItems(FXCollections.observableArrayList(bookService.getAllTitles()));
+        allFilteredBooks = bookService.findAll();
+        currentPage = 0;
+        updatePagedList();
+    }
+
+    private void setupSearchDebounce() {
+        if (searchField == null) {
+            return;
+        }
+        searchDebounce = new PauseTransition(Duration.millis(500));
+        searchDebounce.setOnFinished(e -> performSearch());
+        searchField.textProperty().addListener((obs, oldVal, newVal) -> {
+            searchDebounce.playFromStart();
+        });
+    }
+
+    private void setupPagination() {
+        if (pageSizeCombo != null) {
+            pageSizeCombo.setItems(FXCollections.observableArrayList(20, 50, 100));
+            pageSizeCombo.setValue(20);
+            pageSizeCombo.setOnAction(e -> {
+                pageSize = pageSizeCombo.getValue();
+                currentPage = 0;
+                updatePagedList();
+            });
+        }
+    }
+
+    private void performSearch() {
+        String query = searchField.getText() == null ? "" : searchField.getText().trim();
+        if (query.isEmpty()) {
+            allFilteredBooks = bookService.findAll();
+        } else {
+            String normalizedQuery = query.toLowerCase();
+            allFilteredBooks = bookService.findAll().stream()
+                    .filter(b -> b.title().toLowerCase().contains(normalizedQuery)
+                            || b.author().toLowerCase().contains(normalizedQuery))
+                    .sorted((a, c) -> a.title().compareToIgnoreCase(c.title()))
+                    .toList();
+        }
+        currentPage = 0;
+        updatePagedList();
+    }
+
+    private void updatePagedList() {
+        if (theList == null) {
+            return;
+        }
+        int totalItems = allFilteredBooks.size();
+        int totalPages = Math.max(1, (int) Math.ceil((double) totalItems / pageSize));
+        if (currentPage >= totalPages) {
+            currentPage = totalPages - 1;
+        }
+        int fromIndex = currentPage * pageSize;
+        int toIndex = Math.min(fromIndex + pageSize, totalItems);
+        List<String> pageItems = allFilteredBooks.subList(fromIndex, toIndex).stream()
+                .map(Book::title)
+                .toList();
+        theList.setItems(FXCollections.observableArrayList(pageItems));
+        if (pageInfoLabel != null) {
+            pageInfoLabel.setText("Page " + (currentPage + 1) + " / " + totalPages + " (" + totalItems + " books)");
+        }
+        if (prevPageBtn != null) {
+            prevPageBtn.setDisable(currentPage <= 0);
+        }
+        if (nextPageBtn != null) {
+            nextPageBtn.setDisable(currentPage >= totalPages - 1);
+        }
+    }
+
+    @FXML
+    private void onPrevPage() {
+        if (currentPage > 0) {
+            currentPage--;
+            updatePagedList();
+        }
+    }
+
+    @FXML
+    private void onNextPage() {
+        int totalPages = Math.max(1, (int) Math.ceil((double) allFilteredBooks.size() / pageSize));
+        if (currentPage < totalPages - 1) {
+            currentPage++;
+            updatePagedList();
         }
     }
 
@@ -91,23 +208,23 @@ public class UserController implements Initializable {
         bookAuthor.setText(b.author());
         bookTitle.setText(b.title());
         pages.setText(String.valueOf(b.pages()));
+        if (bookIsbn != null) {
+            bookIsbn.setText(b.isbn() != null ? b.isbn() : "");
+        }
+        if (bookYear != null) {
+            bookYear.setText(b.publishYear() > 0 ? String.valueOf(b.publishYear()) : "");
+        }
+        if (bookPublisher != null) {
+            bookPublisher.setText(b.publisher() != null ? b.publisher() : "");
+        }
+        if (bookStatus != null) {
+            bookStatus.setText(b.status().name());
+        }
     }
 
     @FXML
     private void onSearchBook() {
-        String query = searchField.getText() == null ? "" : searchField.getText().trim();
-        if (query.isEmpty()) {
-            refreshBookList();
-            return;
-        }
-        String normalizedQuery = query.toLowerCase();
-        List<String> filtered = bookService.findAll().stream()
-                .filter(b -> b.title().toLowerCase().contains(normalizedQuery)
-                        || b.author().toLowerCase().contains(normalizedQuery))
-                .map(Book::title)
-                .sorted()
-                .toList();
-        theList.setItems(FXCollections.observableArrayList(filtered));
+        performSearch();
     }
 
     @FXML
@@ -131,6 +248,20 @@ public class UserController implements Initializable {
         }
     }
 
+    @FXML
+    private void onLogout() {
+        authService.logout();
+        try {
+            Parent loginView = FXMLLoader.load(Objects.requireNonNull(
+                    getClass().getResource("/pl/tomaszmiller/views/loginView.fxml")));
+            Stage stage = (Stage) theList.getScene().getWindow();
+            stage.setScene(new Scene(loginView, 800, 600));
+            stage.show();
+        } catch (IOException e) {
+            Utils.openDialog("Logout", "Failed to return to login screen.");
+        }
+    }
+
     private void clearBookDetails() {
         selectedBookId = 0L;
         if (bookAuthor != null) {
@@ -141,6 +272,18 @@ public class UserController implements Initializable {
         }
         if (pages != null) {
             pages.clear();
+        }
+        if (bookIsbn != null) {
+            bookIsbn.clear();
+        }
+        if (bookYear != null) {
+            bookYear.clear();
+        }
+        if (bookPublisher != null) {
+            bookPublisher.clear();
+        }
+        if (bookStatus != null) {
+            bookStatus.clear();
         }
     }
 

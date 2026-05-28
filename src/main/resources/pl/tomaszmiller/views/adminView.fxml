@@ -23,6 +23,13 @@
             stylesheets="@style.css"
             xmlns="http://javafx.com/javafx/17"
             fx:controller="pl.tomaszmiller.controllers.AdminController">
+    <top>
+        <HBox alignment="CENTER_RIGHT" style="-fx-padding: 8 16; -fx-background-color: #002244;">
+            <Label fx:id="welcomeLabel" text="Admin Panel" style="-fx-text-fill: #b3995d; -fx-font-size: 14px;" HBox.hgrow="ALWAYS"/>
+            <Button text="Logout" onAction="#onLogout"
+                    style="-fx-background-color: #b3995d; -fx-text-fill: #002244; -fx-padding: 6 16; -fx-font-weight: bold; -fx-cursor: hand;"/>
+        </HBox>
+    </top>
     <center>
         <TabPane tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER">
             <tabs>
@@ -91,11 +98,19 @@
                                     </ScrollPane>
                                 </VBox>
                                 <VBox spacing="10" style="-fx-padding: 10;" GridPane.columnIndex="1">
-                                    <Label text="Details" style="-fx-font-weight: bold;"/>
+                                    <Label text="Book Details" style="-fx-font-weight: bold; -fx-font-size: 14px;"/>
+                                    <Label text="Author:" style="-fx-font-size: 11px; -fx-text-fill: #666;"/>
                                     <TextField fx:id="bookAuthor" promptText="Author"/>
+                                    <Label text="Title:" style="-fx-font-size: 11px; -fx-text-fill: #666;"/>
                                     <TextField fx:id="bookTitle" promptText="Title"/>
+                                    <Label text="Pages:" style="-fx-font-size: 11px; -fx-text-fill: #666;"/>
                                     <TextField fx:id="pages" promptText="Number of pages"/>
+                                    <Label text="ISBN:" style="-fx-font-size: 11px; -fx-text-fill: #666;"/>
                                     <TextField fx:id="bookIsbn" promptText="ISBN (optional)"/>
+                                    <Label text="Year:" style="-fx-font-size: 11px; -fx-text-fill: #666;"/>
+                                    <TextField fx:id="bookYear" promptText="Publication year"/>
+                                    <Label text="Publisher:" style="-fx-font-size: 11px; -fx-text-fill: #666;"/>
+                                    <TextField fx:id="bookPublisher" promptText="Publisher"/>
                                     <HBox spacing="8">
                                         <Button fx:id="addBookBtn" text="Add / Save" onAction="#onAddBook"
                                                 style="-fx-background-color: #002244; -fx-text-fill: white; -fx-padding: 6 10;"/>
