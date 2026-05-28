@@ -30,7 +30,7 @@ public final class HttpRentalRepository implements RentalRepository {
             return Optional.empty();
         }
         HttpJsonClient.ensure2xx(resp);
-        return Optional.of(client.gson.fromJson(resp.body(), Rental.class));
+        return Optional.ofNullable(client.gson.fromJson(resp.body(), Rental.class));
     }
 
     @Override

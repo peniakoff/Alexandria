@@ -14,10 +14,12 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import pl.tomaszmiller.Utils;
+import pl.tomaszmiller.auth.DesktopAuthSession;
 import pl.tomaszmiller.config.AppConfig;
 import pl.tomaszmiller.i18n.I18n;
 import pl.tomaszmiller.model.*;
 import pl.tomaszmiller.service.*;
+import pl.tomaszmiller.session.UserSession;
 
 import java.io.IOException;
 import java.net.URL;
@@ -151,6 +153,8 @@ public class AdminController implements Initializable {
     @FXML
     private void onLogout() {
         authService.logout();
+        DesktopAuthSession.clear();
+        UserSession.clearCurrentUser();
         try {
             Parent loginView = Utils.loadView("/pl/tomaszmiller/views/loginView.fxml");
             Stage stage = (Stage) theList.getScene().getWindow();

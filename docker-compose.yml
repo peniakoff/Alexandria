@@ -76,7 +76,7 @@ services:
       ALEXANDRIA_DB_POOL_SIZE: 5
       ALEXANDRIA_DB_MINIMUM_IDLE: 1
       ALEXANDRIA_OIDC_ISSUER_CLAIM: "http://localhost:8081/realms/alexandria"
-      ALEXANDRIA_OIDC_JWKS_URL: "http://host.docker.internal:8081/realms/alexandria/protocol/openid-connect/certs"
+      ALEXANDRIA_OIDC_JWKS_URL: "http://keycloak:8080/realms/alexandria/protocol/openid-connect/certs"
       ALEXANDRIA_OIDC_CLIENT_ID: "alexandria-swagger"
       ALEXANDRIA_OIDC_CLIENT_SECRET: "change-me"
     ports:

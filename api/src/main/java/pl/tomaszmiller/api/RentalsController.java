@@ -8,6 +8,8 @@ import io.micronaut.http.annotation.PathVariable;
 import io.micronaut.http.annotation.Post;
 import io.micronaut.http.annotation.Put;
 import io.micronaut.http.annotation.QueryValue;
+import io.micronaut.security.annotation.Secured;
+import io.micronaut.security.rules.SecurityRule;
 import pl.tomaszmiller.model.Rental;
 import pl.tomaszmiller.model.RentalStatus;
 import pl.tomaszmiller.repository.port.RentalRepository;
@@ -16,6 +18,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Controller("/api/rentals")
+@Secured(SecurityRule.IS_AUTHENTICATED)
 class RentalsController {
 
     private final RentalRepository rentalRepository;
@@ -25,6 +28,7 @@ class RentalsController {
     }
 
     @Get
+    @Secured("ADMIN")
     List<Rental> list() throws Exception {
         return rentalRepository.findAll();
     }

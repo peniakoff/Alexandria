@@ -9,12 +9,15 @@ import io.micronaut.http.annotation.QueryValue;
 import io.micronaut.http.annotation.PathVariable;
 import io.micronaut.http.annotation.Post;
 import io.micronaut.http.annotation.Put;
+import io.micronaut.security.annotation.Secured;
+import io.micronaut.security.rules.SecurityRule;
 import pl.tomaszmiller.model.Book;
 import pl.tomaszmiller.service.BookService;
 
 import java.util.List;
 
 @Controller("/api/books")
+@Secured(SecurityRule.IS_AUTHENTICATED)
 class BooksController {
 
     private final BookService bookService;
@@ -44,11 +47,13 @@ class BooksController {
     }
 
     @Post
+    @Secured("ADMIN")
     HttpResponse<Book> create(@Body Book book) {
         return bookService.addBook(book).map(HttpResponse::created).orElseGet(HttpResponse::badRequest);
     }
 
     @Put("/{id}")
+    @Secured("ADMIN")
     HttpResponse<?> update(@PathVariable long id, @Body Book book) {
         Book toUpdate = new Book(id, book.author(), book.title(), book.pages(), book.isbn(), book.status(),
                 book.publishYear(), book.publisher(), book.inventory());
@@ -56,6 +61,7 @@ class BooksController {
     }
 
     @Delete("/{id}")
+    @Secured("ADMIN")
     HttpResponse<?> delete(@PathVariable long id) {
         return bookService.deleteBook(id) ? HttpResponse.noContent() : HttpResponse.notFound();
     }

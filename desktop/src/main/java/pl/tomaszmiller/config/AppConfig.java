@@ -48,11 +48,7 @@ public final class AppConfig {
 
         switch (datasourceType) {
             case REST_API -> {
-                String apiUrl = resolveValue(properties, "alexandria.api.url", "ALEXANDRIA_API_URL", "");
-                if (apiUrl.isBlank()) {
-                    throw new IllegalStateException(
-                            "REST_API datasource requires 'alexandria.api.url' or env ALEXANDRIA_API_URL to be set.");
-                }
+                String apiUrl = resolveValue(properties, "alexandria.api.url", "ALEXANDRIA_API_URL", "http://localhost:8080");
                 bookRepository = new HttpBookRepository(apiUrl);
                 userRepository = new HttpUserRepository(apiUrl);
                 rentalRepository = new HttpRentalRepository(apiUrl);
@@ -132,8 +128,8 @@ public final class AppConfig {
     }
 
     private DatasourceType resolveDatasourceType(Properties properties) {
-        String value = resolveValue(properties, "alexandria.datasource.type", "ALEXANDRIA_DATASOURCE_TYPE", "MYSQL");
-        return DatasourceType.fromString(value, DatasourceType.MYSQL);
+        String value = resolveValue(properties, "alexandria.datasource.type", "ALEXANDRIA_DATASOURCE_TYPE", "REST_API");
+        return DatasourceType.fromString(value, DatasourceType.REST_API);
     }
 
     private String resolveValue(Properties props, String key, String envKey, String defaultValue) {

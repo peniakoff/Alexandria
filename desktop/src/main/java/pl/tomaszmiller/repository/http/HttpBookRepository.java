@@ -42,7 +42,7 @@ public final class HttpBookRepository implements BookRepository {
             return Optional.empty();
         }
         HttpJsonClient.ensure2xx(resp);
-        return Optional.of(client.gson.fromJson(resp.body(), Book.class));
+        return Optional.ofNullable(client.gson.fromJson(resp.body(), Book.class));
     }
 
     @Override
@@ -60,7 +60,7 @@ public final class HttpBookRepository implements BookRepository {
             return Optional.empty();
         }
         HttpJsonClient.ensure2xx(resp);
-        return Optional.of(client.gson.fromJson(resp.body(), Book.class));
+        return Optional.ofNullable(client.gson.fromJson(resp.body(), Book.class));
     }
 
     @Override

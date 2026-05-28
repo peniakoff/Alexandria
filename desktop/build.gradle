@@ -9,9 +9,6 @@ description = 'Alexandria desktop (JavaFX).'
 dependencies {
     implementation project(':core')
 
-    implementation "com.mysql:mysql-connector-j:${rootProject.ext.mysqlVersion}"
-    implementation "org.xerial:sqlite-jdbc:${rootProject.ext.sqliteVersion}"
-    implementation "com.zaxxer:HikariCP:${rootProject.ext.hikaricpVersion}"
     implementation "org.mindrot:jbcrypt:${rootProject.ext.jbcryptVersion}"
     implementation "org.slf4j:slf4j-api:${rootProject.ext.slf4jVersion}"
     implementation "ch.qos.logback:logback-classic:${rootProject.ext.logbackVersion}"
@@ -21,7 +18,6 @@ dependencies {
     testRuntimeOnly    "org.junit.platform:junit-platform-launcher:${rootProject.ext.junitPlatformVersion}"
     testImplementation "org.mockito:mockito-core:${rootProject.ext.mockitoVersion}"
     testImplementation "org.mockito:mockito-junit-jupiter:${rootProject.ext.mockitoVersion}"
-    testImplementation "com.h2database:h2:${rootProject.ext.h2Version}"
 }
 
 javafx {

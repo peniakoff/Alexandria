@@ -31,7 +31,7 @@ public final class HttpUserRepository implements UserRepository {
             return Optional.empty();
         }
         HttpJsonClient.ensure2xx(resp);
-        return Optional.of(client.gson.fromJson(resp.body(), User.class));
+        return Optional.ofNullable(client.gson.fromJson(resp.body(), User.class));
     }
 
     @Override
@@ -42,18 +42,12 @@ public final class HttpUserRepository implements UserRepository {
             return Optional.empty();
         }
         HttpJsonClient.ensure2xx(resp);
-        return Optional.of(client.gson.fromJson(resp.body(), User.class));
+        return Optional.ofNullable(client.gson.fromJson(resp.body(), User.class));
     }
 
     @Override
     public Optional<String> findPasswordHashByEmail(String email) throws Exception {
-        String encoded = URLEncoder.encode(email, StandardCharsets.UTF_8);
-        var resp = client.get("/api/users/password-hash?email=" + encoded);
-        if (resp.statusCode() == 404) {
-            return Optional.empty();
-        }
-        HttpJsonClient.ensure2xx(resp);
-        return Optional.ofNullable(resp.body()).map(String::trim).filter(s -> !s.isBlank());
+        throw new UnsupportedOperationException("Password hash retrieval is not supported over HTTP.");
     }
 
     @Override
