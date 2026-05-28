@@ -33,54 +33,48 @@ You can also override every property with environment variables:
 - `ALEXANDRIA_DB_POOL_SIZE`
 - `ALEXANDRIA_DB_MINIMUM_IDLE`
 
-## Recommended local development (JavaFX on host + MySQL in Docker)
+## Recommended local development (Desktop on host + API+DB in Docker)
 
-Run only the database in Docker:
+Run the backend stack (MySQL + Keycloak + Micronaut API) in Docker:
 
 ```bash
-docker compose -f docker-compose.dev.yml up -d
-docker compose -f docker-compose.dev.yml exec db mysqladmin ping -h localhost -u root -prootpassword
+docker compose up -d --build
+docker compose exec db mysqladmin ping -h localhost -u root -prootpassword
 ```
 
-Then run the JavaFX app on the host:
+Then run the desktop app on the host (configured to call the API):
 
 ```bash
 ./gradlew clean test
-./gradlew run
+ALEXANDRIA_DATASOURCE_TYPE=REST_API ALEXANDRIA_API_URL=http://localhost:8080 ./gradlew :desktop:run
 ```
 
-Default MySQL connection for this setup:
+API endpoints for this setup:
 
-- host: `127.0.0.1`
-- port: `3306`
-- database: `alexandria`
-- user: `alexandria`
-- password: `changeme`
+- API base URL: `http://localhost:8080`
+- Swagger UI: `http://localhost:8080/swagger-ui/`
+- OpenAPI YAML: `http://localhost:8080/swagger/alexandria-api-1.0.0.yml`
+- Keycloak (dev): `http://localhost:8081`
 
-## SQLite mode (existing database only)
+## DB-only Docker (optional)
 
-For offline development against an already initialized SQLite database, set:
+If you only want MySQL (no API/Keycloak), you can still use:
 
-```properties
-alexandria.datasource.type=SQLITE
-alexandria.sqlite.path=./alexandria.db
+```bash
+docker compose -f docker-compose.dev.yml up -d
 ```
-
-in your local `src/main/resources/application.properties`.
-
-The SQLite connector only opens the configured file and does not create the
-schema automatically, so `./alexandria.db` must already contain the `users`,
-`books`, and `rentals` tables before you start the application.
 
 ## Notes about Docker app container
 
-`docker-compose.yml` contains an `app` service, but JavaFX is a GUI application and typically should run on the host (not in a headless container). Use `docker-compose.dev.yml` for daily development.
+The desktop app is a GUI application and typically should run on the host (not in a headless container). The Docker
+setup is intended for `db` + `api` (+ `keycloak`) only.
 
 ## Project structure
 
-- `src/main/java` – application code
-- `src/main/resources` – FXML, CSS, logging, and config templates
-- `src/test/java` – unit tests
+- `core/` – domain + use-cases (no UI/HTTP)
+- `api/` – Micronaut API (Docker)
+- `desktop/` – JavaFX desktop client
+- `docker-compose.yml` – API+Keycloak+DB local Docker stack
 - `docker-compose.dev.yml` – DB-only local Docker setup
 
 ## Test accounts (development only)

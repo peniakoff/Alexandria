@@ -1,0 +1,25 @@
+{
+  "realm": "alexandria",
+  "enabled": true,
+  "passwordCredentialGrantAllowed": true,
+  "clients": [
+    {
+      "clientId": "alexandria-swagger",
+      "enabled": true,
+      "publicClient": false,
+      "clientAuthenticatorType": "client-secret",
+      "secret": "change-me",
+      "protocol": "openid-connect",
+      "redirectUris": [
+        "http://localhost:8080/swagger-ui/oauth2-redirect.html",
+        "http://localhost:8080/swagger-ui/*"
+      ],
+      "webOrigins": [
+        "http://localhost:8080"
+      ],
+      "standardFlowEnabled": true,
+      "directAccessGrantsEnabled": true
+    }
+  ]
+}
+

@@ -1,0 +1,16 @@
+plugins {
+    id 'java-library'
+}
+
+description = 'Alexandria core domain and application services.'
+
+dependencies {
+    api "org.slf4j:slf4j-api:${rootProject.ext.slf4jVersion}"
+    implementation "com.google.code.gson:gson:${rootProject.ext.gsonVersion}"
+    implementation "org.mindrot:jbcrypt:${rootProject.ext.jbcryptVersion}"
+
+    testImplementation "org.junit.jupiter:junit-jupiter:${rootProject.ext.junitVersion}"
+    testRuntimeOnly    "org.junit.platform:junit-platform-launcher:${rootProject.ext.junitPlatformVersion}"
+    testImplementation "org.mockito:mockito-core:${rootProject.ext.mockitoVersion}"
+    testImplementation "org.mockito:mockito-junit-jupiter:${rootProject.ext.mockitoVersion}"
+}

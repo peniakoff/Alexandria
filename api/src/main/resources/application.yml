@@ -1,0 +1,41 @@
+micronaut:
+  application:
+    name: alexandria-api
+  server:
+    port: 8080
+  router:
+    static-resources:
+      swagger:
+        paths: classpath:META-INF/swagger
+        mapping: /swagger/**
+      swagger-ui:
+        paths: classpath:META-INF/swagger/views/swagger-ui
+        mapping: /swagger-ui/**
+  security:
+    enabled: true
+    authentication: bearer
+    token:
+      jwt:
+        enabled: true
+        signatures:
+          jwks:
+            keycloak:
+              url: ${ALEXANDRIA_OIDC_JWKS_URL:http://keycloak:8080/realms/alexandria/protocol/openid-connect/certs}
+        claims-validators:
+          issuer: ${ALEXANDRIA_OIDC_ISSUER_CLAIM:http://keycloak:8080/realms/alexandria}
+          audience:
+            - account
+    intercept-url-map:
+      - pattern: /health
+        access:
+          - isAnonymous()
+      - pattern: /swagger/**
+        access:
+          - isAnonymous()
+      - pattern: /swagger-ui/**
+        access:
+          - isAnonymous()
+      - pattern: /**
+        access:
+          - isAuthenticated()
+
