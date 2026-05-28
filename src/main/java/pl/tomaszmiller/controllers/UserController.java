@@ -59,6 +59,8 @@ public class UserController implements Initializable {
     @FXML
     private TextField bookStatus;
     @FXML
+    private Label bookInventoryLabel;
+    @FXML
     private TextField searchField;
     @FXML
     private Button borrowBtn;
@@ -138,7 +140,7 @@ public class UserController implements Initializable {
             List<Book> all = bookService.findAll();
             if (!showUnavailable) {
                 all = all.stream()
-                        .filter(b -> b.status() == BookStatus.AVAILABLE)
+                        .filter(Book::isVisibleInCatalog)
                         .toList();
             }
             allFilteredBooks = all;
@@ -176,7 +178,7 @@ public class UserController implements Initializable {
 
         if (!showUnavailable) {
             all = all.stream()
-                    .filter(b -> b.status() == BookStatus.AVAILABLE)
+                    .filter(Book::isVisibleInCatalog)
                     .toList();
         }
 
@@ -269,14 +271,18 @@ public class UserController implements Initializable {
         if (bookStatus != null) {
             bookStatus.setText(I18n.getEnum(b.status()));
         }
+        if (bookInventoryLabel != null) {
+            bookInventoryLabel.setText(I18n.get("book.inventory.user",
+                    b.inventory().availableCopies(), b.inventory().activeCopies()));
+        }
         // Show/hide borrow vs reserve based on availability
         if (borrowBtn != null) {
-            borrowBtn.setVisible(b.status() == BookStatus.AVAILABLE);
-            borrowBtn.setManaged(b.status() == BookStatus.AVAILABLE);
+            borrowBtn.setVisible(b.isBorrowable());
+            borrowBtn.setManaged(b.isBorrowable());
         }
         if (reserveBtn != null) {
-            reserveBtn.setVisible(b.status() != BookStatus.AVAILABLE);
-            reserveBtn.setManaged(b.status() != BookStatus.AVAILABLE);
+            reserveBtn.setVisible(b.isVisibleInCatalog() && !b.isBorrowable());
+            reserveBtn.setManaged(b.isVisibleInCatalog() && !b.isBorrowable());
         }
     }
 
@@ -298,7 +304,7 @@ public class UserController implements Initializable {
         }
         // Check if book is available
         Optional<Book> bookOpt = bookService.findById(selectedBookId);
-        if (bookOpt.isPresent() && bookOpt.get().status() != BookStatus.AVAILABLE) {
+        if (bookOpt.isPresent() && !bookOpt.get().isBorrowable()) {
             Utils.openDialog(I18n.get("dialog.borrowbook"), I18n.get("borrow.unavailable"));
             return;
         }
@@ -371,6 +377,9 @@ public class UserController implements Initializable {
         }
         if (bookStatus != null) {
             bookStatus.clear();
+        }
+        if (bookInventoryLabel != null) {
+            bookInventoryLabel.setText(I18n.get("book.inventory.user", 0, 0));
         }
     }
 

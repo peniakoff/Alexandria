@@ -89,6 +89,8 @@
                                                promptText="%book.publisher.prompt"/>
                                     <Label text="%book.status" style="-fx-font-size: 11px; -fx-text-fill: #666;"/>
                                     <TextField fx:id="bookStatus" editable="false" promptText="%col.status"/>
+                                    <Label text="%book.inventory" style="-fx-font-size: 11px; -fx-text-fill: #666;"/>
+                                    <Label fx:id="bookInventoryLabel" text="%book.inventory.user.default"/>
                                     <HBox spacing="8">
                                         <Button fx:id="borrowBtn" text="%borrow.button" onAction="#onBorrowBook"
                                                 style="-fx-background-color: #b3995d; -fx-padding: 8 14;"/>

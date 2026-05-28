@@ -44,6 +44,7 @@ public final class AppConfig {
     private final AuthService authService;
     private final ExtensionRequestService extensionRequestService;
     private final ReservationService reservationService;
+    private final OpenLibraryService openLibraryService;
 
     private AppConfig() {
         Properties properties = loadProperties();
@@ -91,7 +92,7 @@ public final class AppConfig {
 
         bookService = new BookService(bookRepository);
         userService = new UserService(userRepository);
-        rentalService = new RentalService(rentalRepository);
+        rentalService = new RentalService(rentalRepository, bookRepository);
         authService = new AuthService(userRepository);
         extensionRequestService = extensionRequestRepository != null
                 ? new ExtensionRequestService(extensionRequestRepository, rentalRepository, reservationRepository)
@@ -99,6 +100,7 @@ public final class AppConfig {
         reservationService = reservationRepository != null
                 ? new ReservationService(reservationRepository)
                 : null;
+        openLibraryService = new OpenLibraryService();
     }
 
     public static AppConfig getInstance() {
@@ -131,6 +133,10 @@ public final class AppConfig {
 
     public ReservationService getReservationService() {
         return reservationService;
+    }
+
+    public OpenLibraryService getOpenLibraryService() {
+        return openLibraryService;
     }
 
     /**
