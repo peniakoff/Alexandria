@@ -2,15 +2,15 @@
 # Supported values: MYSQL (default) | SQLITE | REST_API
 alexandria.datasource.type=MYSQL
 
-# ─── MySQL (default, production) ─────────────────────────────────────────────
-# Production recommendation (TLS required)
-alexandria.db.url=jdbc:mysql://localhost:3306/alexandria?serverTimezone=UTC&sslMode=REQUIRED
-# Local development only (insecure)
-# alexandria.db.url=jdbc:mysql://localhost:3306/alexandria?serverTimezone=UTC&useSSL=false&allowPublicKeyRetrieval=true
-alexandria.db.username=root
-alexandria.db.password=your_password_here
+# ─── MySQL (default, local Docker development) ───────────────────────────────
+alexandria.db.url=jdbc:mysql://localhost:3306/alexandria?serverTimezone=UTC&useSSL=false&allowPublicKeyRetrieval=true
+alexandria.db.username=alexandria
+alexandria.db.password=changeme
 alexandria.db.poolSize=10
 alexandria.db.minimumIdle=2
+
+# Production recommendation (TLS required)
+# alexandria.db.url=jdbc:mysql://localhost:3306/alexandria?serverTimezone=UTC&sslMode=REQUIRED
 
 # ─── SQLite (local / offline) ─────────────────────────────────────────────────
 # alexandria.datasource.type=SQLITE
