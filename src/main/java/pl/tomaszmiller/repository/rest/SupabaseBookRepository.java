@@ -178,7 +178,9 @@ public class SupabaseBookRepository implements BookRepository {
                 obj.has("title") ? obj.get("title").getAsString() : "",
                 obj.has("pages") ? obj.get("pages").getAsInt() : 0,
                 obj.has("isbn") && !obj.get("isbn").isJsonNull() ? obj.get("isbn").getAsString() : null,
-                status
+                status,
+                obj.has("publish_year") ? obj.get("publish_year").getAsInt() : 0,
+                obj.has("publisher") && !obj.get("publisher").isJsonNull() ? obj.get("publisher").getAsString() : null
         );
     }
 
@@ -192,6 +194,10 @@ public class SupabaseBookRepository implements BookRepository {
             obj.addProperty("isbn", book.isbn());
         }
         obj.addProperty("status", book.status().name());
+        obj.addProperty("publish_year", book.publishYear());
+        if (book.publisher() != null) {
+            obj.addProperty("publisher", book.publisher());
+        }
         return obj;
     }
 }

@@ -1,17 +1,178 @@
-.text-field, .password-field, .list-view {
-    -fx-background-color: #F5F5F5;
-    -fx-border-width: 0 0 2 0;
-    -fx-border-radius: 0;
-    -fx-border-color: #F5F5F5;
+/* Alexandria – Modern UI Style (2026) */
+
+/* === Base === */
+.root {
+    -fx-font-family: "Segoe UI", "SF Pro Display", "Helvetica Neue", Arial, sans-serif;
+    -fx-font-size: 13px;
+    -fx-background-color: #f8f9fa;
 }
 
-.text-field:focused, .password-field:focused, .list-view:focused {
-    -fx-border-width: 0 0 2 0;
+/* === Text Fields & Password Fields === */
+.text-field, .password-field {
+    -fx-background-color: #ffffff;
+    -fx-border-color: #e0e0e0;
+    -fx-border-width: 1;
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
+    -fx-padding: 8 12;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.04), 2, 0, 0, 1);
+}
+
+.text-field:focused, .password-field:focused {
     -fx-border-color: #002244;
-    -fx-background-color: #FAFAFA;
+    -fx-border-width: 2;
+    -fx-background-color: #ffffff;
+    -fx-effect: dropshadow(gaussian, rgba(0, 34, 68, 0.15), 4, 0, 0, 1);
 }
 
+/* === List View === */
+.list-view {
+    -fx-background-color: #ffffff;
+    -fx-border-color: #e0e0e0;
+    -fx-border-width: 1;
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.04), 2, 0, 0, 1);
+}
+
+.list-view:focused {
+    -fx-border-color: #002244;
+}
+
+.list-view .list-cell {
+    -fx-padding: 8 12;
+    -fx-background-radius: 4;
+}
+
+.list-view .list-cell:filled:selected {
+    -fx-background-color: #e8eef5;
+    -fx-text-fill: #002244;
+}
+
+.list-view .list-cell:filled:hover {
+    -fx-background-color: #f0f4f8;
+}
+
+/* === Buttons === */
 .button {
     -fx-border-width: 0;
-    -fx-focus-color: transparent;
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
+    -fx-padding: 8 16;
+    -fx-cursor: hand;
+    -fx-font-weight: bold;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.08), 3, 0, 0, 1);
 }
+
+.button:hover {
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.15), 6, 0, 0, 2);
+    -fx-opacity: 0.92;
+}
+
+.button:pressed {
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.05), 1, 0, 0, 0);
+    -fx-opacity: 0.85;
+}
+
+/* === Table View === */
+.table-view {
+    -fx-background-color: #ffffff;
+    -fx-border-color: #e0e0e0;
+    -fx-border-width: 1;
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.04), 2, 0, 0, 1);
+}
+
+.table-view .column-header {
+    -fx-background-color: #f0f4f8;
+    -fx-border-color: #e0e0e0;
+    -fx-border-width: 0 0 1 0;
+    -fx-padding: 8;
+}
+
+.table-view .column-header .label {
+    -fx-font-weight: bold;
+    -fx-text-fill: #002244;
+    -fx-font-size: 12px;
+}
+
+.table-row-cell {
+    -fx-border-color: transparent transparent #f0f0f0 transparent;
+    -fx-border-width: 0 0 1 0;
+}
+
+.table-row-cell:selected {
+    -fx-background-color: #e8eef5;
+}
+
+.table-row-cell:hover {
+    -fx-background-color: #f8fafc;
+}
+
+/* === Tab Pane === */
+.tab-pane .tab-header-area .tab-header-background {
+    -fx-background-color: #ffffff;
+    -fx-border-color: transparent transparent #e0e0e0 transparent;
+    -fx-border-width: 0 0 1 0;
+}
+
+.tab-pane .tab {
+    -fx-background-color: transparent;
+    -fx-padding: 8 16;
+}
+
+.tab-pane .tab:selected {
+    -fx-background-color: #e8eef5;
+}
+
+.tab-pane .tab .tab-label {
+    -fx-font-weight: bold;
+    -fx-text-fill: #002244;
+}
+
+/* === Combo Box === */
+.combo-box {
+    -fx-background-color: #ffffff;
+    -fx-border-color: #e0e0e0;
+    -fx-border-width: 1;
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
+    -fx-padding: 4 8;
+}
+
+.combo-box:focused {
+    -fx-border-color: #002244;
+}
+
+/* === Check Box === */
+.check-box {
+    -fx-font-size: 12px;
+}
+
+.check-box .box {
+    -fx-border-radius: 4;
+    -fx-background-radius: 4;
+    -fx-border-color: #b0b0b0;
+}
+
+.check-box:selected .box {
+    -fx-background-color: #002244;
+    -fx-border-color: #002244;
+}
+
+/* === Scroll Pane === */
+.scroll-pane {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+}
+
+.scroll-pane .viewport {
+    -fx-background-color: transparent;
+}
+
+/* === Labels === */
+.label {
+    -fx-text-fill: #333333;
+}
+

@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.PasswordField?>
@@ -24,6 +26,13 @@
             stylesheets="@style.css"
             xmlns="http://javafx.com/javafx/17"
             fx:controller="pl.tomaszmiller.controllers.UserController">
+    <top>
+        <HBox alignment="CENTER_RIGHT" style="-fx-padding: 8 16; -fx-background-color: #002244;">
+            <Label fx:id="welcomeLabel" text="Welcome" style="-fx-text-fill: #b3995d; -fx-font-size: 14px;" HBox.hgrow="ALWAYS"/>
+            <Button text="Logout" onAction="#onLogout"
+                    style="-fx-background-color: #b3995d; -fx-text-fill: #002244; -fx-padding: 6 16; -fx-font-weight: bold; -fx-cursor: hand;"/>
+        </HBox>
+    </top>
     <center>
         <TabPane tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER">
             <tabs>
@@ -34,10 +43,11 @@
                             <TableView fx:id="myRentalsTable" VBox.vgrow="ALWAYS">
                                 <columns>
                                     <TableColumn fx:id="myRentalIdCol" text="ID" prefWidth="50"/>
-                                    <TableColumn fx:id="myRentalBookCol" text="Title" prefWidth="300"/>
-                                    <TableColumn fx:id="myRentalBorrowCol" text="Borrowed" prefWidth="120"/>
-                                    <TableColumn fx:id="myRentalDueCol" text="Due date" prefWidth="120"/>
-                                    <TableColumn fx:id="myRentalStatusCol" text="Status" prefWidth="120"/>
+                                    <TableColumn fx:id="myRentalBookCol" text="Title" prefWidth="250"/>
+                                    <TableColumn fx:id="myRentalBorrowCol" text="Borrowed" prefWidth="100"/>
+                                    <TableColumn fx:id="myRentalDueCol" text="Due date" prefWidth="100"/>
+                                    <TableColumn fx:id="myRentalStatusCol" text="Status" prefWidth="100"/>
+                                    <TableColumn fx:id="myRentalActionCol" text="Action" prefWidth="140"/>
                                 </columns>
                             </TableView>
                         </VBox>
@@ -56,24 +66,49 @@
                             </rowConstraints>
                             <children>
                                 <VBox spacing="6" style="-fx-padding: 10;">
-                                    <HBox spacing="6">
+                                    <HBox spacing="6" alignment="CENTER_LEFT">
                                         <TextField fx:id="searchField" promptText="Search by title / author…" HBox.hgrow="ALWAYS"/>
                                         <Button text="Search" onAction="#onSearchBook"
                                                 style="-fx-background-color: #002244; -fx-text-fill: white; -fx-padding: 6 10;"/>
                                     </HBox>
+                                    <CheckBox fx:id="showUnavailableCheck" text="Show unavailable (borrowed) books" onAction="#onToggleShowUnavailable"/>
                                     <ScrollPane fitToWidth="true" fitToHeight="true" VBox.vgrow="ALWAYS">
                                         <content>
                                             <ListView fx:id="theList"/>
                                         </content>
                                     </ScrollPane>
+                                    <HBox spacing="8" alignment="CENTER_LEFT" style="-fx-padding: 4 0 0 0;">
+                                        <Label text="Per page:"/>
+                                        <ComboBox fx:id="pageSizeCombo"/>
+                                        <Button fx:id="prevPageBtn" text="◀ Prev" onAction="#onPrevPage"
+                                                style="-fx-padding: 4 8;"/>
+                                        <Label fx:id="pageInfoLabel" text="Page 1 / 1"/>
+                                        <Button fx:id="nextPageBtn" text="Next ▶" onAction="#onNextPage"
+                                                style="-fx-padding: 4 8;"/>
+                                    </HBox>
                                 </VBox>
                                 <VBox spacing="10" style="-fx-padding: 10;" GridPane.columnIndex="1">
-                                    <Label text="Details" style="-fx-font-weight: bold;"/>
+                                    <Label text="Book Details" style="-fx-font-weight: bold; -fx-font-size: 14px;"/>
+                                    <Label text="Author:" style="-fx-font-size: 11px; -fx-text-fill: #666;"/>
                                     <TextField fx:id="bookAuthor" editable="false" promptText="Author"/>
+                                    <Label text="Title:" style="-fx-font-size: 11px; -fx-text-fill: #666;"/>
                                     <TextField fx:id="bookTitle" editable="false" promptText="Title"/>
+                                    <Label text="Pages:" style="-fx-font-size: 11px; -fx-text-fill: #666;"/>
                                     <TextField fx:id="pages" editable="false" promptText="Pages"/>
-                                    <Button fx:id="borrowBtn" text="Borrow" onAction="#onBorrowBook"
-                                            style="-fx-background-color: #b3995d; -fx-padding: 8 14;"/>
+                                    <Label text="ISBN:" style="-fx-font-size: 11px; -fx-text-fill: #666;"/>
+                                    <TextField fx:id="bookIsbn" editable="false" promptText="ISBN"/>
+                                    <Label text="Year:" style="-fx-font-size: 11px; -fx-text-fill: #666;"/>
+                                    <TextField fx:id="bookYear" editable="false" promptText="Year"/>
+                                    <Label text="Publisher:" style="-fx-font-size: 11px; -fx-text-fill: #666;"/>
+                                    <TextField fx:id="bookPublisher" editable="false" promptText="Publisher"/>
+                                    <Label text="Status:" style="-fx-font-size: 11px; -fx-text-fill: #666;"/>
+                                    <TextField fx:id="bookStatus" editable="false" promptText="Status"/>
+                                    <HBox spacing="8">
+                                        <Button fx:id="borrowBtn" text="Borrow" onAction="#onBorrowBook"
+                                                style="-fx-background-color: #b3995d; -fx-padding: 8 14;"/>
+                                        <Button fx:id="reserveBtn" text="Reserve next period" onAction="#onReserveBook"
+                                                style="-fx-background-color: #3498db; -fx-text-fill: white; -fx-padding: 8 14;"/>
+                                    </HBox>
                                 </VBox>
                             </children>
                         </GridPane>

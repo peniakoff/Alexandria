@@ -41,7 +41,7 @@ public class SqlBookRepository implements BookRepository {
 
     @Override
     public Optional<Book> findByTitle(String title) throws SQLException {
-        String sql = "SELECT id, author, title, pages, isbn, status FROM books WHERE title = ? LIMIT 1";
+        String sql = "SELECT id, author, title, pages, isbn, status, publish_year, publisher FROM books WHERE title = ? LIMIT 1";
         try (Connection c = connector.getConnection();
              PreparedStatement ps = c.prepareStatement(sql)) {
             ps.setString(1, title);
@@ -55,7 +55,7 @@ public class SqlBookRepository implements BookRepository {
     public List<Book> findAll() throws SQLException {
         List<Book> books = new ArrayList<>();
         try (Connection c = connector.getConnection();
-             PreparedStatement ps = c.prepareStatement("SELECT id, author, title, pages, isbn, status FROM books ORDER BY title");
+             PreparedStatement ps = c.prepareStatement("SELECT id, author, title, pages, isbn, status, publish_year, publisher FROM books ORDER BY title");
              ResultSet rs = ps.executeQuery()) {
             while (rs.next()) {
                 books.add(mapRow(rs));
@@ -66,7 +66,7 @@ public class SqlBookRepository implements BookRepository {
 
     @Override
     public Optional<Book> findById(long id) throws SQLException {
-        String sql = "SELECT id, author, title, pages, isbn, status FROM books WHERE id = ?";
+        String sql = "SELECT id, author, title, pages, isbn, status, publish_year, publisher FROM books WHERE id = ?";
         try (Connection c = connector.getConnection();
              PreparedStatement ps = c.prepareStatement(sql)) {
             ps.setLong(1, id);
@@ -78,7 +78,7 @@ public class SqlBookRepository implements BookRepository {
 
     @Override
     public Book save(Book book) throws SQLException {
-        String sql = "INSERT INTO books (author, title, pages, isbn, status) VALUES (?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO books (author, title, pages, isbn, status, publish_year, publisher) VALUES (?, ?, ?, ?, ?, ?, ?)";
         try (Connection c = connector.getConnection();
              PreparedStatement ps = c.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             ps.setString(1, book.author());
@@ -86,10 +86,13 @@ public class SqlBookRepository implements BookRepository {
             ps.setInt(3, book.pages());
             ps.setString(4, book.isbn());
             ps.setString(5, book.status().name());
+            ps.setInt(6, book.publishYear());
+            ps.setString(7, book.publisher());
             ps.executeUpdate();
             try (ResultSet keys = ps.getGeneratedKeys()) {
                 if (keys.next()) {
-                    return new Book(keys.getLong(1), book.author(), book.title(), book.pages(), book.isbn(), book.status());
+                    return new Book(keys.getLong(1), book.author(), book.title(), book.pages(),
+                            book.isbn(), book.status(), book.publishYear(), book.publisher());
                 }
             }
         }
@@ -98,7 +101,7 @@ public class SqlBookRepository implements BookRepository {
 
     @Override
     public void update(Book book) throws SQLException {
-        String sql = "UPDATE books SET author = ?, title = ?, pages = ?, isbn = ?, status = ? WHERE id = ?";
+        String sql = "UPDATE books SET author = ?, title = ?, pages = ?, isbn = ?, status = ?, publish_year = ?, publisher = ? WHERE id = ?";
         try (Connection c = connector.getConnection();
              PreparedStatement ps = c.prepareStatement(sql)) {
             ps.setString(1, book.author());
@@ -106,7 +109,9 @@ public class SqlBookRepository implements BookRepository {
             ps.setInt(3, book.pages());
             ps.setString(4, book.isbn());
             ps.setString(5, book.status().name());
-            ps.setLong(6, book.id());
+            ps.setInt(6, book.publishYear());
+            ps.setString(7, book.publisher());
+            ps.setLong(8, book.id());
             ps.executeUpdate();
         }
     }
@@ -133,7 +138,9 @@ public class SqlBookRepository implements BookRepository {
                 rs.getString("title"),
                 rs.getInt("pages"),
                 rs.getString("isbn"),
-                status
+                status,
+                rs.getInt("publish_year"),
+                rs.getString("publisher")
         );
     }
 }

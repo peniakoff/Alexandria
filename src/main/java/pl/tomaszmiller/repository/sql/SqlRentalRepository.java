@@ -120,12 +120,13 @@ public class SqlRentalRepository implements RentalRepository {
 
     @Override
     public void update(Rental rental) throws SQLException {
-        String sql = "UPDATE rentals SET return_date = ?, status = ? WHERE id = ?";
+        String sql = "UPDATE rentals SET due_date = ?, return_date = ?, status = ? WHERE id = ?";
         try (Connection c = connector.getConnection();
              PreparedStatement ps = c.prepareStatement(sql)) {
-            ps.setDate(1, rental.returnDate() != null ? Date.valueOf(rental.returnDate()) : null);
-            ps.setString(2, rental.status().name());
-            ps.setLong(3, rental.id());
+            ps.setDate(1, Date.valueOf(rental.dueDate()));
+            ps.setDate(2, rental.returnDate() != null ? Date.valueOf(rental.returnDate()) : null);
+            ps.setString(3, rental.status().name());
+            ps.setLong(4, rental.id());
             ps.executeUpdate();
         }
     }
