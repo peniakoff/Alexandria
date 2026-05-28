@@ -57,9 +57,9 @@ Default MySQL connection for this setup:
 - user: `alexandria`
 - password: `changeme`
 
-## SQLite mode (no Docker)
+## SQLite mode (existing database only)
 
-For quick offline development, set:
+For offline development against an already initialized SQLite database, set:
 
 ```properties
 alexandria.datasource.type=SQLITE
@@ -67,6 +67,10 @@ alexandria.sqlite.path=./alexandria.db
 ```
 
 in your local `src/main/resources/application.properties`.
+
+The SQLite connector only opens the configured file and does not create the
+schema automatically, so `./alexandria.db` must already contain the `users`,
+`books`, and `rentals` tables before you start the application.
 
 ## Notes about Docker app container
 
