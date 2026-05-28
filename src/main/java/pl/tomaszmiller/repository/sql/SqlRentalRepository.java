@@ -5,12 +5,7 @@ import pl.tomaszmiller.model.Rental;
 import pl.tomaszmiller.model.RentalStatus;
 import pl.tomaszmiller.repository.port.RentalRepository;
 
-import java.sql.Connection;
-import java.sql.Date;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;

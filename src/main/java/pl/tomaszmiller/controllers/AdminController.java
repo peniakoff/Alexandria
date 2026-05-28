@@ -10,12 +10,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 import javafx.util.Duration;
@@ -23,24 +18,13 @@ import pl.tomaszmiller.Utils;
 import pl.tomaszmiller.config.AppConfig;
 import pl.tomaszmiller.model.Book;
 import pl.tomaszmiller.model.BookStatus;
-import pl.tomaszmiller.model.ExtensionRequest;
 import pl.tomaszmiller.model.Rental;
-import pl.tomaszmiller.model.Reservation;
 import pl.tomaszmiller.model.User;
-import pl.tomaszmiller.service.AuthService;
-import pl.tomaszmiller.service.BookService;
-import pl.tomaszmiller.service.ExtensionRequestService;
-import pl.tomaszmiller.service.RentalService;
-import pl.tomaszmiller.service.ReservationService;
-import pl.tomaszmiller.service.UserService;
+import pl.tomaszmiller.service.*;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.ResourceBundle;
+import java.util.*;
 
 /**
  * Controller for the administrator dashboard.
@@ -55,49 +39,87 @@ public class AdminController implements Initializable {
     private final ExtensionRequestService extensionRequestService = AppConfig.getInstance().getExtensionRequestService();
     private final ReservationService reservationService = AppConfig.getInstance().getReservationService();
 
-    @FXML private Label welcomeLabel;
+    @FXML
+    private Label welcomeLabel;
 
-    @FXML private ListView<String> theList;
-    @FXML private TextField bookAuthor;
-    @FXML private TextField bookTitle;
-    @FXML private TextField pages;
-    @FXML private TextField bookIsbn;
-    @FXML private TextField bookYear;
-    @FXML private TextField bookPublisher;
-    @FXML private TextField searchField;
-    @FXML private Button addBookBtn;
-    @FXML private Button deleteBookBtn;
+    @FXML
+    private ListView<String> theList;
+    @FXML
+    private TextField bookAuthor;
+    @FXML
+    private TextField bookTitle;
+    @FXML
+    private TextField pages;
+    @FXML
+    private TextField bookIsbn;
+    @FXML
+    private TextField bookYear;
+    @FXML
+    private TextField bookPublisher;
+    @FXML
+    private TextField searchField;
+    @FXML
+    private Button addBookBtn;
+    @FXML
+    private Button deleteBookBtn;
 
-    @FXML private TableView<User> usersTable;
-    @FXML private TableColumn<User, Number> userIdCol;
-    @FXML private TableColumn<User, String> userNameCol;
-    @FXML private TableColumn<User, String> userEmailCol;
-    @FXML private TableColumn<User, String> userRoleCol;
-    @FXML private Button deleteUserBtn;
-    @FXML private Label userCountLabel;
+    @FXML
+    private TableView<User> usersTable;
+    @FXML
+    private TableColumn<User, Number> userIdCol;
+    @FXML
+    private TableColumn<User, String> userNameCol;
+    @FXML
+    private TableColumn<User, String> userEmailCol;
+    @FXML
+    private TableColumn<User, String> userRoleCol;
+    @FXML
+    private Button deleteUserBtn;
+    @FXML
+    private Label userCountLabel;
 
-    @FXML private TableView<RentalRow> rentalsTable;
-    @FXML private TableColumn<RentalRow, Long> rentalIdCol;
-    @FXML private TableColumn<RentalRow, String> rentalUserCol;
-    @FXML private TableColumn<RentalRow, String> rentalBookCol;
-    @FXML private TableColumn<RentalRow, String> rentalBorrowCol;
-    @FXML private TableColumn<RentalRow, String> rentalDueCol;
-    @FXML private TableColumn<RentalRow, String> rentalStatusCol;
-    @FXML private Button returnBookBtn;
+    @FXML
+    private TableView<RentalRow> rentalsTable;
+    @FXML
+    private TableColumn<RentalRow, Long> rentalIdCol;
+    @FXML
+    private TableColumn<RentalRow, String> rentalUserCol;
+    @FXML
+    private TableColumn<RentalRow, String> rentalBookCol;
+    @FXML
+    private TableColumn<RentalRow, String> rentalBorrowCol;
+    @FXML
+    private TableColumn<RentalRow, String> rentalDueCol;
+    @FXML
+    private TableColumn<RentalRow, String> rentalStatusCol;
+    @FXML
+    private Button returnBookBtn;
 
-    @FXML private TableView<ExtRequestRow> extRequestsTable;
-    @FXML private TableColumn<ExtRequestRow, Long> extReqIdCol;
-    @FXML private TableColumn<ExtRequestRow, String> extReqUserCol;
-    @FXML private TableColumn<ExtRequestRow, String> extReqBookCol;
-    @FXML private TableColumn<ExtRequestRow, String> extReqDateCol;
-    @FXML private TableColumn<ExtRequestRow, String> extReqStatusCol;
+    @FXML
+    private TableView<ExtRequestRow> extRequestsTable;
+    @FXML
+    private TableColumn<ExtRequestRow, Long> extReqIdCol;
+    @FXML
+    private TableColumn<ExtRequestRow, String> extReqUserCol;
+    @FXML
+    private TableColumn<ExtRequestRow, String> extReqBookCol;
+    @FXML
+    private TableColumn<ExtRequestRow, String> extReqDateCol;
+    @FXML
+    private TableColumn<ExtRequestRow, String> extReqStatusCol;
 
-    @FXML private TableView<ReservationRow> reservationsTable;
-    @FXML private TableColumn<ReservationRow, Long> resIdCol;
-    @FXML private TableColumn<ReservationRow, String> resUserCol;
-    @FXML private TableColumn<ReservationRow, String> resBookCol;
-    @FXML private TableColumn<ReservationRow, String> resDateCol;
-    @FXML private TableColumn<ReservationRow, String> resStatusCol;
+    @FXML
+    private TableView<ReservationRow> reservationsTable;
+    @FXML
+    private TableColumn<ReservationRow, Long> resIdCol;
+    @FXML
+    private TableColumn<ReservationRow, String> resUserCol;
+    @FXML
+    private TableColumn<ReservationRow, String> resBookCol;
+    @FXML
+    private TableColumn<ReservationRow, String> resDateCol;
+    @FXML
+    private TableColumn<ReservationRow, String> resStatusCol;
 
     private long selectedBookId = 0L;
     private long selectedRentalId = 0L;
@@ -338,7 +360,7 @@ public class AdminController implements Initializable {
         rentalStatusCol.setCellValueFactory(new PropertyValueFactory<>("status"));
         refreshRentals();
         rentalsTable.getSelectionModel().selectedItemProperty()
-                .addListener((obs, old, selected) -> selectedRentalId = selected != null ? selected.getId() : 0L);
+                .addListener((obs, old, selected) -> selectedRentalId = selected != null ? selected.id() : 0L);
     }
 
     private void refreshRentals() {
@@ -425,7 +447,7 @@ public class AdminController implements Initializable {
             Utils.openDialog("Extension Request", "Select a request from the table.");
             return;
         }
-        ExtensionRequestService.ApprovalResult result = extensionRequestService.approve(selected.getId());
+        ExtensionRequestService.ApprovalResult result = extensionRequestService.approve(selected.id());
         switch (result) {
             case APPROVED -> {
                 Utils.confirmDialog("Extension Request", "Extension approved. Due date extended by 7 days.");
@@ -433,13 +455,11 @@ public class AdminController implements Initializable {
                 refreshRentals();
             }
             case RESERVATION_CONFLICT ->
-                Utils.openDialog("Extension Request", "Cannot approve. The book has a pending or approved reservation.");
-            case REQUEST_NOT_FOUND ->
-                Utils.openDialog("Extension Request", "Extension request not found.");
-            case RENTAL_NOT_FOUND ->
-                Utils.openDialog("Extension Request", "Associated rental not found.");
+                    Utils.openDialog("Extension Request", "Cannot approve. The book has a pending or approved reservation.");
+            case REQUEST_NOT_FOUND -> Utils.openDialog("Extension Request", "Extension request not found.");
+            case RENTAL_NOT_FOUND -> Utils.openDialog("Extension Request", "Associated rental not found.");
             default ->
-                Utils.openDialog("Extension Request", "An unexpected error occurred while approving the request.");
+                    Utils.openDialog("Extension Request", "An unexpected error occurred while approving the request.");
         }
     }
 
@@ -453,7 +473,7 @@ public class AdminController implements Initializable {
             Utils.openDialog("Extension Request", "Select a request from the table.");
             return;
         }
-        extensionRequestService.reject(selected.getId());
+        extensionRequestService.reject(selected.id());
         Utils.confirmDialog("Extension Request", "Extension request rejected.");
         refreshExtRequests();
     }
@@ -502,7 +522,7 @@ public class AdminController implements Initializable {
             Utils.openDialog("Reservation", "Select a reservation from the table.");
             return;
         }
-        boolean approved = reservationService.approve(selected.getId());
+        boolean approved = reservationService.approve(selected.id());
         if (approved) {
             Utils.confirmDialog("Reservation", "Reservation approved.");
             refreshReservations();
@@ -521,86 +541,27 @@ public class AdminController implements Initializable {
             Utils.openDialog("Reservation", "Select a reservation from the table.");
             return;
         }
-        reservationService.reject(selected.getId());
+        reservationService.reject(selected.id());
         Utils.confirmDialog("Reservation", "Reservation rejected.");
         refreshReservations();
     }
 
     /**
-     * Simple DTO for displaying rental data in a TableView.
-     */
-    public static final class RentalRow {
-        private final long id;
-        private final String userName;
-        private final String bookTitle;
-        private final String borrowDate;
-        private final String dueDate;
-        private final String status;
-
-        public RentalRow(long id, String userName, String bookTitle, String borrowDate, String dueDate, String status) {
-            this.id = id;
-            this.userName = userName;
-            this.bookTitle = bookTitle;
-            this.borrowDate = borrowDate;
-            this.dueDate = dueDate;
-            this.status = status;
-        }
-
-        public long getId() { return id; }
-        public String getUserName() { return userName; }
-        public String getBookTitle() { return bookTitle; }
-        public String getBorrowDate() { return borrowDate; }
-        public String getDueDate() { return dueDate; }
-        public String getStatus() { return status; }
+         * Simple DTO for displaying rental data in a TableView.
+         */
+        public record RentalRow(long id, String userName, String bookTitle, String borrowDate, String dueDate,
+                                String status) {
     }
 
     /**
-     * DTO for extension request table rows.
-     */
-    public static final class ExtRequestRow {
-        private final long id;
-        private final String userName;
-        private final String bookTitle;
-        private final String requestDate;
-        private final String status;
-
-        public ExtRequestRow(long id, String userName, String bookTitle, String requestDate, String status) {
-            this.id = id;
-            this.userName = userName;
-            this.bookTitle = bookTitle;
-            this.requestDate = requestDate;
-            this.status = status;
-        }
-
-        public long getId() { return id; }
-        public String getUserName() { return userName; }
-        public String getBookTitle() { return bookTitle; }
-        public String getRequestDate() { return requestDate; }
-        public String getStatus() { return status; }
+         * DTO for extension request table rows.
+         */
+        public record ExtRequestRow(long id, String userName, String bookTitle, String requestDate, String status) {
     }
 
     /**
-     * DTO for reservation table rows.
-     */
-    public static final class ReservationRow {
-        private final long id;
-        private final String userName;
-        private final String bookTitle;
-        private final String requestDate;
-        private final String status;
-
-        public ReservationRow(long id, String userName, String bookTitle, String requestDate, String status) {
-            this.id = id;
-            this.userName = userName;
-            this.bookTitle = bookTitle;
-            this.requestDate = requestDate;
-            this.status = status;
-        }
-
-        public long getId() { return id; }
-        public String getUserName() { return userName; }
-        public String getBookTitle() { return bookTitle; }
-        public String getRequestDate() { return requestDate; }
-        public String getStatus() { return status; }
+         * DTO for reservation table rows.
+         */
+        public record ReservationRow(long id, String userName, String bookTitle, String requestDate, String status) {
     }
 }

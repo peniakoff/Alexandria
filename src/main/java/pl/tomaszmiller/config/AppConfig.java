@@ -5,25 +5,12 @@ import org.slf4j.LoggerFactory;
 import pl.tomaszmiller.database.DatabaseConnector;
 import pl.tomaszmiller.database.MySqlConnector;
 import pl.tomaszmiller.database.SqliteConnector;
-import pl.tomaszmiller.repository.port.BookRepository;
-import pl.tomaszmiller.repository.port.ExtensionRequestRepository;
-import pl.tomaszmiller.repository.port.RentalRepository;
-import pl.tomaszmiller.repository.port.ReservationRepository;
-import pl.tomaszmiller.repository.port.UserRepository;
+import pl.tomaszmiller.repository.port.*;
 import pl.tomaszmiller.repository.rest.SupabaseBookRepository;
 import pl.tomaszmiller.repository.rest.SupabaseRentalRepository;
 import pl.tomaszmiller.repository.rest.SupabaseUserRepository;
-import pl.tomaszmiller.repository.sql.SqlBookRepository;
-import pl.tomaszmiller.repository.sql.SqlExtensionRequestRepository;
-import pl.tomaszmiller.repository.sql.SqlRentalRepository;
-import pl.tomaszmiller.repository.sql.SqlReservationRepository;
-import pl.tomaszmiller.repository.sql.SqlUserRepository;
-import pl.tomaszmiller.service.AuthService;
-import pl.tomaszmiller.service.BookService;
-import pl.tomaszmiller.service.ExtensionRequestService;
-import pl.tomaszmiller.service.RentalService;
-import pl.tomaszmiller.service.ReservationService;
-import pl.tomaszmiller.service.UserService;
+import pl.tomaszmiller.repository.sql.*;
+import pl.tomaszmiller.service.*;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -146,7 +133,9 @@ public final class AppConfig {
         return reservationService;
     }
 
-    /** Closes the database connector if applicable (called on application stop). */
+    /**
+     * Closes the database connector if applicable (called on application stop).
+     */
     public void shutdown() {
         if (databaseConnector != null) {
             databaseConnector.close();

@@ -1,10 +1,6 @@
 package pl.tomaszmiller.repository.rest;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
+import com.google.gson.*;
 import pl.tomaszmiller.model.User;
 import pl.tomaszmiller.model.UserRole;
 import pl.tomaszmiller.repository.port.UserRepository;

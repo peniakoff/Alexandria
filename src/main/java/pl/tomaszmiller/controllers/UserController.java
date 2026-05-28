@@ -7,14 +7,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
-import javafx.scene.control.PasswordField;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 import javafx.util.Duration;
@@ -24,21 +17,12 @@ import pl.tomaszmiller.model.Book;
 import pl.tomaszmiller.model.BookStatus;
 import pl.tomaszmiller.model.Rental;
 import pl.tomaszmiller.model.User;
-import pl.tomaszmiller.service.AuthService;
-import pl.tomaszmiller.service.BookService;
-import pl.tomaszmiller.service.ExtensionRequestService;
-import pl.tomaszmiller.service.RentalService;
-import pl.tomaszmiller.service.ReservationService;
-import pl.tomaszmiller.service.UserService;
+import pl.tomaszmiller.service.*;
 import pl.tomaszmiller.session.UserSession;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.ResourceBundle;
+import java.util.*;
 
 /**
  * Controller for the regular-user dashboard.
@@ -53,44 +37,74 @@ public class UserController implements Initializable {
     private final ExtensionRequestService extensionRequestService = AppConfig.getInstance().getExtensionRequestService();
     private final ReservationService reservationService = AppConfig.getInstance().getReservationService();
 
-    @FXML private Label welcomeLabel;
+    @FXML
+    private Label welcomeLabel;
 
-    @FXML private ListView<String> theList;
-    @FXML private TextField bookAuthor;
-    @FXML private TextField bookTitle;
-    @FXML private TextField pages;
-    @FXML private TextField bookIsbn;
-    @FXML private TextField bookYear;
-    @FXML private TextField bookPublisher;
-    @FXML private TextField bookStatus;
-    @FXML private TextField searchField;
-    @FXML private Button borrowBtn;
-    @FXML private Button reserveBtn;
-    @FXML private javafx.scene.control.CheckBox showUnavailableCheck;
-    @FXML private ComboBox<Integer> pageSizeCombo;
-    @FXML private Label pageInfoLabel;
-    @FXML private Button prevPageBtn;
-    @FXML private Button nextPageBtn;
+    @FXML
+    private ListView<String> theList;
+    @FXML
+    private TextField bookAuthor;
+    @FXML
+    private TextField bookTitle;
+    @FXML
+    private TextField pages;
+    @FXML
+    private TextField bookIsbn;
+    @FXML
+    private TextField bookYear;
+    @FXML
+    private TextField bookPublisher;
+    @FXML
+    private TextField bookStatus;
+    @FXML
+    private TextField searchField;
+    @FXML
+    private Button borrowBtn;
+    @FXML
+    private Button reserveBtn;
+    @FXML
+    private javafx.scene.control.CheckBox showUnavailableCheck;
+    @FXML
+    private ComboBox<Integer> pageSizeCombo;
+    @FXML
+    private Label pageInfoLabel;
+    @FXML
+    private Button prevPageBtn;
+    @FXML
+    private Button nextPageBtn;
 
     private PauseTransition searchDebounce;
     private int currentPage = 0;
     private int pageSize = 20;
     private List<Book> allFilteredBooks = List.of();
 
-    @FXML private TableView<RentalRow> myRentalsTable;
-    @FXML private TableColumn<RentalRow, Long> myRentalIdCol;
-    @FXML private TableColumn<RentalRow, String> myRentalBookCol;
-    @FXML private TableColumn<RentalRow, String> myRentalBorrowCol;
-    @FXML private TableColumn<RentalRow, String> myRentalDueCol;
-    @FXML private TableColumn<RentalRow, String> myRentalStatusCol;
-    @FXML private TableColumn<RentalRow, Void> myRentalActionCol;
+    @FXML
+    private TableView<RentalRow> myRentalsTable;
+    @FXML
+    private TableColumn<RentalRow, Long> myRentalIdCol;
+    @FXML
+    private TableColumn<RentalRow, String> myRentalBookCol;
+    @FXML
+    private TableColumn<RentalRow, String> myRentalBorrowCol;
+    @FXML
+    private TableColumn<RentalRow, String> myRentalDueCol;
+    @FXML
+    private TableColumn<RentalRow, String> myRentalStatusCol;
+    @FXML
+    private TableColumn<RentalRow, Void> myRentalActionCol;
 
-    @FXML private TextField settingsFirstName;
-    @FXML private TextField settingsLastName;
-    @FXML private TextField settingsPhone;
-    @FXML private PasswordField settingsNewPassword;
-    @FXML private PasswordField settingsConfirmPassword;
-    @FXML private Button saveSettingsBtn;
+    @FXML
+    private TextField settingsFirstName;
+    @FXML
+    private TextField settingsLastName;
+    @FXML
+    private TextField settingsPhone;
+    @FXML
+    private PasswordField settingsNewPassword;
+    @FXML
+    private PasswordField settingsConfirmPassword;
+    @FXML
+    private Button saveSettingsBtn;
 
     private long selectedBookId = 0L;
 
@@ -387,7 +401,7 @@ public class UserController implements Initializable {
                 }
                 setText(item);
                 RentalRow row = getTableView().getItems().get(idx);
-                switch (row.getColorCode()) {
+                switch (row.colorCode()) {
                     case "GREEN" -> setStyle("-fx-background-color: #d4edda; -fx-text-fill: #155724;");
                     case "YELLOW" -> setStyle("-fx-background-color: #fff3cd; -fx-text-fill: #856404;");
                     case "RED" -> setStyle("-fx-background-color: #f8d7da; -fx-text-fill: #721c24;");
@@ -400,6 +414,7 @@ public class UserController implements Initializable {
         if (myRentalActionCol != null) {
             myRentalActionCol.setCellFactory(col -> new javafx.scene.control.TableCell<>() {
                 private final Button extBtn = new Button("Request Extension");
+
                 {
                     extBtn.setStyle("-fx-background-color: #f0ad4e; -fx-text-fill: white; -fx-padding: 2 8; -fx-font-size: 11px;");
                     extBtn.setOnAction(e -> {
@@ -423,7 +438,7 @@ public class UserController implements Initializable {
                         return;
                     }
                     RentalRow row = getTableView().getItems().get(idx);
-                    if ("YELLOW".equals(row.getColorCode())) {
+                    if ("YELLOW".equals(row.colorCode())) {
                         setGraphic(extBtn);
                     } else {
                         setGraphic(null);
@@ -444,7 +459,7 @@ public class UserController implements Initializable {
         if (currentUser == null) {
             return;
         }
-        var result = extensionRequestService.requestExtension(row.getRentalId(), currentUser.id());
+        var result = extensionRequestService.requestExtension(row.rentalId(), currentUser.id());
         if (result.isPresent()) {
             Utils.confirmDialog("Extension Request", "Your request to extend the rental has been submitted. An administrator will review it.");
         } else {
@@ -559,54 +574,9 @@ public class UserController implements Initializable {
     }
 
     /**
-     * DTO for the personal rentals TableView.
-     */
-    public static final class RentalRow {
-        private final long id;
-        private final long rentalId;
-        private final String bookTitle;
-        private final String borrowDate;
-        private final String dueDate;
-        private final String status;
-        private final String colorCode;
-
-        public RentalRow(long id, long rentalId, String bookTitle, String borrowDate,
-                         String dueDate, String status, String colorCode) {
-            this.id = id;
-            this.rentalId = rentalId;
-            this.bookTitle = bookTitle;
-            this.borrowDate = borrowDate;
-            this.dueDate = dueDate;
-            this.status = status;
-            this.colorCode = colorCode;
-        }
-
-        public long getId() {
-            return id;
-        }
-
-        public long getRentalId() {
-            return rentalId;
-        }
-
-        public String getBookTitle() {
-            return bookTitle;
-        }
-
-        public String getBorrowDate() {
-            return borrowDate;
-        }
-
-        public String getDueDate() {
-            return dueDate;
-        }
-
-        public String getStatus() {
-            return status;
-        }
-
-        public String getColorCode() {
-            return colorCode;
-        }
+         * DTO for the personal rentals TableView.
+         */
+        public record RentalRow(long id, long rentalId, String bookTitle, String borrowDate, String dueDate, String status,
+                                String colorCode) {
     }
 }

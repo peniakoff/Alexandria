@@ -8,7 +8,7 @@ package pl.tomaszmiller.config;
  *   <li>{@link #SQLITE}  – local SQLite file via JDBC (offline/private libraries)</li>
  *   <li>{@link #REST_API}– cloud REST API, e.g. Supabase (SaaS deployments)</li>
  * </ul>
- *
+ * <p>
  * Configured via {@code alexandria.datasource.type} property or
  * {@code ALEXANDRIA_DATASOURCE_TYPE} environment variable.
  */

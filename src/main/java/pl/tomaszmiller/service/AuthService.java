@@ -49,7 +49,9 @@ public class AuthService {
         }
     }
 
-    /** Clears the current session. */
+    /**
+     * Clears the current session.
+     */
     public void logout() {
         UserSession.clearCurrentUser();
     }

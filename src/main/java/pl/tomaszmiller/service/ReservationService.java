@@ -2,8 +2,8 @@ package pl.tomaszmiller.service;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import pl.tomaszmiller.model.Reservation;
 import pl.tomaszmiller.model.RequestStatus;
+import pl.tomaszmiller.model.Reservation;
 import pl.tomaszmiller.repository.port.ReservationRepository;
 
 import java.time.LocalDate;

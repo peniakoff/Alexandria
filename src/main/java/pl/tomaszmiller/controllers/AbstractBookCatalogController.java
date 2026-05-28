@@ -18,10 +18,14 @@ public abstract class AbstractBookCatalogController implements Initializable {
 
     protected final BookService bookService = AppConfig.getInstance().getBookService();
 
-    @FXML protected ListView<String> theList;
-    @FXML protected TextField bookAuthor;
-    @FXML protected TextField bookTitle;
-    @FXML protected TextField pages;
+    @FXML
+    protected ListView<String> theList;
+    @FXML
+    protected TextField bookAuthor;
+    @FXML
+    protected TextField bookTitle;
+    @FXML
+    protected TextField pages;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {

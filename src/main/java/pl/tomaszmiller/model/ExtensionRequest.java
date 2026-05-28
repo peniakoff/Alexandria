@@ -18,6 +18,8 @@ public record ExtensionRequest(
         RequestStatus status,
         LocalDate requestDate
 ) {
-    /** Default extension period in days. */
+    /**
+     * Default extension period in days.
+     */
     public static final int EXTENSION_DAYS = 7;
 }

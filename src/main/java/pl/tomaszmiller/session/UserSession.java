@@ -13,22 +13,30 @@ public final class UserSession {
     private UserSession() {
     }
 
-    /** Returns the currently logged-in user, or {@code null} if not authenticated. */
+    /**
+     * Returns the currently logged-in user, or {@code null} if not authenticated.
+     */
     public static User getCurrentUser() {
         return currentUser;
     }
 
-    /** Sets the authenticated user. */
+    /**
+     * Sets the authenticated user.
+     */
     public static void setCurrentUser(User user) {
         currentUser = user;
     }
 
-    /** Clears the authenticated user (logout). */
+    /**
+     * Clears the authenticated user (logout).
+     */
     public static void clearCurrentUser() {
         currentUser = null;
     }
 
-    /** Returns {@code true} if a user is currently logged in. */
+    /**
+     * Returns {@code true} if a user is currently logged in.
+     */
     public static boolean isLoggedIn() {
         return currentUser != null;
     }

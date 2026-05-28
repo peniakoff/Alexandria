@@ -35,16 +35,26 @@ public class StartController implements Initializable {
     private final AuthService authService = AppConfig.getInstance().getAuthService();
     private final UserService userService = AppConfig.getInstance().getUserService();
 
-    @FXML private ComboBox<String> languageCombo;
-    @FXML private TextField userEmail;
-    @FXML private PasswordField userPassword;
-    @FXML private TextField firstName;
-    @FXML private TextField lastName;
-    @FXML private TextField phoneNumber;
-    @FXML private TextField email;
-    @FXML private TextField emailConfirmed;
-    @FXML private PasswordField password;
-    @FXML private PasswordField passwordConfirmed;
+    @FXML
+    private ComboBox<String> languageCombo;
+    @FXML
+    private TextField userEmail;
+    @FXML
+    private PasswordField userPassword;
+    @FXML
+    private TextField firstName;
+    @FXML
+    private TextField lastName;
+    @FXML
+    private TextField phoneNumber;
+    @FXML
+    private TextField email;
+    @FXML
+    private TextField emailConfirmed;
+    @FXML
+    private PasswordField password;
+    @FXML
+    private PasswordField passwordConfirmed;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {

@@ -2,11 +2,7 @@ package pl.tomaszmiller.service;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import pl.tomaszmiller.model.ExtensionRequest;
-import pl.tomaszmiller.model.Rental;
-import pl.tomaszmiller.model.RentalStatus;
-import pl.tomaszmiller.model.RequestStatus;
-import pl.tomaszmiller.model.Reservation;
+import pl.tomaszmiller.model.*;
 import pl.tomaszmiller.repository.port.ExtensionRequestRepository;
 import pl.tomaszmiller.repository.port.RentalRepository;
 import pl.tomaszmiller.repository.port.ReservationRepository;
@@ -21,21 +17,10 @@ import java.util.Optional;
  */
 public class ExtensionRequestService {
 
-    /** Detailed result of an extension-approval attempt. */
-    public enum ApprovalResult {
-        APPROVED,
-        REQUEST_NOT_FOUND,
-        RENTAL_NOT_FOUND,
-        RESERVATION_CONFLICT,
-        ERROR
-    }
-
     private static final Logger LOGGER = LoggerFactory.getLogger(ExtensionRequestService.class);
-
     private final ExtensionRequestRepository extensionRepo;
     private final RentalRepository rentalRepo;
     private final ReservationRepository reservationRepo;
-
     public ExtensionRequestService(ExtensionRequestRepository extensionRepo,
                                    RentalRepository rentalRepo,
                                    ReservationRepository reservationRepo) {
@@ -132,5 +117,16 @@ public class ExtensionRequestService {
             LOGGER.error("Unable to reject extension request {}.", requestId, e);
             return false;
         }
+    }
+
+    /**
+     * Detailed result of an extension-approval attempt.
+     */
+    public enum ApprovalResult {
+        APPROVED,
+        REQUEST_NOT_FOUND,
+        RENTAL_NOT_FOUND,
+        RESERVATION_CONFLICT,
+        ERROR
     }
 }

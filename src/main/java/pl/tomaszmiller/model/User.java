@@ -18,12 +18,16 @@ public record User(
         String phoneNumber,
         UserRole role
 ) {
-    /** Returns the full display name. */
+    /**
+     * Returns the full display name.
+     */
     public String fullName() {
         return firstName + " " + lastName;
     }
 
-    /** Returns {@code true} if this user has administrator privileges. */
+    /**
+     * Returns {@code true} if this user has administrator privileges.
+     */
     public boolean isAdmin() {
         return role == UserRole.ADMIN;
     }

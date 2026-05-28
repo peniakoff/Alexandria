@@ -1,10 +1,6 @@
 package pl.tomaszmiller.repository.rest;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
+import com.google.gson.*;
 import pl.tomaszmiller.model.Book;
 import pl.tomaszmiller.model.BookStatus;
 import pl.tomaszmiller.repository.port.BookRepository;

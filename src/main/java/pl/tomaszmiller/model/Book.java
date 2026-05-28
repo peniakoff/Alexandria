@@ -22,12 +22,16 @@ public record Book(
         int publishYear,
         String publisher
 ) {
-    /** Convenience constructor for search results that do not carry an id yet. */
+    /**
+     * Convenience constructor for search results that do not carry an id yet.
+     */
     public Book(String author, String title, int pages) {
         this(0L, author, title, pages, null, BookStatus.AVAILABLE, 0, null);
     }
 
-    /** Legacy constructor without publishYear and publisher for backward compatibility. */
+    /**
+     * Legacy constructor without publishYear and publisher for backward compatibility.
+     */
     public Book(long id, String author, String title, int pages, String isbn, BookStatus status) {
         this(id, author, title, pages, isbn, status, 0, null);
     }

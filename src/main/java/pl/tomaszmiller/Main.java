@@ -18,6 +18,10 @@ public class Main extends Application {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Main.class);
 
+    public static void main(String[] args) {
+        launch(args);
+    }
+
     @Override
     public void start(Stage primaryStage) throws IOException {
         Parent root = FXMLLoader.load(Objects.requireNonNull(
@@ -44,9 +48,5 @@ public class Main extends Application {
             return;
         }
         primaryStage.getIcons().add(new Image(iconUrl.toExternalForm()));
-    }
-
-    public static void main(String[] args) {
-        launch(args);
     }
 }
