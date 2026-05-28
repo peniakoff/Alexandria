@@ -7,6 +7,7 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import pl.tomaszmiller.Utils;
 import pl.tomaszmiller.config.AppConfig;
+import pl.tomaszmiller.i18n.I18n;
 import pl.tomaszmiller.model.Book;
 import pl.tomaszmiller.service.BookService;
 
@@ -46,7 +47,7 @@ public abstract class AbstractBookCatalogController implements Initializable {
         Optional<Book> book = bookService.findByTitle(selectedTitle);
         if (book.isEmpty()) {
             clearBookDetails();
-            Utils.openDialog("Book catalog", "Failed to find the selected book.");
+            Utils.openDialog(I18n.get("dialog.bookcatalog"), I18n.get("book.selected.notfound"));
             return;
         }
         Book selectedBook = book.get();

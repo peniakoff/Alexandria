@@ -1,6 +1,7 @@
 package pl.tomaszmiller.i18n;
 
 import java.util.Locale;
+import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
 /**
@@ -42,6 +43,21 @@ public final class I18n {
             return java.text.MessageFormat.format(bundle.getString(key), args);
         } catch (Exception e) {
             return "!" + key + "!";
+        }
+    }
+
+    public static String getEnum(Enum<?> value) {
+        if (value == null) {
+            return "";
+        }
+        String key = "enum."
+                + value.getClass().getSimpleName().toLowerCase(Locale.ROOT)
+                + "."
+                + value.name().toLowerCase(Locale.ROOT);
+        try {
+            return bundle.getString(key);
+        } catch (MissingResourceException exception) {
+            return value.name();
         }
     }
 

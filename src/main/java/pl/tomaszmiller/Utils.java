@@ -1,8 +1,14 @@
 package pl.tomaszmiller;
 
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.control.Alert;
 import org.mindrot.jbcrypt.BCrypt;
+import pl.tomaszmiller.i18n.I18n;
 
+import java.io.IOException;
+import java.net.URL;
+import java.util.Objects;
 import java.util.regex.Pattern;
 
 public final class Utils {
@@ -28,6 +34,13 @@ public final class Utils {
         alert.setHeaderText(null);
         alert.setContentText(message);
         alert.showAndWait();
+    }
+
+    public static Parent loadView(String resourcePath) throws IOException {
+        URL resourceUrl = Objects.requireNonNull(Utils.class.getResource(resourcePath),
+                "View is missing: " + resourcePath);
+        FXMLLoader loader = new FXMLLoader(resourceUrl, I18n.getBundle());
+        return loader.load();
     }
 
     public static String hashPassword(String password) {

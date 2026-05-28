@@ -3,7 +3,6 @@ package pl.tomaszmiller.controllers;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
@@ -24,7 +23,6 @@ import pl.tomaszmiller.service.UserService;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
@@ -59,8 +57,10 @@ public class StartController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         if (languageCombo != null) {
-            languageCombo.setItems(FXCollections.observableArrayList("English", "Polski"));
-            languageCombo.setValue(I18n.getCurrentLocale().getLanguage().equals("pl") ? "Polski" : "English");
+            languageCombo.setItems(FXCollections.observableArrayList(I18n.get("lang.en"), I18n.get("lang.pl")));
+            languageCombo.setValue(I18n.getCurrentLocale().getLanguage().equals("pl")
+                    ? I18n.get("lang.pl")
+                    : I18n.get("lang.en"));
         }
     }
 
@@ -70,18 +70,16 @@ public class StartController implements Initializable {
             return;
         }
         String selected = languageCombo.getValue();
-        if ("Polski".equals(selected)) {
+        if (I18n.get("lang.pl").equals(selected)) {
             I18n.switchToPolish();
         } else {
             I18n.switchToEnglish();
         }
         // Reload the login view to reflect the new language
         try {
-            FXMLLoader loader = new FXMLLoader(
-                    Objects.requireNonNull(getClass().getResource("/pl/tomaszmiller/views/loginView.fxml")),
-                    I18n.getBundle());
-            Parent loginView = loader.load();
+            Parent loginView = Utils.loadView("/pl/tomaszmiller/views/loginView.fxml");
             Stage stage = (Stage) languageCombo.getScene().getWindow();
+            stage.setTitle(I18n.get("app.title"));
             stage.setScene(new Scene(loginView, 800, 600));
             stage.show();
         } catch (IOException e) {
@@ -97,7 +95,7 @@ public class StartController implements Initializable {
 
         Optional<User> userOpt = authService.login(getValue(userEmail), getPassword(userPassword));
         if (userOpt.isEmpty()) {
-            Utils.openDialog("Login", "Invalid e-mail address or password.");
+            Utils.openDialog(I18n.get("login.tab"), I18n.get("login.error"));
             return;
         }
 
@@ -107,10 +105,10 @@ public class StartController implements Initializable {
                 : "/pl/tomaszmiller/views/userView.fxml";
         try {
             switchScene(event, source);
-            Utils.confirmDialog("Login", "Logged in successfully as " + user.fullName() + ".");
+            Utils.confirmDialog(I18n.get("login.tab"), I18n.get("login.success", user.fullName()));
         } catch (IOException exception) {
             LOGGER.error("Unable to open the dashboard view {}.", source, exception);
-            Utils.openDialog("Login", "Failed to open user panel.");
+            Utils.openDialog(I18n.get("login.tab"), I18n.get("login.failed"));
         }
     }
 
@@ -121,7 +119,7 @@ public class StartController implements Initializable {
         }
 
         if (userService.emailExists(getValue(email))) {
-            Utils.openDialog("Create new account", "A user with this e-mail address already exists!");
+            Utils.openDialog(I18n.get("register.title"), I18n.get("register.exists"));
             return;
         }
 
@@ -129,10 +127,10 @@ public class StartController implements Initializable {
                 getValue(email), getValue(phoneNumber), UserRole.USER);
         Optional<User> saved = userService.register(newUser, getPassword(password));
         if (saved.isPresent()) {
-            Utils.confirmDialog("Create new account", "Your account has been successfully created!");
+            Utils.confirmDialog(I18n.get("register.title"), I18n.get("register.success"));
             clearRegisterForm();
         } else {
-            Utils.openDialog("Create new account", "Failed to create new account.");
+            Utils.openDialog(I18n.get("register.title"), I18n.get("register.failed"));
         }
     }
 
@@ -140,7 +138,7 @@ public class StartController implements Initializable {
         String emailValue = getValue(userEmail);
         String passwordValue = getPassword(userPassword);
         if (!Utils.isValidEmail(emailValue) || passwordValue.length() < 8) {
-            Utils.openDialog("Login", "E-mail address or password is incorrect!");
+            Utils.openDialog(I18n.get("login.tab"), I18n.get("login.error"));
             return false;
         }
         return true;
@@ -164,17 +162,17 @@ public class StartController implements Initializable {
                 && passwordValue.equals(passwordConfirmedValue);
 
         if (!valid) {
-            Utils.openDialog("Create new account", "The data entered is incorrect! Check the form and try again.");
+            Utils.openDialog(I18n.get("register.title"), I18n.get("register.invalid"));
         }
         return valid;
     }
 
     private void switchScene(ActionEvent event, String source) throws IOException {
-        Parent nextView = FXMLLoader.load(Objects.requireNonNull(
-                getClass().getResource(source), "View is missing: " + source));
+        Parent nextView = Utils.loadView(source);
         Scene scene = new Scene(nextView);
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         stage.hide();
+        stage.setTitle(I18n.get("app.title"));
         stage.setScene(scene);
         stage.show();
     }

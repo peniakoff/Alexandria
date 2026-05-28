@@ -25,56 +25,56 @@
             fx:controller="pl.tomaszmiller.controllers.AdminController">
     <top>
         <HBox alignment="CENTER_RIGHT" style="-fx-padding: 8 16; -fx-background-color: #002244;">
-            <Label fx:id="welcomeLabel" text="Admin Panel" style="-fx-text-fill: #b3995d; -fx-font-size: 14px;" HBox.hgrow="ALWAYS"/>
-            <Button text="Logout" onAction="#onLogout"
+            <Label fx:id="welcomeLabel" text="%nav.admin" style="-fx-text-fill: #b3995d; -fx-font-size: 14px;" HBox.hgrow="ALWAYS"/>
+            <Button text="%nav.logout" onAction="#onLogout"
                     style="-fx-background-color: #b3995d; -fx-text-fill: #002244; -fx-padding: 6 16; -fx-font-weight: bold; -fx-cursor: hand;"/>
         </HBox>
     </top>
     <center>
         <TabPane tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER">
             <tabs>
-                <Tab text="Users">
+                <Tab text="%tab.users">
                     <content>
                         <VBox spacing="8.0" style="-fx-padding: 12;">
-                            <Label fx:id="userCountLabel" text="Users" style="-fx-font-size: 14px;"/>
+                            <Label fx:id="userCountLabel" text="%tab.users" style="-fx-font-size: 14px;"/>
                             <TableView fx:id="usersTable" VBox.vgrow="ALWAYS">
                                 <columns>
-                                    <TableColumn fx:id="userIdCol" text="ID" prefWidth="50"/>
-                                    <TableColumn fx:id="userNameCol" text="Full name" prefWidth="200"/>
-                                    <TableColumn fx:id="userEmailCol" text="E-mail" prefWidth="240"/>
-                                    <TableColumn fx:id="userRoleCol" text="Role" prefWidth="90"/>
+                                    <TableColumn fx:id="userIdCol" text="%col.id" prefWidth="50"/>
+                                    <TableColumn fx:id="userNameCol" text="%col.fullname" prefWidth="200"/>
+                                    <TableColumn fx:id="userEmailCol" text="%col.email" prefWidth="240"/>
+                                    <TableColumn fx:id="userRoleCol" text="%col.role" prefWidth="90"/>
                                 </columns>
                             </TableView>
                             <HBox spacing="8">
-                                <Button fx:id="deleteUserBtn" text="Remove user" onAction="#onDeleteUser"
+                                <Button fx:id="deleteUserBtn" text="%admin.users.remove" onAction="#onDeleteUser"
                                         style="-fx-background-color: #c0392b; -fx-text-fill: white; -fx-padding: 6 12;"/>
                             </HBox>
                         </VBox>
                     </content>
                 </Tab>
 
-                <Tab text="Rentals">
+                <Tab text="%tab.rentals">
                     <content>
                         <VBox spacing="8.0" style="-fx-padding: 12;">
                             <TableView fx:id="rentalsTable" VBox.vgrow="ALWAYS">
                                 <columns>
-                                    <TableColumn fx:id="rentalIdCol" text="ID" prefWidth="50"/>
-                                    <TableColumn fx:id="rentalUserCol" text="User" prefWidth="150"/>
-                                    <TableColumn fx:id="rentalBookCol" text="Book" prefWidth="200"/>
-                                    <TableColumn fx:id="rentalBorrowCol" text="Borrowed" prefWidth="110"/>
-                                    <TableColumn fx:id="rentalDueCol" text="Due date" prefWidth="110"/>
-                                    <TableColumn fx:id="rentalStatusCol" text="Status" prefWidth="110"/>
+                                    <TableColumn fx:id="rentalIdCol" text="%col.id" prefWidth="50"/>
+                                    <TableColumn fx:id="rentalUserCol" text="%col.user" prefWidth="150"/>
+                                    <TableColumn fx:id="rentalBookCol" text="%col.book" prefWidth="200"/>
+                                    <TableColumn fx:id="rentalBorrowCol" text="%col.borrowed" prefWidth="110"/>
+                                    <TableColumn fx:id="rentalDueCol" text="%col.duedate" prefWidth="110"/>
+                                    <TableColumn fx:id="rentalStatusCol" text="%col.status" prefWidth="110"/>
                                 </columns>
                             </TableView>
                             <HBox spacing="8">
-                                <Button fx:id="returnBookBtn" text="Register return" onAction="#onReturnBook"
+                                <Button fx:id="returnBookBtn" text="%admin.rentals.return" onAction="#onReturnBook"
                                         style="-fx-background-color: #27ae60; -fx-text-fill: white; -fx-padding: 6 12;"/>
                             </HBox>
                         </VBox>
                     </content>
                 </Tab>
 
-                <Tab text="Book catalog">
+                <Tab text="%tab.bookcatalog">
                     <content>
                         <GridPane>
                             <columnConstraints>
@@ -87,8 +87,8 @@
                             <children>
                                 <VBox spacing="6" style="-fx-padding: 10;">
                                     <HBox spacing="6">
-                                        <TextField fx:id="searchField" promptText="Search by title / author…" HBox.hgrow="ALWAYS"/>
-                                        <Button text="Search" onAction="#onSearchBook"
+                                        <TextField fx:id="searchField" promptText="%search.prompt" HBox.hgrow="ALWAYS"/>
+                                        <Button text="%search.button" onAction="#onSearchBook"
                                                 style="-fx-background-color: #002244; -fx-text-fill: white; -fx-padding: 6 10;"/>
                                     </HBox>
                                     <ScrollPane fitToWidth="true" fitToHeight="true" VBox.vgrow="ALWAYS">
@@ -98,23 +98,23 @@
                                     </ScrollPane>
                                 </VBox>
                                 <VBox spacing="10" style="-fx-padding: 10;" GridPane.columnIndex="1">
-                                    <Label text="Book Details" style="-fx-font-weight: bold; -fx-font-size: 14px;"/>
-                                    <Label text="Author:" style="-fx-font-size: 11px; -fx-text-fill: #666;"/>
-                                    <TextField fx:id="bookAuthor" promptText="Author"/>
-                                    <Label text="Title:" style="-fx-font-size: 11px; -fx-text-fill: #666;"/>
-                                    <TextField fx:id="bookTitle" promptText="Title"/>
-                                    <Label text="Pages:" style="-fx-font-size: 11px; -fx-text-fill: #666;"/>
-                                    <TextField fx:id="pages" promptText="Number of pages"/>
-                                    <Label text="ISBN:" style="-fx-font-size: 11px; -fx-text-fill: #666;"/>
-                                    <TextField fx:id="bookIsbn" promptText="ISBN (optional)"/>
-                                    <Label text="Year:" style="-fx-font-size: 11px; -fx-text-fill: #666;"/>
-                                    <TextField fx:id="bookYear" promptText="Publication year"/>
-                                    <Label text="Publisher:" style="-fx-font-size: 11px; -fx-text-fill: #666;"/>
-                                    <TextField fx:id="bookPublisher" promptText="Publisher"/>
+                                    <Label text="%book.details" style="-fx-font-weight: bold; -fx-font-size: 14px;"/>
+                                    <Label text="%book.author" style="-fx-font-size: 11px; -fx-text-fill: #666;"/>
+                                    <TextField fx:id="bookAuthor" promptText="%book.author.prompt"/>
+                                    <Label text="%book.title" style="-fx-font-size: 11px; -fx-text-fill: #666;"/>
+                                    <TextField fx:id="bookTitle" promptText="%book.title.prompt"/>
+                                    <Label text="%book.pages" style="-fx-font-size: 11px; -fx-text-fill: #666;"/>
+                                    <TextField fx:id="pages" promptText="%book.pages.prompt"/>
+                                    <Label text="%book.isbn" style="-fx-font-size: 11px; -fx-text-fill: #666;"/>
+                                    <TextField fx:id="bookIsbn" promptText="%book.isbn.prompt"/>
+                                    <Label text="%book.year" style="-fx-font-size: 11px; -fx-text-fill: #666;"/>
+                                    <TextField fx:id="bookYear" promptText="%book.year.prompt"/>
+                                    <Label text="%book.publisher" style="-fx-font-size: 11px; -fx-text-fill: #666;"/>
+                                    <TextField fx:id="bookPublisher" promptText="%book.publisher.prompt"/>
                                     <HBox spacing="8">
-                                        <Button fx:id="addBookBtn" text="Add / Save" onAction="#onAddBook"
+                                        <Button fx:id="addBookBtn" text="%admin.books.add" onAction="#onAddBook"
                                                 style="-fx-background-color: #002244; -fx-text-fill: white; -fx-padding: 6 10;"/>
-                                        <Button fx:id="deleteBookBtn" text="Remove" onAction="#onDeleteBook"
+                                        <Button fx:id="deleteBookBtn" text="%admin.books.remove" onAction="#onDeleteBook"
                                                 style="-fx-background-color: #c0392b; -fx-text-fill: white; -fx-padding: 6 10;"/>
                                     </HBox>
                                 </VBox>
@@ -123,46 +123,46 @@
                     </content>
                 </Tab>
 
-                <Tab text="Extension Requests">
+                <Tab text="%tab.extensions">
                     <content>
                         <VBox spacing="8.0" style="-fx-padding: 12;">
-                            <Label text="Pending Extension Requests" style="-fx-font-size: 14px; -fx-font-weight: bold;"/>
+                            <Label text="%admin.ext.title" style="-fx-font-size: 14px; -fx-font-weight: bold;"/>
                             <TableView fx:id="extRequestsTable" VBox.vgrow="ALWAYS">
                                 <columns>
-                                    <TableColumn fx:id="extReqIdCol" text="ID" prefWidth="50"/>
-                                    <TableColumn fx:id="extReqUserCol" text="User" prefWidth="150"/>
-                                    <TableColumn fx:id="extReqBookCol" text="Book" prefWidth="200"/>
-                                    <TableColumn fx:id="extReqDateCol" text="Request Date" prefWidth="110"/>
-                                    <TableColumn fx:id="extReqStatusCol" text="Status" prefWidth="100"/>
+                                    <TableColumn fx:id="extReqIdCol" text="%col.id" prefWidth="50"/>
+                                    <TableColumn fx:id="extReqUserCol" text="%col.user" prefWidth="150"/>
+                                    <TableColumn fx:id="extReqBookCol" text="%col.book" prefWidth="200"/>
+                                    <TableColumn fx:id="extReqDateCol" text="%col.requestdate" prefWidth="110"/>
+                                    <TableColumn fx:id="extReqStatusCol" text="%col.status" prefWidth="100"/>
                                 </columns>
                             </TableView>
                             <HBox spacing="8">
-                                <Button text="Approve" onAction="#onApproveExtension"
+                                <Button text="%admin.ext.approve" onAction="#onApproveExtension"
                                         style="-fx-background-color: #27ae60; -fx-text-fill: white; -fx-padding: 6 12;"/>
-                                <Button text="Reject" onAction="#onRejectExtension"
+                                <Button text="%admin.ext.reject" onAction="#onRejectExtension"
                                         style="-fx-background-color: #c0392b; -fx-text-fill: white; -fx-padding: 6 12;"/>
                             </HBox>
                         </VBox>
                     </content>
                 </Tab>
 
-                <Tab text="Reservations">
+                <Tab text="%tab.reservations">
                     <content>
                         <VBox spacing="8.0" style="-fx-padding: 12;">
-                            <Label text="Pending Reservations" style="-fx-font-size: 14px; -fx-font-weight: bold;"/>
+                            <Label text="%admin.res.title" style="-fx-font-size: 14px; -fx-font-weight: bold;"/>
                             <TableView fx:id="reservationsTable" VBox.vgrow="ALWAYS">
                                 <columns>
-                                    <TableColumn fx:id="resIdCol" text="ID" prefWidth="50"/>
-                                    <TableColumn fx:id="resUserCol" text="User" prefWidth="150"/>
-                                    <TableColumn fx:id="resBookCol" text="Book" prefWidth="200"/>
-                                    <TableColumn fx:id="resDateCol" text="Request Date" prefWidth="110"/>
-                                    <TableColumn fx:id="resStatusCol" text="Status" prefWidth="100"/>
+                                    <TableColumn fx:id="resIdCol" text="%col.id" prefWidth="50"/>
+                                    <TableColumn fx:id="resUserCol" text="%col.user" prefWidth="150"/>
+                                    <TableColumn fx:id="resBookCol" text="%col.book" prefWidth="200"/>
+                                    <TableColumn fx:id="resDateCol" text="%col.requestdate" prefWidth="110"/>
+                                    <TableColumn fx:id="resStatusCol" text="%col.status" prefWidth="100"/>
                                 </columns>
                             </TableView>
                             <HBox spacing="8">
-                                <Button text="Approve" onAction="#onApproveReservation"
+                                <Button text="%admin.res.approve" onAction="#onApproveReservation"
                                         style="-fx-background-color: #27ae60; -fx-text-fill: white; -fx-padding: 6 12;"/>
-                                <Button text="Reject" onAction="#onRejectReservation"
+                                <Button text="%admin.res.reject" onAction="#onRejectReservation"
                                         style="-fx-background-color: #c0392b; -fx-text-fill: white; -fx-padding: 6 12;"/>
                             </HBox>
                         </VBox>

@@ -3,7 +3,6 @@ package pl.tomaszmiller.controllers;
 import javafx.animation.PauseTransition;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -13,6 +12,7 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 import pl.tomaszmiller.Utils;
 import pl.tomaszmiller.config.AppConfig;
+import pl.tomaszmiller.i18n.I18n;
 import pl.tomaszmiller.model.Book;
 import pl.tomaszmiller.model.BookStatus;
 import pl.tomaszmiller.model.Rental;
@@ -39,7 +39,6 @@ public class UserController implements Initializable {
 
     @FXML
     private Label welcomeLabel;
-
     @FXML
     private ListView<String> theList;
     @FXML
@@ -120,7 +119,7 @@ public class UserController implements Initializable {
         if (welcomeLabel != null) {
             User user = UserSession.getCurrentUser();
             if (user != null) {
-                welcomeLabel.setText("Welcome, " + user.fullName());
+                welcomeLabel.setText(I18n.get("nav.welcome", user.fullName()));
             }
         }
         setupSearchDebounce();
@@ -213,7 +212,7 @@ public class UserController implements Initializable {
                 .toList();
         theList.setItems(FXCollections.observableArrayList(pageItems));
         if (pageInfoLabel != null) {
-            pageInfoLabel.setText("Page " + (currentPage + 1) + " / " + totalPages + " (" + totalItems + " books)");
+            pageInfoLabel.setText(I18n.get("page.info", currentPage + 1, totalPages, totalItems));
         }
         if (prevPageBtn != null) {
             prevPageBtn.setDisable(currentPage <= 0);
@@ -265,7 +264,7 @@ public class UserController implements Initializable {
             bookPublisher.setText(b.publisher() != null ? b.publisher() : "");
         }
         if (bookStatus != null) {
-            bookStatus.setText(b.status().name());
+            bookStatus.setText(I18n.getEnum(b.status()));
         }
         // Show/hide borrow vs reserve based on availability
         if (borrowBtn != null) {
@@ -287,26 +286,26 @@ public class UserController implements Initializable {
     private void onBorrowBook() {
         User currentUser = UserSession.getCurrentUser();
         if (currentUser == null) {
-            Utils.openDialog("Borrow book", "You must be logged in to borrow a book.");
+            Utils.openDialog(I18n.get("dialog.borrowbook"), I18n.get("borrow.notloggedin"));
             return;
         }
         if (selectedBookId <= 0) {
-            Utils.openDialog("Borrow book", "First select a book from the list.");
+            Utils.openDialog(I18n.get("dialog.borrowbook"), I18n.get("borrow.selectfirst"));
             return;
         }
         // Check if book is available
         Optional<Book> bookOpt = bookService.findById(selectedBookId);
         if (bookOpt.isPresent() && bookOpt.get().status() != BookStatus.AVAILABLE) {
-            Utils.openDialog("Borrow book", "This book is currently unavailable. You can reserve it instead.");
+            Utils.openDialog(I18n.get("dialog.borrowbook"), I18n.get("borrow.unavailable"));
             return;
         }
         Optional<Rental> rental = rentalService.borrow(currentUser.id(), selectedBookId);
         if (rental.isPresent()) {
-            Utils.confirmDialog("Borrow book",
-                    "Book has been borrowed. Due date: " + rental.get().dueDate() + ".");
+            Utils.confirmDialog(I18n.get("dialog.borrowbook"),
+                    I18n.get("borrow.success", rental.get().dueDate()));
             refreshMyRentals();
         } else {
-            Utils.openDialog("Borrow book", "Failed to borrow book.");
+            Utils.openDialog(I18n.get("dialog.borrowbook"), I18n.get("borrow.failed"));
         }
     }
 
@@ -314,23 +313,22 @@ public class UserController implements Initializable {
     private void onReserveBook() {
         User currentUser = UserSession.getCurrentUser();
         if (currentUser == null) {
-            Utils.openDialog("Reserve book", "You must be logged in to reserve a book.");
+            Utils.openDialog(I18n.get("dialog.reservebook"), I18n.get("reserve.notloggedin"));
             return;
         }
         if (selectedBookId <= 0) {
-            Utils.openDialog("Reserve book", "First select a book from the list.");
+            Utils.openDialog(I18n.get("dialog.reservebook"), I18n.get("reserve.selectfirst"));
             return;
         }
         if (reservationService == null) {
-            Utils.openDialog("Reserve book", "Reservation service is not available.");
+            Utils.openDialog(I18n.get("dialog.reservebook"), I18n.get("reserve.unavailable"));
             return;
         }
         var result = reservationService.reserve(currentUser.id(), selectedBookId);
         if (result.isPresent()) {
-            Utils.confirmDialog("Reserve book",
-                    "Your reservation request has been submitted. An administrator will review it.");
+            Utils.confirmDialog(I18n.get("dialog.reservebook"), I18n.get("reserve.success"));
         } else {
-            Utils.openDialog("Reserve book", "Failed to submit reservation.");
+            Utils.openDialog(I18n.get("dialog.reservebook"), I18n.get("reserve.failed"));
         }
     }
 
@@ -338,13 +336,13 @@ public class UserController implements Initializable {
     private void onLogout() {
         authService.logout();
         try {
-            Parent loginView = FXMLLoader.load(Objects.requireNonNull(
-                    getClass().getResource("/pl/tomaszmiller/views/loginView.fxml")));
+            Parent loginView = Utils.loadView("/pl/tomaszmiller/views/loginView.fxml");
             Stage stage = (Stage) theList.getScene().getWindow();
+            stage.setTitle(I18n.get("app.title"));
             stage.setScene(new Scene(loginView, 800, 600));
             stage.show();
         } catch (IOException e) {
-            Utils.openDialog("Logout", "Failed to return to login screen.");
+            Utils.openDialog(I18n.get("dialog.logout"), I18n.get("logout.failed"));
         }
     }
 
@@ -413,7 +411,7 @@ public class UserController implements Initializable {
         // Action column with "Request Extension" button
         if (myRentalActionCol != null) {
             myRentalActionCol.setCellFactory(col -> new javafx.scene.control.TableCell<>() {
-                private final Button extBtn = new Button("Request Extension");
+                private final Button extBtn = new Button(I18n.get("extension.button"));
 
                 {
                     extBtn.setStyle("-fx-background-color: #f0ad4e; -fx-text-fill: white; -fx-padding: 2 8; -fx-font-size: 11px;");
@@ -452,7 +450,7 @@ public class UserController implements Initializable {
 
     private void onRequestExtension(RentalRow row) {
         if (extensionRequestService == null) {
-            Utils.openDialog("Extension", "Extension requests are not available.");
+            Utils.openDialog(I18n.get("dialog.extension"), I18n.get("extension.unavailable"));
             return;
         }
         User currentUser = UserSession.getCurrentUser();
@@ -461,9 +459,9 @@ public class UserController implements Initializable {
         }
         var result = extensionRequestService.requestExtension(row.rentalId(), currentUser.id());
         if (result.isPresent()) {
-            Utils.confirmDialog("Extension Request", "Your request to extend the rental has been submitted. An administrator will review it.");
+            Utils.confirmDialog(I18n.get("dialog.extensionrequest"), I18n.get("extension.success"));
         } else {
-            Utils.openDialog("Extension Request", "Failed to submit extension request.");
+            Utils.openDialog(I18n.get("dialog.extensionrequest"), I18n.get("extension.failed"));
         }
     }
 
@@ -483,7 +481,7 @@ public class UserController implements Initializable {
                     String bookTitleStr = bookTitles.getOrDefault(r.bookId(), "(id=" + r.bookId() + ")");
                     String colorCode = computeColorCode(r);
                     return new RentalRow(r.id(), r.id(), bookTitleStr,
-                            r.borrowDate().toString(), r.dueDate().toString(), r.status().name(), colorCode);
+                            r.borrowDate().toString(), r.dueDate().toString(), I18n.getEnum(r.status()), colorCode);
                 })
                 .toList();
         myRentalsTable.setItems(FXCollections.observableArrayList(rows));
@@ -528,11 +526,11 @@ public class UserController implements Initializable {
         String phone = settingsPhone.getText() == null ? "" : settingsPhone.getText().trim();
 
         if (!Utils.isValidName(firstName) || !Utils.isValidName(lastName)) {
-            Utils.openDialog("Settings", "First and last name are required (2-48 characters, letters only).");
+            Utils.openDialog(I18n.get("dialog.settings"), I18n.get("settings.namereq"));
             return;
         }
         if (!phone.isEmpty() && !Utils.isValidPhoneNumber(phone)) {
-            Utils.openDialog("Settings", "Invalid phone number format.");
+            Utils.openDialog(I18n.get("dialog.settings"), I18n.get("settings.phoneinvalid"));
             return;
         }
 
@@ -540,11 +538,11 @@ public class UserController implements Initializable {
         String confirmPass = settingsConfirmPassword != null ? settingsConfirmPassword.getText() : "";
         if (newPass != null && !newPass.isBlank()) {
             if (newPass.length() < 8) {
-                Utils.openDialog("Change password", "Password must be at least 8 characters long.");
+                Utils.openDialog(I18n.get("dialog.changepassword"), I18n.get("settings.passshort"));
                 return;
             }
             if (!newPass.equals(confirmPass)) {
-                Utils.openDialog("Change password", "Passwords do not match.");
+                Utils.openDialog(I18n.get("dialog.changepassword"), I18n.get("settings.passmatch"));
                 return;
             }
         }
@@ -554,8 +552,11 @@ public class UserController implements Initializable {
         boolean saved = userService.updateProfile(updated);
         if (saved) {
             UserSession.setCurrentUser(updated);
+            if (welcomeLabel != null) {
+                welcomeLabel.setText(I18n.get("nav.welcome", updated.fullName()));
+            }
         } else {
-            Utils.openDialog("Settings", "Failed to save changes.");
+            Utils.openDialog(I18n.get("dialog.settings"), I18n.get("settings.savefailed"));
             return;
         }
 
@@ -564,13 +565,13 @@ public class UserController implements Initializable {
             if (changed) {
                 settingsNewPassword.clear();
                 settingsConfirmPassword.clear();
-                Utils.confirmDialog("Settings", "Data and password have been updated.");
+                Utils.confirmDialog(I18n.get("dialog.settings"), I18n.get("settings.passupdated"));
             } else {
-                Utils.openDialog("Change password", "Failed to change password.");
+                Utils.openDialog(I18n.get("dialog.changepassword"), I18n.get("settings.passfailed"));
             }
             return;
         }
-        Utils.confirmDialog("Settings", "Data has been updated.");
+        Utils.confirmDialog(I18n.get("dialog.settings"), I18n.get("settings.updated"));
     }
 
     /**

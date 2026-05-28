@@ -1,7 +1,6 @@
 package pl.tomaszmiller;
 
 import javafx.application.Application;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
@@ -9,10 +8,10 @@ import javafx.stage.Stage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pl.tomaszmiller.config.AppConfig;
+import pl.tomaszmiller.i18n.I18n;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.Objects;
 
 public class Main extends Application {
 
@@ -23,13 +22,15 @@ public class Main extends Application {
     }
 
     @Override
-    public void start(Stage primaryStage) throws IOException {
-        Parent root = FXMLLoader.load(Objects.requireNonNull(
-                getClass().getResource("/pl/tomaszmiller/views/loginView.fxml"),
-                "Login view is missing"
-        ));
+    public void start(Stage primaryStage) {
+        Parent root;
+        try {
+            root = Utils.loadView("/pl/tomaszmiller/views/loginView.fxml");
+        } catch (IOException exception) {
+            throw new IllegalStateException("Failed to load the login view.", exception);
+        }
 
-        primaryStage.setTitle("Alexandria – library management");
+        primaryStage.setTitle(I18n.get("app.title"));
         addWindowIcon(primaryStage);
         primaryStage.setScene(new Scene(root, 800, 600));
         primaryStage.setResizable(false);

@@ -28,33 +28,33 @@
             fx:controller="pl.tomaszmiller.controllers.UserController">
     <top>
         <HBox alignment="CENTER_RIGHT" style="-fx-padding: 8 16; -fx-background-color: #002244;">
-            <Label fx:id="welcomeLabel" text="Welcome" style="-fx-text-fill: #b3995d; -fx-font-size: 14px;" HBox.hgrow="ALWAYS"/>
-            <Button text="Logout" onAction="#onLogout"
+            <Label fx:id="welcomeLabel" text="%nav.welcome" style="-fx-text-fill: #b3995d; -fx-font-size: 14px;" HBox.hgrow="ALWAYS"/>
+            <Button text="%nav.logout" onAction="#onLogout"
                     style="-fx-background-color: #b3995d; -fx-text-fill: #002244; -fx-padding: 6 16; -fx-font-weight: bold; -fx-cursor: hand;"/>
         </HBox>
     </top>
     <center>
         <TabPane tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER">
             <tabs>
-                <Tab text="My rentals">
+                <Tab text="%tab.myrentals">
                     <content>
                         <VBox spacing="8.0" style="-fx-padding: 12;">
-                            <Label text="My rentals" style="-fx-font-size: 16px; -fx-font-weight: bold;"/>
+                            <Label text="%tab.myrentals" style="-fx-font-size: 16px; -fx-font-weight: bold;"/>
                             <TableView fx:id="myRentalsTable" VBox.vgrow="ALWAYS">
                                 <columns>
-                                    <TableColumn fx:id="myRentalIdCol" text="ID" prefWidth="50"/>
-                                    <TableColumn fx:id="myRentalBookCol" text="Title" prefWidth="250"/>
-                                    <TableColumn fx:id="myRentalBorrowCol" text="Borrowed" prefWidth="100"/>
-                                    <TableColumn fx:id="myRentalDueCol" text="Due date" prefWidth="100"/>
-                                    <TableColumn fx:id="myRentalStatusCol" text="Status" prefWidth="100"/>
-                                    <TableColumn fx:id="myRentalActionCol" text="Action" prefWidth="140"/>
+                                    <TableColumn fx:id="myRentalIdCol" text="%col.id" prefWidth="50"/>
+                                    <TableColumn fx:id="myRentalBookCol" text="%col.title" prefWidth="250"/>
+                                    <TableColumn fx:id="myRentalBorrowCol" text="%col.borrowed" prefWidth="100"/>
+                                    <TableColumn fx:id="myRentalDueCol" text="%col.duedate" prefWidth="100"/>
+                                    <TableColumn fx:id="myRentalStatusCol" text="%col.status" prefWidth="100"/>
+                                    <TableColumn fx:id="myRentalActionCol" text="%col.action" prefWidth="140"/>
                                 </columns>
                             </TableView>
                         </VBox>
                     </content>
                 </Tab>
 
-                <Tab text="Borrow book">
+                <Tab text="%tab.borrow">
                     <content>
                         <GridPane>
                             <columnConstraints>
@@ -67,46 +67,46 @@
                             <children>
                                 <VBox spacing="6" style="-fx-padding: 10;">
                                     <HBox spacing="6" alignment="CENTER_LEFT">
-                                        <TextField fx:id="searchField" promptText="Search by title / author…" HBox.hgrow="ALWAYS"/>
-                                        <Button text="Search" onAction="#onSearchBook"
+                                        <TextField fx:id="searchField" promptText="%search.prompt" HBox.hgrow="ALWAYS"/>
+                                        <Button text="%search.button" onAction="#onSearchBook"
                                                 style="-fx-background-color: #002244; -fx-text-fill: white; -fx-padding: 6 10;"/>
                                     </HBox>
-                                    <CheckBox fx:id="showUnavailableCheck" text="Show unavailable (borrowed) books" onAction="#onToggleShowUnavailable"/>
+                                    <CheckBox fx:id="showUnavailableCheck" text="%search.showunavailable" onAction="#onToggleShowUnavailable"/>
                                     <ScrollPane fitToWidth="true" fitToHeight="true" VBox.vgrow="ALWAYS">
                                         <content>
                                             <ListView fx:id="theList"/>
                                         </content>
                                     </ScrollPane>
                                     <HBox spacing="8" alignment="CENTER_LEFT" style="-fx-padding: 4 0 0 0;">
-                                        <Label text="Per page:"/>
+                                        <Label text="%search.perpage"/>
                                         <ComboBox fx:id="pageSizeCombo"/>
-                                        <Button fx:id="prevPageBtn" text="◀ Prev" onAction="#onPrevPage"
+                                        <Button fx:id="prevPageBtn" text="%search.prev" onAction="#onPrevPage"
                                                 style="-fx-padding: 4 8;"/>
-                                        <Label fx:id="pageInfoLabel" text="Page 1 / 1"/>
-                                        <Button fx:id="nextPageBtn" text="Next ▶" onAction="#onNextPage"
+                                        <Label fx:id="pageInfoLabel" text="%search.page"/>
+                                        <Button fx:id="nextPageBtn" text="%search.next" onAction="#onNextPage"
                                                 style="-fx-padding: 4 8;"/>
                                     </HBox>
                                 </VBox>
                                 <VBox spacing="10" style="-fx-padding: 10;" GridPane.columnIndex="1">
-                                    <Label text="Book Details" style="-fx-font-weight: bold; -fx-font-size: 14px;"/>
-                                    <Label text="Author:" style="-fx-font-size: 11px; -fx-text-fill: #666;"/>
-                                    <TextField fx:id="bookAuthor" editable="false" promptText="Author"/>
-                                    <Label text="Title:" style="-fx-font-size: 11px; -fx-text-fill: #666;"/>
-                                    <TextField fx:id="bookTitle" editable="false" promptText="Title"/>
-                                    <Label text="Pages:" style="-fx-font-size: 11px; -fx-text-fill: #666;"/>
-                                    <TextField fx:id="pages" editable="false" promptText="Pages"/>
-                                    <Label text="ISBN:" style="-fx-font-size: 11px; -fx-text-fill: #666;"/>
-                                    <TextField fx:id="bookIsbn" editable="false" promptText="ISBN"/>
-                                    <Label text="Year:" style="-fx-font-size: 11px; -fx-text-fill: #666;"/>
-                                    <TextField fx:id="bookYear" editable="false" promptText="Year"/>
-                                    <Label text="Publisher:" style="-fx-font-size: 11px; -fx-text-fill: #666;"/>
-                                    <TextField fx:id="bookPublisher" editable="false" promptText="Publisher"/>
-                                    <Label text="Status:" style="-fx-font-size: 11px; -fx-text-fill: #666;"/>
-                                    <TextField fx:id="bookStatus" editable="false" promptText="Status"/>
+                                    <Label text="%book.details" style="-fx-font-weight: bold; -fx-font-size: 14px;"/>
+                                    <Label text="%book.author" style="-fx-font-size: 11px; -fx-text-fill: #666;"/>
+                                    <TextField fx:id="bookAuthor" editable="false" promptText="%book.author.prompt"/>
+                                    <Label text="%book.title" style="-fx-font-size: 11px; -fx-text-fill: #666;"/>
+                                    <TextField fx:id="bookTitle" editable="false" promptText="%book.title.prompt"/>
+                                    <Label text="%book.pages" style="-fx-font-size: 11px; -fx-text-fill: #666;"/>
+                                    <TextField fx:id="pages" editable="false" promptText="%book.pages.prompt"/>
+                                    <Label text="%book.isbn" style="-fx-font-size: 11px; -fx-text-fill: #666;"/>
+                                    <TextField fx:id="bookIsbn" editable="false" promptText="%book.isbn.prompt"/>
+                                    <Label text="%book.year" style="-fx-font-size: 11px; -fx-text-fill: #666;"/>
+                                    <TextField fx:id="bookYear" editable="false" promptText="%book.year.prompt"/>
+                                    <Label text="%book.publisher" style="-fx-font-size: 11px; -fx-text-fill: #666;"/>
+                                    <TextField fx:id="bookPublisher" editable="false" promptText="%book.publisher.prompt"/>
+                                    <Label text="%book.status" style="-fx-font-size: 11px; -fx-text-fill: #666;"/>
+                                    <TextField fx:id="bookStatus" editable="false" promptText="%col.status"/>
                                     <HBox spacing="8">
-                                        <Button fx:id="borrowBtn" text="Borrow" onAction="#onBorrowBook"
+                                        <Button fx:id="borrowBtn" text="%borrow.button" onAction="#onBorrowBook"
                                                 style="-fx-background-color: #b3995d; -fx-padding: 8 14;"/>
-                                        <Button fx:id="reserveBtn" text="Reserve next period" onAction="#onReserveBook"
+                                        <Button fx:id="reserveBtn" text="%borrow.reserve" onAction="#onReserveBook"
                                                 style="-fx-background-color: #3498db; -fx-text-fill: white; -fx-padding: 8 14;"/>
                                     </HBox>
                                 </VBox>
@@ -115,36 +115,36 @@
                     </content>
                 </Tab>
 
-                <Tab text="User settings">
+                <Tab text="%tab.settings">
                     <content>
                         <VBox spacing="16" style="-fx-padding: 24; -fx-background-color: #EEEEEE;">
-                            <Label text="Profile data" style="-fx-font-size: 16px; -fx-font-weight: bold;"/>
+                            <Label text="%settings.profile" style="-fx-font-size: 16px; -fx-font-weight: bold;"/>
                             <GridPane hgap="12" vgap="10">
                                 <columnConstraints>
                                     <ColumnConstraints percentWidth="25" halignment="RIGHT"/>
                                     <ColumnConstraints percentWidth="55"/>
                                 </columnConstraints>
-                                <Label text="First name:" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+                                <Label text="%settings.firstname" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
                                 <TextField fx:id="settingsFirstName" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
-                                <Label text="Last name:" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+                                <Label text="%settings.lastname" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
                                 <TextField fx:id="settingsLastName" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
-                                <Label text="Phone:" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+                                <Label text="%settings.phone" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
                                 <TextField fx:id="settingsPhone" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
                             </GridPane>
 
-                            <Label text="Change password" style="-fx-font-size: 16px; -fx-font-weight: bold;"/>
+                            <Label text="%settings.changepass" style="-fx-font-size: 16px; -fx-font-weight: bold;"/>
                             <GridPane hgap="12" vgap="10">
                                 <columnConstraints>
                                     <ColumnConstraints percentWidth="25" halignment="RIGHT"/>
                                     <ColumnConstraints percentWidth="55"/>
                                 </columnConstraints>
-                                <Label text="New password:" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
-                                <PasswordField fx:id="settingsNewPassword" GridPane.rowIndex="0" GridPane.columnIndex="1" promptText="min. 8 characters"/>
-                                <Label text="Repeat password:" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
-                                <PasswordField fx:id="settingsConfirmPassword" GridPane.rowIndex="1" GridPane.columnIndex="1" promptText="re-enter new password"/>
+                                <Label text="%settings.newpass" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+                                <PasswordField fx:id="settingsNewPassword" GridPane.rowIndex="0" GridPane.columnIndex="1" promptText="%settings.newpass.prompt"/>
+                                <Label text="%settings.confirmpass" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+                                <PasswordField fx:id="settingsConfirmPassword" GridPane.rowIndex="1" GridPane.columnIndex="1" promptText="%settings.confirmpass.prompt"/>
                             </GridPane>
 
-                            <Button fx:id="saveSettingsBtn" text="Save changes" onAction="#onSaveSettings"
+                            <Button fx:id="saveSettingsBtn" text="%settings.save" onAction="#onSaveSettings"
                                     style="-fx-background-color: #002244; -fx-text-fill: white; -fx-padding: 8 20;"/>
                         </VBox>
                     </content>

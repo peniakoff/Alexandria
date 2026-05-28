@@ -6,7 +6,6 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -16,6 +15,7 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 import pl.tomaszmiller.Utils;
 import pl.tomaszmiller.config.AppConfig;
+import pl.tomaszmiller.i18n.I18n;
 import pl.tomaszmiller.model.Book;
 import pl.tomaszmiller.model.BookStatus;
 import pl.tomaszmiller.model.Rental;
@@ -144,7 +144,7 @@ public class AdminController implements Initializable {
         if (welcomeLabel != null) {
             User user = pl.tomaszmiller.session.UserSession.getCurrentUser();
             if (user != null) {
-                welcomeLabel.setText("Admin: " + user.fullName());
+                welcomeLabel.setText(I18n.get("nav.admin", user.fullName()));
             }
         }
     }
@@ -153,13 +153,13 @@ public class AdminController implements Initializable {
     private void onLogout() {
         authService.logout();
         try {
-            Parent loginView = FXMLLoader.load(Objects.requireNonNull(
-                    getClass().getResource("/pl/tomaszmiller/views/loginView.fxml")));
+            Parent loginView = Utils.loadView("/pl/tomaszmiller/views/loginView.fxml");
             Stage stage = (Stage) theList.getScene().getWindow();
+            stage.setTitle(I18n.get("app.title"));
             stage.setScene(new Scene(loginView, 800, 600));
             stage.show();
         } catch (IOException e) {
-            Utils.openDialog("Logout", "Failed to return to login screen.");
+            Utils.openDialog(I18n.get("dialog.logout"), I18n.get("logout.failed"));
         }
     }
 
@@ -203,14 +203,14 @@ public class AdminController implements Initializable {
         String publisher = bookPublisher != null && bookPublisher.getText() != null ? bookPublisher.getText().trim() : "";
 
         if (author.isEmpty() || title.isEmpty() || pagesStr.isEmpty()) {
-            Utils.openDialog("Add book", "Please fill in all fields: author, title and number of pages.");
+            Utils.openDialog(I18n.get("dialog.addbook"), I18n.get("admin.books.fields"));
             return;
         }
         int pageCount;
         try {
             pageCount = Integer.parseInt(pagesStr);
         } catch (NumberFormatException e) {
-            Utils.openDialog("Add book", "Number of pages must be an integer.");
+            Utils.openDialog(I18n.get("dialog.addbook"), I18n.get("admin.books.pagesinvalid"));
             return;
         }
         int publishYear = 0;
@@ -218,7 +218,7 @@ public class AdminController implements Initializable {
             try {
                 publishYear = Integer.parseInt(yearStr);
             } catch (NumberFormatException e) {
-                Utils.openDialog("Add book", "Publication year must be an integer.");
+                Utils.openDialog(I18n.get("dialog.addbook"), I18n.get("admin.books.yearinvalid"));
                 return;
             }
         }
@@ -229,11 +229,11 @@ public class AdminController implements Initializable {
                     publishYear, publisher.isEmpty() ? null : publisher);
             boolean updated = bookService.updateBook(updatedBook);
             if (updated) {
-                Utils.confirmDialog("Edit book", "Book \"" + title + "\" has been updated.");
+                Utils.confirmDialog(I18n.get("dialog.editbook"), I18n.get("admin.books.updated", title));
                 refreshBookList();
                 clearBookDetails();
             } else {
-                Utils.openDialog("Edit book", "Failed to update book.");
+                Utils.openDialog(I18n.get("dialog.editbook"), I18n.get("admin.books.updatefailed"));
             }
         } else {
             Book newBook = new Book(0L, author, title, pageCount,
@@ -241,11 +241,11 @@ public class AdminController implements Initializable {
                     publishYear, publisher.isEmpty() ? null : publisher);
             Optional<Book> saved = bookService.addBook(newBook);
             if (saved.isPresent()) {
-                Utils.confirmDialog("Add book", "Book \"" + title + "\" has been added.");
+                Utils.confirmDialog(I18n.get("dialog.addbook"), I18n.get("admin.books.added", title));
                 refreshBookList();
                 clearBookDetails();
             } else {
-                Utils.openDialog("Add book", "Failed to add book.");
+                Utils.openDialog(I18n.get("dialog.addbook"), I18n.get("admin.books.addfailed"));
             }
         }
     }
@@ -253,17 +253,17 @@ public class AdminController implements Initializable {
     @FXML
     private void onDeleteBook() {
         if (selectedBookId <= 0) {
-            Utils.openDialog("Remove book", "First select a book from the list.");
+            Utils.openDialog(I18n.get("dialog.removebook"), I18n.get("admin.books.selectfirst"));
             return;
         }
         boolean deleted = bookService.deleteBook(selectedBookId);
         if (deleted) {
-            Utils.confirmDialog("Remove book", "Book has been removed.");
+            Utils.confirmDialog(I18n.get("dialog.removebook"), I18n.get("admin.books.removed"));
             refreshBookList();
             clearBookDetails();
             selectedBookId = 0L;
         } else {
-            Utils.openDialog("Remove book", "Failed to remove book.");
+            Utils.openDialog(I18n.get("dialog.removebook"), I18n.get("admin.books.removefailed"));
         }
     }
 
@@ -313,7 +313,7 @@ public class AdminController implements Initializable {
         userIdCol.setCellValueFactory(data -> new SimpleLongProperty(data.getValue().id()));
         userNameCol.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().fullName()));
         userEmailCol.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().email()));
-        userRoleCol.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().role().name()));
+        userRoleCol.setCellValueFactory(data -> new SimpleStringProperty(I18n.getEnum(data.getValue().role())));
         refreshUsers();
     }
 
@@ -325,7 +325,7 @@ public class AdminController implements Initializable {
         ObservableList<User> data = FXCollections.observableArrayList(users);
         usersTable.setItems(data);
         if (userCountLabel != null) {
-            userCountLabel.setText("Users: " + users.size());
+            userCountLabel.setText(I18n.get("admin.users", users.size()));
         }
     }
 
@@ -336,15 +336,15 @@ public class AdminController implements Initializable {
         }
         User selected = usersTable.getSelectionModel().getSelectedItem();
         if (selected == null) {
-            Utils.openDialog("Remove user", "Select a user from the list.");
+            Utils.openDialog(I18n.get("dialog.removeuser"), I18n.get("admin.users.selectfirst"));
             return;
         }
         boolean deleted = userService.deleteUser(selected.id());
         if (deleted) {
-            Utils.confirmDialog("Remove user", "User " + selected.fullName() + " has been removed.");
+            Utils.confirmDialog(I18n.get("dialog.removeuser"), I18n.get("admin.users.removed", selected.fullName()));
             refreshUsers();
         } else {
-            Utils.openDialog("Remove user", "Failed to remove user.");
+            Utils.openDialog(I18n.get("dialog.removeuser"), I18n.get("admin.users.removefailed"));
         }
     }
 
@@ -376,7 +376,7 @@ public class AdminController implements Initializable {
                     String userName = userNames.getOrDefault(r.userId(), "(id=" + r.userId() + ")");
                     String bookTitleStr = bookTitles.getOrDefault(r.bookId(), "(id=" + r.bookId() + ")");
                     return new RentalRow(r.id(), userName, bookTitleStr,
-                            r.borrowDate().toString(), r.dueDate().toString(), r.status().name());
+                            r.borrowDate().toString(), r.dueDate().toString(), I18n.getEnum(r.status()));
                 })
                 .toList();
         rentalsTable.setItems(FXCollections.observableArrayList(rows));
@@ -385,16 +385,16 @@ public class AdminController implements Initializable {
     @FXML
     private void onReturnBook() {
         if (selectedRentalId <= 0) {
-            Utils.openDialog("Book return", "Select a rental from the table.");
+            Utils.openDialog(I18n.get("dialog.bookreturn"), I18n.get("admin.rentals.selectfirst"));
             return;
         }
         boolean done = rentalService.returnBook(selectedRentalId);
         if (done) {
-            Utils.confirmDialog("Book return", "Return registered successfully.");
+            Utils.confirmDialog(I18n.get("dialog.bookreturn"), I18n.get("admin.rentals.returned"));
             refreshRentals();
             selectedRentalId = 0L;
         } else {
-            Utils.openDialog("Book return", "Failed to register return.");
+            Utils.openDialog(I18n.get("dialog.bookreturn"), I18n.get("admin.rentals.returnfailed"));
         }
     }
 
@@ -431,7 +431,7 @@ public class AdminController implements Initializable {
                             ? bookTitles.getOrDefault(rental.bookId(), "(unknown)")
                             : "(unknown)";
                     return new ExtRequestRow(req.id(), userName, bookTitle,
-                            req.requestDate().toString(), req.status().name());
+                            req.requestDate().toString(), I18n.getEnum(req.status()));
                 })
                 .toList();
         extRequestsTable.setItems(FXCollections.observableArrayList(rows));
@@ -444,22 +444,22 @@ public class AdminController implements Initializable {
         }
         ExtRequestRow selected = extRequestsTable.getSelectionModel().getSelectedItem();
         if (selected == null) {
-            Utils.openDialog("Extension Request", "Select a request from the table.");
+            Utils.openDialog(I18n.get("dialog.extensionrequest"), I18n.get("admin.ext.selectfirst"));
             return;
         }
         ExtensionRequestService.ApprovalResult result = extensionRequestService.approve(selected.id());
         switch (result) {
             case APPROVED -> {
-                Utils.confirmDialog("Extension Request", "Extension approved. Due date extended by 7 days.");
+                Utils.confirmDialog(I18n.get("dialog.extensionrequest"), I18n.get("extension.approved"));
                 refreshExtRequests();
                 refreshRentals();
             }
             case RESERVATION_CONFLICT ->
-                    Utils.openDialog("Extension Request", "Cannot approve. The book has a pending or approved reservation.");
-            case REQUEST_NOT_FOUND -> Utils.openDialog("Extension Request", "Extension request not found.");
-            case RENTAL_NOT_FOUND -> Utils.openDialog("Extension Request", "Associated rental not found.");
+                    Utils.openDialog(I18n.get("dialog.extensionrequest"), I18n.get("admin.ext.conflict"));
+            case REQUEST_NOT_FOUND -> Utils.openDialog(I18n.get("dialog.extensionrequest"), I18n.get("admin.ext.notfound"));
+            case RENTAL_NOT_FOUND -> Utils.openDialog(I18n.get("dialog.extensionrequest"), I18n.get("admin.ext.rentalnotfound"));
             default ->
-                    Utils.openDialog("Extension Request", "An unexpected error occurred while approving the request.");
+                    Utils.openDialog(I18n.get("dialog.extensionrequest"), I18n.get("admin.ext.unexpected"));
         }
     }
 
@@ -470,11 +470,11 @@ public class AdminController implements Initializable {
         }
         ExtRequestRow selected = extRequestsTable.getSelectionModel().getSelectedItem();
         if (selected == null) {
-            Utils.openDialog("Extension Request", "Select a request from the table.");
+            Utils.openDialog(I18n.get("dialog.extensionrequest"), I18n.get("admin.ext.selectfirst"));
             return;
         }
         extensionRequestService.reject(selected.id());
-        Utils.confirmDialog("Extension Request", "Extension request rejected.");
+        Utils.confirmDialog(I18n.get("dialog.extensionrequest"), I18n.get("extension.rejected"));
         refreshExtRequests();
     }
 
@@ -506,7 +506,7 @@ public class AdminController implements Initializable {
                     String userName = userNames.getOrDefault(res.userId(), "(id=" + res.userId() + ")");
                     String bookTitle = bookTitlesMap.getOrDefault(res.bookId(), "(id=" + res.bookId() + ")");
                     return new ReservationRow(res.id(), userName, bookTitle,
-                            res.requestDate().toString(), res.status().name());
+                            res.requestDate().toString(), I18n.getEnum(res.status()));
                 })
                 .toList();
         reservationsTable.setItems(FXCollections.observableArrayList(rows));
@@ -519,15 +519,15 @@ public class AdminController implements Initializable {
         }
         ReservationRow selected = reservationsTable.getSelectionModel().getSelectedItem();
         if (selected == null) {
-            Utils.openDialog("Reservation", "Select a reservation from the table.");
+            Utils.openDialog(I18n.get("dialog.reservation"), I18n.get("admin.res.selectfirst"));
             return;
         }
         boolean approved = reservationService.approve(selected.id());
         if (approved) {
-            Utils.confirmDialog("Reservation", "Reservation approved.");
+            Utils.confirmDialog(I18n.get("dialog.reservation"), I18n.get("admin.res.approved"));
             refreshReservations();
         } else {
-            Utils.openDialog("Reservation", "Failed to approve reservation.");
+            Utils.openDialog(I18n.get("dialog.reservation"), I18n.get("admin.res.approvefailed"));
         }
     }
 
@@ -538,11 +538,11 @@ public class AdminController implements Initializable {
         }
         ReservationRow selected = reservationsTable.getSelectionModel().getSelectedItem();
         if (selected == null) {
-            Utils.openDialog("Reservation", "Select a reservation from the table.");
+            Utils.openDialog(I18n.get("dialog.reservation"), I18n.get("admin.res.selectfirst"));
             return;
         }
         reservationService.reject(selected.id());
-        Utils.confirmDialog("Reservation", "Reservation rejected.");
+        Utils.confirmDialog(I18n.get("dialog.reservation"), I18n.get("admin.res.rejected"));
         refreshReservations();
     }
 
