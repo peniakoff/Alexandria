@@ -1,21 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.ListView?>
-<?import javafx.scene.control.ScrollPane?>
-<?import javafx.scene.control.Tab?>
-<?import javafx.scene.control.TabPane?>
-<?import javafx.scene.control.TableColumn?>
-<?import javafx.scene.control.TableView?>
-<?import javafx.scene.control.TextField?>
-<?import javafx.scene.layout.BorderPane?>
-<?import javafx.scene.layout.ColumnConstraints?>
-<?import javafx.scene.layout.GridPane?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.RowConstraints?>
-<?import javafx.scene.layout.VBox?>
-
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
 <BorderPane xmlns:fx="http://javafx.com/fxml/1"
             maxHeight="-Infinity" maxWidth="-Infinity"
             minHeight="600.0" minWidth="800.0"
@@ -25,7 +11,8 @@
             fx:controller="pl.tomaszmiller.controllers.AdminController">
     <top>
         <HBox alignment="CENTER_RIGHT" style="-fx-padding: 8 16; -fx-background-color: #002244;">
-            <Label fx:id="welcomeLabel" text="%nav.admin" style="-fx-text-fill: #b3995d; -fx-font-size: 14px;" HBox.hgrow="ALWAYS"/>
+            <Label fx:id="welcomeLabel" text="%nav.admin" style="-fx-text-fill: #b3995d; -fx-font-size: 14px;"
+                   HBox.hgrow="ALWAYS"/>
             <Button text="%nav.logout" onAction="#onLogout"
                     style="-fx-background-color: #b3995d; -fx-text-fill: #002244; -fx-padding: 6 16; -fx-font-weight: bold; -fx-cursor: hand;"/>
         </HBox>
@@ -114,7 +101,8 @@
                                     <HBox spacing="8">
                                         <Button fx:id="addBookBtn" text="%admin.books.add" onAction="#onAddBook"
                                                 style="-fx-background-color: #002244; -fx-text-fill: white; -fx-padding: 6 10;"/>
-                                        <Button fx:id="deleteBookBtn" text="%admin.books.remove" onAction="#onDeleteBook"
+                                        <Button fx:id="deleteBookBtn" text="%admin.books.remove"
+                                                onAction="#onDeleteBook"
                                                 style="-fx-background-color: #c0392b; -fx-text-fill: white; -fx-padding: 6 10;"/>
                                     </HBox>
                                 </VBox>

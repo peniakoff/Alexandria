@@ -15,7 +15,8 @@ import pl.tomaszmiller.session.UserSession;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.anyString;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class AuthServiceTest {
@@ -37,9 +38,9 @@ class AuthServiceTest {
 
     @Test
     void login_successWithValidCredentials() throws Exception {
-        String email    = "admin@example.com";
+        String email = "admin@example.com";
         String password = "SecretPass123";
-        String hash     = Utils.hashPassword(password);
+        String hash = Utils.hashPassword(password);
         User user = new User(1L, "Admin", "User", email, "600000001", UserRole.ADMIN);
 
         when(userRepository.findPasswordHashByEmail(email)).thenReturn(Optional.of(hash));
@@ -54,7 +55,7 @@ class AuthServiceTest {
     @Test
     void login_failsWithWrongPassword() throws Exception {
         String email = "user@example.com";
-        String hash  = Utils.hashPassword("correctPassword");
+        String hash = Utils.hashPassword("correctPassword");
 
         when(userRepository.findPasswordHashByEmail(email)).thenReturn(Optional.of(hash));
 
@@ -79,9 +80,9 @@ class AuthServiceTest {
 
     @Test
     void logout_clearsSession() throws Exception {
-        String email    = "user@example.com";
+        String email = "user@example.com";
         String password = "SecretPass123";
-        String hash     = Utils.hashPassword(password);
+        String hash = Utils.hashPassword(password);
         User user = new User(2L, "Regular", "User", email, "600000002", UserRole.USER);
         when(userRepository.findPasswordHashByEmail(email)).thenReturn(Optional.of(hash));
         when(userRepository.findByEmail(email)).thenReturn(Optional.of(user));

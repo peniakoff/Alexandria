@@ -105,7 +105,7 @@ class RentalServiceTest {
 
     @Test
     void findAll_returnsAllRentals() throws Exception {
-        when(rentalRepository.findAll()).thenReturn(Arrays.asList(
+        when(rentalRepository.findAll()).thenReturn(List.of(
                 new Rental(1L, 1L, 1L, LocalDate.now(), LocalDate.now().plusDays(14), null, RentalStatus.ACTIVE)
         ));
         assertEquals(1, rentalService.findAll().size());

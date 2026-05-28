@@ -28,17 +28,6 @@ public abstract class H2TestBase {
         connector.close();
     }
 
-    @BeforeEach
-    void clearTables() throws SQLException {
-        try (Connection c = connector.getConnection(); Statement st = c.createStatement()) {
-            st.execute("DELETE FROM extension_requests");
-            st.execute("DELETE FROM reservations");
-            st.execute("DELETE FROM rentals");
-            st.execute("DELETE FROM books");
-            st.execute("DELETE FROM users");
-        }
-    }
-
     private static void createSchema() {
         try (Connection c = connector.getConnection(); Statement st = c.createStatement()) {
             st.execute("""
@@ -95,6 +84,17 @@ public abstract class H2TestBase {
                     """);
         } catch (SQLException e) {
             throw new RuntimeException("Failed to create H2 schema", e);
+        }
+    }
+
+    @BeforeEach
+    void clearTables() throws SQLException {
+        try (Connection c = connector.getConnection(); Statement st = c.createStatement()) {
+            st.execute("DELETE FROM extension_requests");
+            st.execute("DELETE FROM reservations");
+            st.execute("DELETE FROM rentals");
+            st.execute("DELETE FROM books");
+            st.execute("DELETE FROM users");
         }
     }
 }

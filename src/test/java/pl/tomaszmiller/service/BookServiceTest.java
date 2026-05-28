@@ -63,8 +63,8 @@ class BookServiceTest {
 
     @Test
     void addBook_savesAndReturnsBook() throws Exception {
-        Book input  = new Book(0L, "Adam Mickiewicz", "Pan Tadeusz", 328, "978-83-7081-941-0", BookStatus.AVAILABLE);
-        Book saved  = new Book(5L, "Adam Mickiewicz", "Pan Tadeusz", 328, "978-83-7081-941-0", BookStatus.AVAILABLE);
+        Book input = new Book(0L, "Adam Mickiewicz", "Pan Tadeusz", 328, "978-83-7081-941-0", BookStatus.AVAILABLE);
+        Book saved = new Book(5L, "Adam Mickiewicz", "Pan Tadeusz", 328, "978-83-7081-941-0", BookStatus.AVAILABLE);
         when(bookRepository.save(input)).thenReturn(saved);
         Optional<Book> result = bookService.addBook(input);
         assertTrue(result.isPresent());

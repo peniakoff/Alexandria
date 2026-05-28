@@ -1,12 +1,7 @@
 package pl.tomaszmiller.repository;
 
 import org.junit.jupiter.api.Test;
-import pl.tomaszmiller.model.Book;
-import pl.tomaszmiller.model.BookStatus;
-import pl.tomaszmiller.model.Rental;
-import pl.tomaszmiller.model.RentalStatus;
-import pl.tomaszmiller.model.User;
-import pl.tomaszmiller.model.UserRole;
+import pl.tomaszmiller.model.*;
 import pl.tomaszmiller.repository.sql.SqlBookRepository;
 import pl.tomaszmiller.repository.sql.SqlRentalRepository;
 import pl.tomaszmiller.repository.sql.SqlUserRepository;

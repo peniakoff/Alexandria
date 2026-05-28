@@ -22,7 +22,10 @@ import pl.tomaszmiller.session.UserSession;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.*;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.ResourceBundle;
 
 /**
  * Controller for the regular-user dashboard.
@@ -575,9 +578,9 @@ public class UserController implements Initializable {
     }
 
     /**
-         * DTO for the personal rentals TableView.
-         */
-        public record RentalRow(long id, long rentalId, String bookTitle, String borrowDate, String dueDate, String status,
-                                String colorCode) {
+     * DTO for the personal rentals TableView.
+     */
+    public record RentalRow(long id, long rentalId, String bookTitle, String borrowDate, String dueDate, String status,
+                            String colorCode) {
     }
 }

@@ -1,24 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.CheckBox?>
-<?import javafx.scene.control.ComboBox?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.ListView?>
-<?import javafx.scene.control.PasswordField?>
-<?import javafx.scene.control.ScrollPane?>
-<?import javafx.scene.control.Tab?>
-<?import javafx.scene.control.TabPane?>
-<?import javafx.scene.control.TableColumn?>
-<?import javafx.scene.control.TableView?>
-<?import javafx.scene.control.TextField?>
-<?import javafx.scene.layout.BorderPane?>
-<?import javafx.scene.layout.ColumnConstraints?>
-<?import javafx.scene.layout.GridPane?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.RowConstraints?>
-<?import javafx.scene.layout.VBox?>
-
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
 <BorderPane xmlns:fx="http://javafx.com/fxml/1"
             maxHeight="-Infinity" maxWidth="-Infinity"
             minHeight="600.0" minWidth="800.0"
@@ -28,7 +11,8 @@
             fx:controller="pl.tomaszmiller.controllers.UserController">
     <top>
         <HBox alignment="CENTER_RIGHT" style="-fx-padding: 8 16; -fx-background-color: #002244;">
-            <Label fx:id="welcomeLabel" text="%nav.welcome" style="-fx-text-fill: #b3995d; -fx-font-size: 14px;" HBox.hgrow="ALWAYS"/>
+            <Label fx:id="welcomeLabel" text="%nav.welcome" style="-fx-text-fill: #b3995d; -fx-font-size: 14px;"
+                   HBox.hgrow="ALWAYS"/>
             <Button text="%nav.logout" onAction="#onLogout"
                     style="-fx-background-color: #b3995d; -fx-text-fill: #002244; -fx-padding: 6 16; -fx-font-weight: bold; -fx-cursor: hand;"/>
         </HBox>
@@ -71,7 +55,8 @@
                                         <Button text="%search.button" onAction="#onSearchBook"
                                                 style="-fx-background-color: #002244; -fx-text-fill: white; -fx-padding: 6 10;"/>
                                     </HBox>
-                                    <CheckBox fx:id="showUnavailableCheck" text="%search.showunavailable" onAction="#onToggleShowUnavailable"/>
+                                    <CheckBox fx:id="showUnavailableCheck" text="%search.showunavailable"
+                                              onAction="#onToggleShowUnavailable"/>
                                     <ScrollPane fitToWidth="true" fitToHeight="true" VBox.vgrow="ALWAYS">
                                         <content>
                                             <ListView fx:id="theList"/>
@@ -100,7 +85,8 @@
                                     <Label text="%book.year" style="-fx-font-size: 11px; -fx-text-fill: #666;"/>
                                     <TextField fx:id="bookYear" editable="false" promptText="%book.year.prompt"/>
                                     <Label text="%book.publisher" style="-fx-font-size: 11px; -fx-text-fill: #666;"/>
-                                    <TextField fx:id="bookPublisher" editable="false" promptText="%book.publisher.prompt"/>
+                                    <TextField fx:id="bookPublisher" editable="false"
+                                               promptText="%book.publisher.prompt"/>
                                     <Label text="%book.status" style="-fx-font-size: 11px; -fx-text-fill: #666;"/>
                                     <TextField fx:id="bookStatus" editable="false" promptText="%col.status"/>
                                     <HBox spacing="8">
@@ -139,9 +125,11 @@
                                     <ColumnConstraints percentWidth="55"/>
                                 </columnConstraints>
                                 <Label text="%settings.newpass" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
-                                <PasswordField fx:id="settingsNewPassword" GridPane.rowIndex="0" GridPane.columnIndex="1" promptText="%settings.newpass.prompt"/>
+                                <PasswordField fx:id="settingsNewPassword" GridPane.rowIndex="0"
+                                               GridPane.columnIndex="1" promptText="%settings.newpass.prompt"/>
                                 <Label text="%settings.confirmpass" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
-                                <PasswordField fx:id="settingsConfirmPassword" GridPane.rowIndex="1" GridPane.columnIndex="1" promptText="%settings.confirmpass.prompt"/>
+                                <PasswordField fx:id="settingsConfirmPassword" GridPane.rowIndex="1"
+                                               GridPane.columnIndex="1" promptText="%settings.confirmpass.prompt"/>
                             </GridPane>
 
                             <Button fx:id="saveSettingsBtn" text="%settings.save" onAction="#onSaveSettings"

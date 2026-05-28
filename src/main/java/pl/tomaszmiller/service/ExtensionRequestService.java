@@ -21,6 +21,7 @@ public class ExtensionRequestService {
     private final ExtensionRequestRepository extensionRepo;
     private final RentalRepository rentalRepo;
     private final ReservationRepository reservationRepo;
+
     public ExtensionRequestService(ExtensionRequestRepository extensionRepo,
                                    RentalRepository rentalRepo,
                                    ReservationRepository reservationRepo) {

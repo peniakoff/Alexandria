@@ -24,7 +24,10 @@ import pl.tomaszmiller.service.*;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.*;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.ResourceBundle;
 
 /**
  * Controller for the administrator dashboard.
@@ -456,10 +459,11 @@ public class AdminController implements Initializable {
             }
             case RESERVATION_CONFLICT ->
                     Utils.openDialog(I18n.get("dialog.extensionrequest"), I18n.get("admin.ext.conflict"));
-            case REQUEST_NOT_FOUND -> Utils.openDialog(I18n.get("dialog.extensionrequest"), I18n.get("admin.ext.notfound"));
-            case RENTAL_NOT_FOUND -> Utils.openDialog(I18n.get("dialog.extensionrequest"), I18n.get("admin.ext.rentalnotfound"));
-            default ->
-                    Utils.openDialog(I18n.get("dialog.extensionrequest"), I18n.get("admin.ext.unexpected"));
+            case REQUEST_NOT_FOUND ->
+                    Utils.openDialog(I18n.get("dialog.extensionrequest"), I18n.get("admin.ext.notfound"));
+            case RENTAL_NOT_FOUND ->
+                    Utils.openDialog(I18n.get("dialog.extensionrequest"), I18n.get("admin.ext.rentalnotfound"));
+            default -> Utils.openDialog(I18n.get("dialog.extensionrequest"), I18n.get("admin.ext.unexpected"));
         }
     }
 
@@ -547,21 +551,21 @@ public class AdminController implements Initializable {
     }
 
     /**
-         * Simple DTO for displaying rental data in a TableView.
-         */
-        public record RentalRow(long id, String userName, String bookTitle, String borrowDate, String dueDate,
-                                String status) {
+     * Simple DTO for displaying rental data in a TableView.
+     */
+    public record RentalRow(long id, String userName, String bookTitle, String borrowDate, String dueDate,
+                            String status) {
     }
 
     /**
-         * DTO for extension request table rows.
-         */
-        public record ExtRequestRow(long id, String userName, String bookTitle, String requestDate, String status) {
+     * DTO for extension request table rows.
+     */
+    public record ExtRequestRow(long id, String userName, String bookTitle, String requestDate, String status) {
     }
 
     /**
-         * DTO for reservation table rows.
-         */
-        public record ReservationRow(long id, String userName, String bookTitle, String requestDate, String status) {
+     * DTO for reservation table rows.
+     */
+    public record ReservationRow(long id, String userName, String bookTitle, String requestDate, String status) {
     }
 }
