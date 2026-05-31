@@ -49,7 +49,8 @@ class BooksController {
     @Post
     @Secured("ADMIN")
     HttpResponse<Book> create(@Body Book book) {
-        return bookService.addBook(book).map(HttpResponse::created).orElseGet(HttpResponse::badRequest);
+        int requestedCopies = book.inventory().activeCopies();
+        return bookService.addBook(book, requestedCopies).map(HttpResponse::created).orElseGet(HttpResponse::badRequest);
     }
 
     @Put("/{id}")
@@ -66,4 +67,3 @@ class BooksController {
         return bookService.deleteBook(id) ? HttpResponse.noContent() : HttpResponse.notFound();
     }
 }
-
